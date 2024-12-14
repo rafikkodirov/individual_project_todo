@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "finance2",
+    "slug": "finance2",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.example.myapplication"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-localization",
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "apiKey": "AIzaSyAv_6S3YNkTHXqfxlQuBGj0GLMigXmQJ4A",
+      "authDomain": "com-creditmax.firebaseapp.com",
+      "databaseURL": "https://com-creditmax-default-rtdb.firebaseio.com",
+      "projectId": "com-creditmax",
+      "storageBucket": "com-creditmax.firebasestorage.app",
+      "messagingSenderId": "148778770855",
+      "appId": "1:148778770855:web:1b5dcd02f6e2fc5ad01682",
+      "measurementId": "G-7B83M9XLPK",
+      "eas": {
+        "projectId": "7effde9f-8695-492f-8363-c29ca27431a6"
+      },
+      "encryptionKey": "c2db59705610329f47f01c2c38b0b2281e21539a21bf538f79ea5f2ced2c0818",
+      "iv": "4a23c56c3e39aa0126f4b54252425d6b"
+    }
+  }
+}
