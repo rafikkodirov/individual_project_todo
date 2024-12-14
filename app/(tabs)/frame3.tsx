@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const Frame1 = () => {
+const Frame3 = () => {
   return (
     <View>
-      <Text>Frame1</Text>
+      <Text>Frame3</Text>
     </View>
   )
 }
 
-export default Frame1
+export default Frame3

@@ -32,7 +32,7 @@ const IndexScreen = () => {
           // } else {
             router.replace('/sign-in'); // Переход на другой экран
           // }
-        }, 2000); // 3 seconds delay
+        }, 1); // 3 seconds delay
       }
     };
 
@@ -48,7 +48,11 @@ const IndexScreen = () => {
 
   return (
     <View style={styles.container}>
-     
+      <Image
+        source={require('../assets/images/react_logo.png')} // Укажите путь к вашему логотипу
+        style={styles.logo}
+      // resizeMode="contain"
+      />
     </View>
   );
 };
@@ -61,7 +65,7 @@ const styles = ScaledStyleSheet.create({
     height: "50%",
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'blue', // Цвет фона можно изменить
+    // backgroundColor: 'blue'  , // Цвет фона можно изменить
   },
   logo: {
 

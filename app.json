@@ -4,10 +4,14 @@
     "slug": "individ",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/react_logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/react_logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "ios": {
       "supportsTablet": true
     },
@@ -15,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.example.myapplication"
     },
     "web": {
       "bundler": "metro",
@@ -24,18 +29,23 @@
     },
     "plugins": [
       "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
-        }
-      ]
+      "expo-font",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "apiKey": "AIzaSyDRlVh1z3Umsa5s2pez9sK1NULCQt8Ksyw",
+      "authDomain": "individ-eec88.firebaseapp.com",
+      "projectId": "individ-eec88",
+      "storageBucket": "individ-eec88.firebasestorage.app",
+      "messagingSenderId": "1032971371295",
+      "appId": "1:1032971371295:web:f916c9b58883f92923a62a",
+      "measurementId": "G-KPX5XJ9EX2",
+      "eas": {
+        "projectId": "7effde9f-8695-492f-8363-c29ca27431a6"
+      }
     }
   }
 }

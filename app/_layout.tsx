@@ -29,7 +29,11 @@ export default function RootLayout() {
 
   return ( 
       <Stack> 
-        <Stack.Screen name="index" />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="/(tabs)/frame1" options={{ headerShown: false }} />
+        <Stack.Screen name="/(tabs)/frame2" options={{ headerShown: false }} />
+        <Stack.Screen name="/(tabs)/frame3" options={{ headerShown: false }} />
       </Stack> 
   );
 }
