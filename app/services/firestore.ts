@@ -1,16 +1,17 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
   updateDoc,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
-import * as Localization from "expo-localization"; 
+import * as Localization from "expo-localization";
 
 
-export const addElementToTheFirebase = (path: string, element: any) => {    
+export const addElementToTheFirebase = (path: string, element: any) => {
   const tasksCollectionRef = collection(db, path);
   addDoc(tasksCollectionRef, element);
 };
@@ -20,15 +21,56 @@ export const updateElementToTheFirebase = (docPath: string, element: any) => {
   delete element.key;
   updateDoc(tasksCollectionRef, element);
 };
+export const deleteElementFromFirebase = async (docPath: string, element: any) => {
 
-export default {addElementToTheFirebase, updateElementToTheFirebase}
+  const elementRef = doc(db, docPath, element.key);
+  await deleteDoc(elementRef);
+}
 
+interface Item {
+  key: string;
+  [key: string]: any;
+}
 
+export const getItems = async (path: string): Promise<Item[]> => {
+  try {
+    const querySnapshot = await getDocs(collection(db, path));
+    const itemsArray: Item[] = [];
 
+    querySnapshot.forEach((doc) => {
+      const elements: Item = {
+        key: doc.id,
+        ...doc.data(),
+      };
+      itemsArray.push(elements);
+    });
 
+    return itemsArray;
+  } catch (error) {
+    console.error('Ошибка получения данных из Firestore:', error);
+    return [];
+  }
+};
 
+export default { addElementToTheFirebase, updateElementToTheFirebase,getItems }
 
+// export const getItems = async () => {
+//   const path = `/tasks`
+//   try {
+//     const querySnapshot = await getDocs(collection(db, path));
+//     const itemsArray: any[] = [];
 
+//     querySnapshot.forEach((doc) => {
+//       const elements = {
+//         key: doc.id,
+//         ...JSON.parse(JSON.stringify(doc.data())),
+//       };
+//       itemsArray.push(elements);
+//     });
+//   }catch (error) {
+//     console.error('Ошибка получения данных из Firestore:', error);
+// }
+// }
 
 
 
@@ -117,7 +159,7 @@ export default {addElementToTheFirebase, updateElementToTheFirebase}
 //     line is not being executed by the program and is simply there for reference or as a placeholder.
 //     In this specific context, it seems like the line was originally intended to define the `path`
 //     variable for some purpose, but it is currently commented out and not used in the code. */
-//     const path = `/test` 
+//     const path = `/test`
 //     // `/${rootCollection}/${i18n.locale}/${offerCollections[offerCollectionIndex]}/${offer.key}`;
 //     const offerDocRef = doc(db, path);
 
@@ -146,4 +188,3 @@ export default {addElementToTheFirebase, updateElementToTheFirebase}
 //     console.error("Error updating viewsCount:", error);
 //   }
 // };
- 

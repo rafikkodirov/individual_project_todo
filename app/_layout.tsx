@@ -31,9 +31,9 @@ export default function RootLayout() {
       <Stack> 
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="/(tabs)/frame1" options={{ headerShown: false }} />
-        <Stack.Screen name="/(tabs)/frame2" options={{ headerShown: false }} />
-        <Stack.Screen name="/(tabs)/frame3" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)/activeTask" options={{ headerShown:true, title: "Активные задания"  }} />
+        <Stack.Screen name="(tabs)/frame2" options={{   headerShown:true}} />
+        <Stack.Screen name="(tabs)/frame3" options={{ headerShown:true  }} />
       </Stack> 
   );
 }

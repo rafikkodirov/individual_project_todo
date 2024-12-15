@@ -1,24 +1,24 @@
-import { View, Text, Button } from 'react-native'
-import React from 'react'
-import { addElementToTheFirebase, updateElementToTheFirebase } from '../services/firestore'
-
+import { View, Text, Button, Animated, FlatList } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { getItems} from '../services/firestore' 
 
 const ActiveTask: React.FC = () => {
-  return (
-    <View>
-      <Text >Frame1</Text>
-      <Button title='Test' onPress={() => addElementToTheFirebase("/tasks", { description: "Do it" })}></Button>
-      <View style={{ marginTop: 20 }}>
-        <Button title='Test2' onPress={() => updateElementToTheFirebase("/tasks",
-          {
-            key: '39F8uPN0w3YAsOKwI7As',
-            description: "Do it 2"
-          }
-        )}>
+  const [items, setItems] = useState<any[]>([]); 
+ 
+  useEffect(() => {
+    const fetchItems = async () => {
+      const fetchedItems = await getItems("tasks");
+      setItems(fetchedItems); 
+    };
 
-        </Button>
-      </View>
-    </View>
+    fetchItems();
+  }, []);
+  return (
+     <View>
+       <FlatList
+          
+        />
+     </View>
   )
 }
 

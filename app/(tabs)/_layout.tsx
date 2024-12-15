@@ -40,11 +40,10 @@ const TabsLayout = () => {
     <>
       <Tabs>
         
-        <Tabs.Screen name="frame1"
+        <Tabs.Screen name="activeTask"
           options={{
-            title: 'frame1', 
-            tabBarLabel:"frame1",
-            headerShown: false,
+            title: 'Активные Задания', 
+            tabBarLabel:"Задания",
             tabBarIcon: ({ color, focused }) => {
               return <TabIcon 
                 icon={react_logo}
@@ -56,9 +55,8 @@ const TabsLayout = () => {
           }} />
           <Tabs.Screen name="frame2"
           options={{
-            title: 'frame2', 
-            tabBarLabel:"frame2",
-            headerShown: false,
+            title: 'Группы', 
+            tabBarLabel:"Группы", 
             tabBarIcon: ({ color, focused }) => {
               return <TabIcon 
                 icon={react_logo}
@@ -70,9 +68,8 @@ const TabsLayout = () => {
           }} />
            <Tabs.Screen name="frame3"
           options={{
-            title: 'frame3', 
-            tabBarLabel:"frame3",
-            headerShown: false,
+            title: 'Настройки', 
+            tabBarLabel:"Настройки", 
             tabBarIcon: ({ color, focused }) => {
               return <TabIcon 
                 icon={react_logo}
