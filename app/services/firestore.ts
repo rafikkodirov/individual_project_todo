@@ -42,6 +42,15 @@ export const getItems = async (path: string): Promise<Item[]> => {
         key: doc.id,
         ...doc.data(),
       };
+
+      // if (elements['startDate']) {
+      //   elements['startDate'] = elements['startDate'].toDate()
+      // }
+      // // if (elements['endDate']) {
+      // //   elements['endDate'] = elements['endDate'].toDate()
+      // // }
+      // console.log(elements)
+      
       itemsArray.push(elements);
     });
 
@@ -52,7 +61,7 @@ export const getItems = async (path: string): Promise<Item[]> => {
   }
 };
 
-export default { addElementToTheFirebase, updateElementToTheFirebase,getItems }
+export default { addElementToTheFirebase, updateElementToTheFirebase, getItems }
 
 // export const getItems = async () => {
 //   const path = `/tasks`
