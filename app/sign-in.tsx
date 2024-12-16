@@ -15,7 +15,7 @@ const AuthScreen: React.FC = () => {
     console.log('Email:', email);
     console.log('Password:', password);
     router.push({
-      pathname: "/(tabs)/frame1"
+      pathname: "/(tabs)/activeTask"
     })
   };
 
