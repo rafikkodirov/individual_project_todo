@@ -1,22 +1,54 @@
-// E:\Projects\expo\fin_app\finance\screens\AuthScreen.tsx
-
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { ScaledStyleSheet } from './ScaledStyleSheet';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getItems } from './services/firestore';
 
 const AuthScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [users, setUsers] = useState<any[]>([]);
 
   const router = useRouter();
-  const handleLogin = () => {
-    // // Логика авторизации
-    console.log('Email:', email);
-    console.log('Password:', password);
+
+  // Fetch users from Firestore
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const fetchedUsers: any[] = await getItems('auth');
+        setUsers(fetchedUsers);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        Alert.alert('Ошибка', 'Не удалось загрузить данные авторизации.');
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  // Login Handler
+  const handleReg = () => {
     router.push({
-      pathname: "/(tabs)/activeTask"
+      pathname:"/sign-up"
     })
+  }
+  const handleLogin = () => {
+    if (!email || !password) {
+      Alert.alert('Ошибка', 'Пожалуйста, введите email и пароль.');
+      return;
+    }
+
+    const user = users.find(
+      (user) => user.email === email && user.password === password
+    );
+
+    if (user) { 
+      router.push({
+        pathname: '/(tabs)/activeTask',
+      });
+    } else {
+      Alert.alert('Ошибка', 'Неверный email или пароль.');
+    }
   };
 
   return (
@@ -42,6 +74,9 @@ const AuthScreen: React.FC = () => {
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Войти</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.buttonDown} onPress={handleReg}>
+        <Text style={styles.buttonText}>Зарегистрироваться</Text>
       </TouchableOpacity>
     </View>
   );
@@ -77,6 +112,16 @@ const styles = ScaledStyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
   },
+  buttonDown: {
+    width: '100%',
+    height: 50,
+    marginTop:"15%",
+    backgroundColor: '#007bff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+
   buttonText: {
     color: '#fff',
     fontSize: 18,
