@@ -1,0 +1,37 @@
+   {/* DateTimePicker для StartTime */}
+        {/* <Text style={styles.header}>Время начала:</Text>
+        <Button title="Выбрать дату" onPress={showDatePicker} />
+
+        {show && Platform.OS === 'android' && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="default"
+            onChange={onChange}
+          />
+        )}
+
+        <Button title={`Выбранная дата: ${date.toLocaleDateString()}`} onPress={() => { }} />
+
+
+        {/* DateTimePicker для EndTime */}
+        <Text style={styles.header}>Время окончания:</Text>
+        <Button title="Выбрать дату" onPress={showDatePickerEnd} />
+
+        {show && Platform.OS === 'android' && (
+          <DateTimePicker
+            value={dateEnd}
+            mode="date"
+            display="default"
+            onChange={onChangeEnd}
+          />
+        )}
+        <Button title={`Выбранная дата: ${dateEnd.toLocaleDateString()}`} onPress={() => { }} />
+        {/* Поле для Category */}
+        <Text style={styles.header}>Категория:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Введите категорию"
+          value={category}
+          onChangeText={setCategory}
+        /> */}

@@ -1,37 +1,67 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
-import { addDoc, collection } from 'firebase/firestore'; 
-import { db } from './services/firebaseConfig';
-
+import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, ScrollView, Platform, Switch } from 'react-native';
+import { addDoc, collection } from 'firebase/firestore';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { db } from './services/firebaseConfig';  
+// import {v4 as uuidv4} from 'uuid';
+// Пример использования
 const AddTaskScreen: React.FC = () => {
-  // Состояния для формы
-  const [title, setTitle] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [category, setCategory] = useState('');
+  // Состояния для формы 
+  const [groupId, setGroupId] = useState('');
+  const [groupName, setGroupName] = useState('');
+  // const [isPending, setIsPending] = useState('');
+  const [startTime, setStartTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
+  const [description, setDescription] = useState('');
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [dateEnd, setDateEnd] = useState(new Date());
+  const [show, setShow] = useState(false);
+  const [showEnd, setShowEnd] = useState(false);
 
+  const onChange = (event: any, selectedDate?: Date) => {
+    setShow(false); // Закрыть пикер после выбора
+    if (selectedDate) setDate(selectedDate);
+  };
+ 
+  const showDatePicker = () => {
+    setShow(true);
+  };
+  const onChangeEnd = (event: any, selectedDate?: Date) => {
+    setShowEnd(false); // Закрыть пикер после выбора
+    if (selectedDate) setDateEnd(selectedDate);
+  };
+
+  const showDatePickerEnd = () => {
+    setShowEnd(true);
+  };
   // Функция добавления задачи в Firebase
   const addTask = async () => {
-    if (!title || !startTime || !endTime || !category) {
+    if (!description   || !startTime || !endTime  || !groupName ) {
       alert('Пожалуйста, заполните все поля!');
       return;
     }
 
-    const newTask = {
-      title,
-      startTime,
-      endTime,
-      category,
+    const newTask = { 
+      startTime: startTime.toISOString(), // Сохраняем в формате ISO строки
+      endTime: endTime.toISOString(),
+      groupId,
+      groupName,
+      // isPending,
+      description,
     };
 
     try {
       await addDoc(collection(db, 'tasks'), newTask);
       alert('Задача успешно добавлена!');
-      // Очистка формы после добавления
-      setTitle('');
-      setStartTime('');
-      setEndTime('');
-      setCategory('');
+      // setTitle('');
+      setGroupId('');
+      setGroupName('');
+      // setIsPending(false);
+      setStartTime(new Date());
+      setEndTime(new Date());
+      setDescription('');
     } catch (error) {
       console.error('Ошибка при добавлении задачи:', error);
     }
@@ -40,52 +70,76 @@ const AddTaskScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.header}>Добавить новую задачу</Text>
+     
 
-        {/* Поле ввода для Title */}
-        <Text style={styles.label}>Название задачи:</Text>
+        {/* Поле для Title */}
+        <Text style={styles.header}>Название задачи:</Text>
         <TextInput
           style={styles.input}
           placeholder="Введите название задачи"
-          value={title}
-          onChangeText={setTitle}
+          value={description}
+          onChangeText={setDescription}
         />
-
-        {/* Поле ввода для Start Time */}
-        <Text style={styles.label}>Время начала:</Text>
+        <Text style={styles.header}>Название группы:</Text>
         <TextInput
           style={styles.input}
-          placeholder="01/01/2024 10:00"
-          value={startTime}
-          onChangeText={setStartTime}
+          placeholder="Введите название группы"
+          value={groupName}
+          onChangeText={setGroupName}
         />
-
-        {/* Поле ввода для End Time */}
-        <Text style={styles.label}>Время окончания:</Text>
+         <Text style={styles.header}>Id:</Text>
         <TextInput
           style={styles.input}
-          placeholder="01/01/2024 11:00"
-          value={endTime}
-          onChangeText={setEndTime}
+          placeholder="Введите Id"
+          value={groupId}
+          onChangeText={setGroupId}
         />
+     
+        {/* DateTimePicker для StartTime */}
+        <Text style={styles.header}>Время начала:</Text>
+        <Button title="Выбрать дату" onPress={showDatePicker} />
 
-        {/* Поле ввода для Category */}
-        <Text style={styles.label}>Категория:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Школьные"
-          value={category}
-          onChangeText={setCategory}
-        />
+        {show && Platform.OS === 'android' && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="default"
+            onChange={onChange}
+          />
+        )}
 
-        {/* Кнопка для добавления задачи */}
+        <Button title={`Выбранная дата: ${date.toLocaleDateString()}`} onPress={() => { }} />
+
+
+        {/* DateTimePicker для EndTime */}
+        <Text style={styles.header}>Время окончания:</Text>
+        <Button title="Выбрать дату" onPress={showDatePickerEnd} />
+
+        {showEnd && Platform.OS === 'android' && (
+          <DateTimePicker
+            value={dateEnd}
+            mode="date"
+            display="default"
+            onChange={onChangeEnd}
+          />
+        )}
+        <Button title={`Выбранная дата: ${dateEnd.toLocaleDateString()}`} onPress={() => { }} />
+        {/* Поле для Category */} 
+        
+
+        {/* Кнопка для отправки */}
+        <View style={styles.addTask}>
         <Button title="Добавить задачу" onPress={addTask} color="#007bff" />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  addTask:{
+    marginTop:10,
+  },
   container: {
     flex: 1,
     backgroundColor: '#f9f9f9',
@@ -93,10 +147,15 @@ const styles = StyleSheet.create({
   scrollContainer: {
     padding: 16,
   },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 16,
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
     textAlign: 'center',
   },
   label: {

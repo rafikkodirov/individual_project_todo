@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { Button } from 'react-native';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -27,13 +28,15 @@ export default function RootLayout() {
     return null;
   }
 
-  return ( 
-      <Stack> 
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)/activeTask" options={{ headerShown:true, title: "Активные задания"  }} />
-        <Stack.Screen name="(tabs)/frame2" options={{   headerShown:true}} />
-        <Stack.Screen name="(tabs)/frame3" options={{ headerShown:true  }} />
-      </Stack> 
+  return (
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+      <Stack.Screen name="GroupDetailsPage" options={{ headerShown: true ,title:"Задания группы",headerBackTitle: "Назад"}} />
+      <Stack.Screen name="AddTask" options={{ headerShown: true ,title:"Добавление задачи",headerBackTitle: "Назад"}} />
+      <Stack.Screen name="AddGroups" options={{ headerShown: true ,title:"Добавление группы",headerBackTitle: "Назад"}} />
+      <Stack.Screen name="sign-up" options={{ headerShown: false }} /> 
+    </Stack>
   );
 }

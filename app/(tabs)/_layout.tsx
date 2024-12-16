@@ -1,7 +1,7 @@
-import { Image, View, StyleSheet, Text } from 'react-native'
+import { Image, View, StyleSheet, Text, Button, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { Tabs, Redirect } from 'expo-router'
-
+import { Tabs, Redirect, useRouter } from 'expo-router'
+import { Ionicons } from '@expo/vector-icons';
 // import Tab1 from '../assets/icons/Tab1. 
 // import react_logo from '../../assets/react_logo.png'
 import react_logo from '../../assets/images/react-logo.png'
@@ -26,6 +26,17 @@ const TabIcon: React.FC<TabIcon> = ({ icon,  focused, color, name }) => {
     </View>
   )
 }
+//  const router = useRouter();
+//   const handleGroupes = () => {
+//     router.push({
+//       pathname: "/AddGroups"
+//     })
+//   }
+// const handleTasks =  () => { 
+//   router.push({
+//     pathname: "/AddTask"
+//   })
+// };
 const styles = ScaledStyleSheet.create({
   icon: {
     width: 24,
@@ -34,8 +45,35 @@ const styles = ScaledStyleSheet.create({
   text: {
     fontSize: 12,
   },
+  headerButtonsContainer: {
+    flexDirection: 'row',
+    marginRight: 10,
+  },
+  button: {
+    marginLeft: 10,
+    padding: 5,
+  },
+  buttonText: {
+    fontSize: 18,
+    color: '#007AFF', // Цвет текста кнопок
+  },
 });
 const TabsLayout = () => {
+  const router = useRouter(); // Используем useRouter для навигации
+
+  // Функция для перехода на экран "Добавить группу"
+  const handleGroups = () => {
+    router.push({
+      pathname: '/AddGroups', // Путь для экрана с добавлением группы
+    });
+  };
+
+  // Функция для перехода на экран "Добавить задачу"
+  const handleTasks = () => {
+    router.push({
+      pathname: '/AddTask', // Путь для экрана с добавлением задачи
+    });
+  };
   return (
     <>
       <Tabs>
@@ -48,7 +86,7 @@ const TabsLayout = () => {
               return <TabIcon 
                 icon={react_logo}
                 color={color}
-                name="loans"
+                name="Задания"
                 focused={focused}
               />
             }
@@ -56,12 +94,30 @@ const TabsLayout = () => {
           <Tabs.Screen name="frame2"
           options={{
             title: 'Группы', 
+            headerRight: () => (
+              <View style={styles.headerButtonsContainer}>
+              {/* Первая кнопка */}
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleTasks}
+              > 
+              <Ionicons name="checkbox-outline" size={24}  />
+              </TouchableOpacity>
+
+              {/* Вторая кнопка */}
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleGroups}
+              >
+              <Ionicons name="people" size={24} color="black" />
+              </TouchableOpacity>
+            </View>),
             tabBarLabel:"Группы", 
             tabBarIcon: ({ color, focused }) => {
               return <TabIcon 
                 icon={react_logo}
                 color={color}
-                name="loans"
+                name="Группы"
                 focused={focused}
               />
             }
@@ -74,7 +130,7 @@ const TabsLayout = () => {
               return <TabIcon 
                 icon={react_logo}
                 color={color}
-                name="loans"
+                name="Настройки"
                 focused={focused}
               />
             }
