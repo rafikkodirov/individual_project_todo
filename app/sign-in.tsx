@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { getItems } from './services/firestore';
 
+import auth from '@react-native-firebase/auth';
 const AuthScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +16,7 @@ const AuthScreen: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const fetchedUsers: any[] = await getItems('auth');
+        const fetchedUsers: any[] = await getItems('Users');
         setUsers(fetchedUsers);
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -25,35 +26,41 @@ const AuthScreen: React.FC = () => {
 
     fetchUsers();
   }, []);
-
+ 
   // Login Handler
   const handleReg = () => {
     router.push({
       pathname:"/sign-up"
     })
   }
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Ошибка', 'Пожалуйста, введите email и пароль.');
       return;
     }
 
     const user = users.find(
-      (user) => user.email === email && user.password === password
+      (user) => user.email === email && user.password === password && user.isActive === true
     );
-
+    // 
     if (user) { 
+      // if (user.isActive) {
       router.push({
         pathname: '/(tabs)/activeTask',
       });
     } else {
+      // await auth().signOut();
+      // router.push({
+      //   pathname: '/sign-in',
+      // });
       Alert.alert('Ошибка', 'Неверный email или пароль.');
     }
+  // }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Авторизация</Text>
+      {/* <Text style={styles.title}>Авторизация</Text> */}
 
       <TextInput
         style={styles.input}
@@ -115,7 +122,7 @@ const styles = ScaledStyleSheet.create({
   buttonDown: {
     width: '100%',
     height: 50,
-    marginTop:"15%",
+    marginTop:"4%",
     backgroundColor: '#007bff',
     justifyContent: 'center',
     alignItems: 'center',
@@ -129,4 +136,4 @@ const styles = ScaledStyleSheet.create({
   },
 });
 
-export default AuthScreen;
+export default AuthScreen; 

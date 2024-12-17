@@ -7,6 +7,8 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [naming, setName] = useState('');
+  const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -22,7 +24,7 @@ const SignUp: React.FC = () => {
     })
   }
   const handleRegister = async () => {
-    if (!email || !password || !confirmPassword) {
+    if (!naming || !nickname ||!email || !password || !confirmPassword) {
       Alert.alert('Ошибка', 'Заполните все поля.');
       return;
     }
@@ -44,23 +46,26 @@ const SignUp: React.FC = () => {
 
     try {
       // Check if the email is already registered
-      const q = query(collection(db, 'auth'), where('email', '==', email));
+      const q = query(collection(db, 'Users'), where('email', '==', email));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
         Alert.alert('Ошибка', 'Пользователь с таким email уже существует.');
         return;
       }
-
+      const isActive: Boolean = false
       // Save the new user to Firestore
       const newUser = {
+        naming,
+        nickname,
         email,
-        password, // Ideally, hash the password before storing it
+        password, 
+        isActive// Ideally, hash the password before storing it
       };
 
-      await addDoc(collection(db, 'auth'), newUser);
+      await addDoc(collection(db, 'Users'), newUser);
       Alert.alert('Успех', 'Вы успешно зарегистрировались!');
-      router.push('/(tabs)/activeTask');
+      router.push('/sign-in');
     } catch (error) {
       console.error('Ошибка при регистрации:', error);
       Alert.alert('Ошибка', 'Не удалось завершить регистрацию. Попробуйте еще раз.');
@@ -71,8 +76,21 @@ const SignUp: React.FC = () => {
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Регистрация</Text>
-
+      {/* <Text style={styles.title}>Регистрация</Text> */}
+      <TextInput
+        style={styles.input}
+        placeholder="Введите имя"
+        value={naming}
+        onChangeText={setName} 
+        autoCapitalize="none"
+      />
+       <TextInput
+        style={styles.input}
+        placeholder="Введите имя пользователя"
+        value={nickname}
+        onChangeText={setNickname} 
+        autoCapitalize="none"
+      />
       <TextInput
         style={styles.input}
         placeholder="Введите email"
@@ -118,6 +136,7 @@ const SignUp: React.FC = () => {
 
 const styles = ScaledStyleSheet.create({
   container: {
+    height:"100%",
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -127,7 +146,7 @@ const styles = ScaledStyleSheet.create({
   buttonDown: {
     width: '100%',
     height: 50,
-    marginTop: "15%",
+    marginTop: "10%",
     backgroundColor: '#007bff',
     justifyContent: 'center',
     alignItems: 'center',

@@ -32,11 +32,11 @@ export default function RootLayout() {
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="sign-in" options={{ headerShown: false }} />
-      <Stack.Screen name="GroupDetailsPage" options={{ headerShown: true ,title:"Задания группы",headerBackTitle: "Назад"}} />
-      <Stack.Screen name="AddTask" options={{ headerShown: true ,title:"Добавление задачи",headerBackTitle: "Назад"}} />
-      <Stack.Screen name="AddGroups" options={{ headerShown: true ,title:"Добавление группы",headerBackTitle: "Назад"}} />
-      <Stack.Screen name="sign-up" options={{ headerShown: false }} /> 
+      <Stack.Screen name="sign-in" options={{headerShown: true, title: "Авторизация",headerBackVisible: false, headerTitleAlign: 'center'}} />
+      <Stack.Screen name="GroupDetailsPage" options={{ headerShown: true, title: "Задания группы", headerBackTitle: "Назад" }} />
+      <Stack.Screen name="AddTask" options={{ headerShown: true, title: "Добавление задачи", headerBackTitle: "Назад" }} />
+      <Stack.Screen name="AddGroups" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
+      <Stack.Screen name="sign-up" options={{ headerShown: true, title: "Регистрация",headerBackVisible: false,  headerTitleAlign: 'center'}}  />
     </Stack>
   );
 }
