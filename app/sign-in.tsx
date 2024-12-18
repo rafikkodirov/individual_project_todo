@@ -2,78 +2,87 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Button } fr
 import { ScaledStyleSheet } from './ScaledStyleSheet';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { getItems } from './services/firestore';
+import { getItems, getUser } from './services/firestore';
 import { loginWithEmail, loginWithGoogle } from './services/authUtils';
+import { auth } from './services/firebaseConfig';
+import { isLoading } from 'expo-font';
 
 const AuthScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [users, setUsers] = useState<any[]>([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  
-  const handleGoogleLogin = async () => {
-    try {
-      await loginWithGoogle();
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
-  
-  // Fetch users from Firestore
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const fetchedUsers: any[] = await getItems('auth');
-        setUsers(fetchedUsers);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        Alert.alert('Ошибка', 'Не удалось загрузить данные авторизации.');
-      }
-    };
 
-    fetchUsers();
-  }, []);
+  // const handleGoogleLogin = async () => {
+  //   try {
+  //     await loginWithGoogle();
+  //   } catch (err: any) {
+  //     setError(err.message);
+  //   }
+  // };
+
+
 
   // Login Handler
   const handleReg = () => {
     router.push({
-      pathname:"/sign-up"
+      pathname: "/sign-up"
     })
   }
+
   const handleLogin = async () => {
+
+    console.log("handleLogin 1", loading);
+    if (loading)
+      return;
+    setLoading(true);
+    console.log("handleLogin 2");
+
     if (!email || !password) {
       Alert.alert('Ошибка', 'Пожалуйста, введите email и пароль.');
+      setLoading(false);
       return;
     }
 
     try {
+      console.log("handleLogin 3");
+
       await loginWithEmail(email, password);
+      console.log(auth.currentUser, "Login successfully");
+
+      const user = await getUser(email)
+      
+      console.log(user, "user");
+      if (user) {
+        if (user.isActive) {
+          router.push({
+            pathname: '/(tabs)/activeTask',
+          });
+        } else {
+          router.push({
+            pathname: '/sign-up',
+          });
+        }
+      }
+
+
+
     } catch (err: any) {
-      setError(err.message);      
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
 
 
-
-    // const user = users.find(
-    //   (user) => user.email === email && user.password === password
-    // );
-
-    // if (user) { 
-    //   router.push({
-    //     pathname: '/(tabs)/activeTask',
-    //   });
-    // } else {
-    //   Alert.alert('Ошибка', 'Неверный email или пароль.');
-    // }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Авторизация</Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      
+
       <TextInput
         style={styles.input}
         placeholder="Введите email"
@@ -95,8 +104,8 @@ const AuthScreen: React.FC = () => {
         <Text style={styles.buttonText}>Войти</Text>
       </TouchableOpacity>
 
-      <Button title="Login with Google" onPress={handleGoogleLogin} />
-      
+      {/* <Button title="Login with Google" onPress={handleGoogleLogin} /> */}
+
       <TouchableOpacity style={styles.buttonDown} onPress={handleReg}>
         <Text style={styles.buttonText}>Зарегистрироваться</Text>
       </TouchableOpacity>
@@ -137,7 +146,7 @@ const styles = ScaledStyleSheet.create({
   buttonDown: {
     width: '100%',
     height: 50,
-    marginTop:"15%",
+    marginTop: "4%",
     backgroundColor: '#007bff',
     justifyContent: 'center',
     alignItems: 'center',
@@ -149,6 +158,7 @@ const styles = ScaledStyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  error: { color: "red", marginBottom: 10 },
 });
 
-export default AuthScreen;
+export default AuthScreen; 

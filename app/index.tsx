@@ -30,8 +30,9 @@ const IndexScreen = () => {
           //   router.replace('/main');
           //   // router.replace('/(tabs)/loans'); // Переход на другой экран
           // } else {
-            router.replace('/sign-in'); // Переход на другой экран
-          // }
+//            router.replace('/sign-in'); // Переход на другой экран
+          router.replace('/(tabs)/activeTask'); // Переход на другой экран
+
         }, 1); // 3 seconds delay
       }
     };

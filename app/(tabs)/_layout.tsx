@@ -1,5 +1,5 @@
 import { Image, View, StyleSheet, Text, Button, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Tabs, Redirect, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons';
 // import Tab1 from '../assets/icons/Tab1. 
@@ -8,6 +8,7 @@ import react_logo from '../../assets/images/react-logo.png'
 import cards_tab from '../../assets/icons/cards_tab.png'
 import Unknown from '../../assets/icons/Unknown.png'
 import { ScaledStyleSheet } from '../ScaledStyleSheet' 
+import { useAuth } from '../authProvider';
 // import ZaymIcon from "../assets/icons/ZaymIcon.png"
 interface TabIcon {
   color: string,
@@ -60,6 +61,19 @@ const styles = ScaledStyleSheet.create({
 });
 const TabsLayout = () => {
   const router = useRouter(); // Используем useRouter для навигации
+
+  const { user, loading } = useAuth();
+  useEffect(() => {
+    if (!loading && !user) {
+      console.log(user, "TabsLayout");
+      router.replace("/sign-in");
+    }
+  }, [user, loading]);
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
 
   // Функция для перехода на экран "Добавить группу"
   const handleGroups = () => {

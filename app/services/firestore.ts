@@ -5,6 +5,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  query,
   updateDoc,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
@@ -81,7 +82,26 @@ export default { addElementToTheFirebase, updateElementToTheFirebase, getItems }
 // }
 // }
 
+export const getUser = async (email: string): Promise<any> => {
+  try {
+    console.log("getUser 1");
 
+  const userRef = doc(db, `/users/${email}`);
+  console.log("getUser 2");
+
+  const docSnapshot = await getDoc(userRef);
+  console.log("getUser 3", docSnapshot);
+    
+  if(!docSnapshot.exists())
+        return null;
+
+  console.log("getUser 4", docSnapshot.data());
+      return docSnapshot.data() 
+  } catch (error) {
+    console.error('Ошибка получения данных из Firestore:', error);
+    return null;
+  }
+};
 
 
 

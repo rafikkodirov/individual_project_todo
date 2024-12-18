@@ -1,20 +1,3 @@
-// {
-//   "extends": "expo/tsconfig.base",
-//   "compilerOptions": {
-//     "strict": true,
-//     "paths": {
-//       "@/*": [
-//         "./*"
-//       ]
-//     }
-//   },
-//   "include": [
-//     "**/*.ts",
-//     "**/*.tsx",
-//     ".expo/types/**/*.ts",
-//     "expo-env.d.ts"
-// , "app/FIndez.jsx", "app/profile.jsx", "tailwind.config.js"  ]
-// }
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
@@ -39,5 +22,5 @@
     "declarations.d.ts",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "babel.config.js", "tailwind.config.ts", "components/LoanCard.js"  ]
+, "babel.config.js", "tailwind.config.ts" ]
 }

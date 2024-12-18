@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { ScaledStyleSheet } from './ScaledStyleSheet';
-import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { db } from './services/firebaseConfig';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { loginWithEmail, registerWithEmail } from './services/authUtils';
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [naming, setName] = useState('');
+  const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const router = useRouter();
+
+  const [error, setError] = useState("");
 
   const validateEmail = (email: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -22,7 +27,7 @@ const SignUp: React.FC = () => {
     })
   }
   const handleRegister = async () => {
-    if (!email || !password || !confirmPassword) {
+    if (!nickname || !email || !password || !confirmPassword) {
       Alert.alert('Ошибка', 'Заполните все поля.');
       return;
     }
@@ -42,37 +47,51 @@ const SignUp: React.FC = () => {
       return;
     }
 
+
     try {
+      await registerWithEmail(email, password);
+
       // Check if the email is already registered
-      const q = query(collection(db, 'auth'), where('email', '==', email));
+      const q = query(collection(db, 'users'), where('email', '==', email));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
         Alert.alert('Ошибка', 'Пользователь с таким email уже существует.');
+        
         return;
       }
-
+      const isActive: Boolean = true
       // Save the new user to Firestore
-      const newUser = {
-        email,
-        password, // Ideally, hash the password before storing it
+      const newUser = { 
+        nickname,
+        isActive// Ideally, hash the password before storing it
       };
 
-      await addDoc(collection(db, 'auth'), newUser);
+      await setDoc(doc(db, `users/${email}`), newUser);
       Alert.alert('Успех', 'Вы успешно зарегистрировались!');
-      router.push('/(tabs)/activeTask');
-    } catch (error) {
-      console.error('Ошибка при регистрации:', error);
-      Alert.alert('Ошибка', 'Не удалось завершить регистрацию. Попробуйте еще раз.');
+      router.push('/sign-in');
+
+    } catch (err: any) {
+      setError(err.message);
     }
+
+
+
+
   };
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Регистрация</Text>
-
+      {error ? <Text style={styles.error}>{error}</Text> : null} 
+      <TextInput
+        style={styles.input}
+        placeholder="Введите имя пользователя"
+        value={nickname}
+        onChangeText={setNickname}
+        autoCapitalize="none"
+      />
       <TextInput
         style={styles.input}
         placeholder="Введите email"
@@ -118,6 +137,7 @@ const SignUp: React.FC = () => {
 
 const styles = ScaledStyleSheet.create({
   container: {
+    height: "100%",
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -127,7 +147,7 @@ const styles = ScaledStyleSheet.create({
   buttonDown: {
     width: '100%',
     height: 50,
-    marginTop: "15%",
+    marginTop: "10%",
     backgroundColor: '#007bff',
     justifyContent: 'center',
     alignItems: 'center',
@@ -160,6 +180,7 @@ const styles = ScaledStyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  error: { color: "red", marginBottom: 10 },
 });
 
 export default SignUp;
