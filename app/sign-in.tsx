@@ -1,16 +1,26 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Button } from 'react-native';
 import { ScaledStyleSheet } from './ScaledStyleSheet';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { getItems } from './services/firestore';
+import { loginWithEmail, loginWithGoogle } from './services/authUtils';
 
 const AuthScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [users, setUsers] = useState<any[]>([]);
+  const [error, setError] = useState("");
 
   const router = useRouter();
-
+  
+  const handleGoogleLogin = async () => {
+    try {
+      await loginWithGoogle();
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+  
   // Fetch users from Firestore
   useEffect(() => {
     const fetchUsers = async () => {
@@ -32,29 +42,38 @@ const AuthScreen: React.FC = () => {
       pathname:"/sign-up"
     })
   }
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Ошибка', 'Пожалуйста, введите email и пароль.');
       return;
     }
 
-    const user = users.find(
-      (user) => user.email === email && user.password === password
-    );
-
-    if (user) { 
-      router.push({
-        pathname: '/(tabs)/activeTask',
-      });
-    } else {
-      Alert.alert('Ошибка', 'Неверный email или пароль.');
+    try {
+      await loginWithEmail(email, password);
+    } catch (err: any) {
+      setError(err.message);      
     }
+
+
+
+    // const user = users.find(
+    //   (user) => user.email === email && user.password === password
+    // );
+
+    // if (user) { 
+    //   router.push({
+    //     pathname: '/(tabs)/activeTask',
+    //   });
+    // } else {
+    //   Alert.alert('Ошибка', 'Неверный email или пароль.');
+    // }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Авторизация</Text>
-
+      {error ? <Text style={styles.error}>{error}</Text> : null}
+      
       <TextInput
         style={styles.input}
         placeholder="Введите email"
@@ -75,6 +94,9 @@ const AuthScreen: React.FC = () => {
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Войти</Text>
       </TouchableOpacity>
+
+      <Button title="Login with Google" onPress={handleGoogleLogin} />
+      
       <TouchableOpacity style={styles.buttonDown} onPress={handleReg}>
         <Text style={styles.buttonText}>Зарегистрироваться</Text>
       </TouchableOpacity>
