@@ -39,7 +39,7 @@ const ActiveTask: React.FC = () => {
     // }
     // await addElementToTheFirebase("/tasks", newElement)
   };
-  console.log(items, '11111111111')
+  // console.log(items, '11111111111')
 
   return (
 

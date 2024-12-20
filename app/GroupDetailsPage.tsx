@@ -1,23 +1,27 @@
 import { View, Text, Button, Animated, FlatList, RefreshControl, TouchableOpacity } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import TaskCard from '@/components/TaskCard';
-import { getItems } from './services/firestore';
+import { getFilteredItems, getItems } from './services/firestore';
 import { ScaledStyleSheet } from './ScaledStyleSheet'; 
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
+interface GroupDetailsPageProps {
+  element: any,
+ }
 
-const GroupDetailsPage: React.FC = () => {
+const GroupDetailsPage: React.FC = (GroupDetailsPageProps) => {
+  const route = useRouter();
+  const params = useLocalSearchParams(); 
+  
   const [items, setItems] = useState<any[]>([]);
   const [groups, setGroups] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false); // Состояние для отслеживания загрузки
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const fetchedTasks = await getItems('tasks');
-        const fetchedGroups = await getItems('groups');
-        setItems(fetchedTasks);
-        setGroups(fetchedGroups);
+      try { 
+        const filteredTasks = await getFilteredItems('/tasks', 'groupId', params?.groupId) 
+        setItems(filteredTasks); 
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -25,9 +29,7 @@ const GroupDetailsPage: React.FC = () => {
   
     fetchData();
   }, []);
-  const filteredTasks = items.filter((task) =>
-    groups.some((group) => group.groupName === task.groupName)
-  );
+  
   
   const onRefresh = async () => {
     setRefreshing(true); // Включаем индикатор загрузки
@@ -55,12 +57,12 @@ const GroupDetailsPage: React.FC = () => {
     // }
     // await addElementToTheFirebase("/tasks", newElement)
   };
-  console.log(items, '11111111111')
+  // console.log(items, '11111111111')
  
   return (
     <>
       <FlatList
-        data={filteredTasks}
+        data={items}
         keyExtractor={(item) => item.key}
         renderItem={({ item }) => (
           <View>

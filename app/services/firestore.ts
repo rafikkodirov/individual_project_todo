@@ -7,6 +7,7 @@ import {
   getDocs,
   query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import * as Localization from "expo-localization";
@@ -31,6 +32,28 @@ export const deleteElementFromFirebase = async (docPath: string, element: any) =
 interface Item {
   key: string;
   [key: string]: any;
+}
+  
+export const getFilteredItems = async (path: string, key: string, optionWhere: any) => {
+  console.log("getFilteredItems", path, key, optionWhere);
+  try {
+    const q = query(collection(db, path), where(key, '==', optionWhere));
+    const querySnapshot = await getDocs(q);
+    const itemsArray: Item[] = [];
+
+    querySnapshot.forEach((doc) => {
+      const elements: Item = {
+        key: doc.id,
+        ...doc.data(),
+      }; 
+      itemsArray.push(elements);
+    });
+
+    return itemsArray;
+  } catch (error) {
+    console.error('Ошибка получения данных из Firestore:', error);
+    return [];
+  }
 }
 
 export const getItems = async (path: string): Promise<Item[]> => {

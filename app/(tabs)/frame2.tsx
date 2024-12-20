@@ -14,7 +14,7 @@ const ActiveTask: React.FC = () => {
     const fetchItemsGroups = async () => {
       const fetchedItemsGroups: any[]= await getItems("groups");
 
-
+      console.log(fetchedItemsGroups,'fetchedItemsGroups')
       setItems(fetchedItemsGroups);
     };
 
@@ -28,18 +28,16 @@ const ActiveTask: React.FC = () => {
     
   };
  
-  const handleComplete = () => { 
+  const handleGotoGroupDetails = (group: any) => { 
     router.push({
-      pathname: "/GroupDetailsPage"
+      pathname: "/GroupDetailsPage",
+      params: {
+        groupId: group.key
+      }
     })
-    // const newElement = {
-    //   title:"Школьный",
-    //   color:"ffcf48"
-    // }
-    // await addElementToTheFirebase("/groups", newElement)
   };
   
-console.log(items,'11111111111')
+// console.log(items,'11111111111')
   const onRefresh = async () => {
     setRefreshing(true); // Включаем индикатор загрузки
     const fetchedItems: any[] = await getItems("groups");
@@ -53,7 +51,7 @@ console.log(items,'11111111111')
       keyExtractor={(item) => item.key} // Уникальный ключ для каждого элемента
       renderItem={({ item }) => (
         <View>
-          <TouchableOpacity onPress={handleComplete}>
+          <TouchableOpacity onPress={()=>handleGotoGroupDetails(item)}>
           <GroupCard
           groups={item} 
           onDetailsPress={handleUser} 

@@ -70,96 +70,98 @@ const AuthScreen: React.FC = () => {
     );
     setFilteredUsers(filtered);
   };
-  const handleLog = async() => {
+  const handleLog = async () => {
     // router.push({
     //   pathname:"/sign-in"
     // })
     await logout()
     console.log("logout");
-    
+
   }
   const handleSelectUser = (userId: string) => {
     setSelectedUser(userId === selectedUser ? null : userId); // Переключение выбора
   };
   return (
     <>
-    <View style={styles.container}>
+      <View style={styles.container}>
 
-      <View>
-      <Text style={styles.title}>Имя Пользователя</Text>
-       <Text style={styles.applyTextFirst}>{nickname}</Text>
-       {/* {nickname} */}
-       </View>
-        
-       <View>
-       {/* <Text style={styles.applyTextFirst}>111111111111111</Text> */}
-       </View>
-       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}  onPress={() => setModalVisible(true)}  >
-          <Text style={styles.applyText}>Найти пользователя</Text>
-        </TouchableOpacity>
-        <Modal
-        visible={isModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Поиск пользователя</Text>
-
-            {/* Поле ввода для поиска */}
-            <TextInput
-              style={styles.input}
-              placeholder="Введите имя пользователя"
-              value={searchQuery}
-              onChangeText={handleSearch}
-            />
-
-            {/* Список результатов поиска */}
-            <FlatList
-              data={filteredUsers}
-              keyExtractor={(item) => item.uid}
-              renderItem={({ item }) => (
-                
-                <TouchableOpacity
-                style={styles.userItem}
-                onPress={() => handleSelectUser(item.uid)}
-              >
-                {/* Круг выбора */}
-                <View
-                  style={[
-                    styles.selectionCircle,
-                    selectedUser === item.uid && styles.selectedCircle,
-                  ]}
-                />
-                <Text style={styles.userText}>{item.nickname}</Text>
-              </TouchableOpacity>
-              )}
-              ListEmptyComponent={
-                searchQuery !== ''
-                  ? <Text style={styles.noResultsText}>Пользователи не найдены</Text>
-                  : null
-              }
-            />
-
-            {/* Кнопка закрытия */}
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.closeButtonText}>Закрыть</Text>
-            </TouchableOpacity>
-          </View>
+        <View>
+          <Text style={styles.title}>Имя Пользователя</Text>
+          <Text style={styles.applyTextFirst}>{nickname}</Text>
+          {/* {nickname} */}
         </View>
-      </Modal>
+
+        <View>
+          {/* <Text style={styles.applyTextFirst}>111111111111111</Text> */}
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}  >
+            <Text style={styles.applyText}>Найти пользователя</Text>
+          </TouchableOpacity>
+          <Modal
+            visible={isModalVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Поиск пользователя</Text>
+
+                {/* Поле ввода для поиска */}
+                <TextInput
+                  style={styles.input}
+                  placeholder="Введите имя пользователя"
+                  value={searchQuery}
+                  onChangeText={handleSearch}
+                />
+
+                {/* Список результатов поиска */}
+                <FlatList
+                  data={filteredUsers}
+                  keyExtractor={(item) => item.uid}
+                  renderItem={({ item }) => (
+
+                    <View style={{flex: 1, width: '100%'}}>
+                      <TouchableOpacity
+                        style={styles.userItem}
+                        onPress={() => handleSelectUser(item.uid)}
+                      >
+                        {/* Круг выбора */}
+                        <View
+                          style={[
+                            styles.selectionCircle,
+                            selectedUser === item.uid && styles.selectedCircle,
+                          ]}
+                        />
+                        <Text style={styles.userText}>{item.nickname}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                  ListEmptyComponent={
+                    searchQuery !== ''
+                      ? <Text style={styles.noResultsText}>Пользователи не найдены</Text>
+                      : null
+                  }
+                />
+
+                {/* Кнопка закрытия */}
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={styles.closeButtonText}>Закрыть</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleLog} >
+            <Text style={styles.applyText}>Выйти из аккаунта</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleLog} >
-          <Text style={styles.applyText}>Выйти из аккаунта</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
     </>
   );
 };
@@ -181,7 +183,7 @@ const styles = StyleSheet.create({
     borderColor: '#007bff',
     marginRight: 10,
   },
- 
+
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -193,8 +195,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 20,
-    alignItems: 'center',
-    
+    alignItems: 'stretch',
+
   },
   modalTitle: {
     fontSize: 20,
@@ -212,18 +214,18 @@ const styles = StyleSheet.create({
   // },
   userItem: {
     flexDirection: 'row',
-    marginBottom:5, 
+    marginBottom: 5,
     // paddingVertical: 10,
     // borderBottomWidth: 1,
     // borderBottomColor: '#ccc',
-    width: '100%', 
-    borderWidth:1, 
+    width: '100%',
+    borderWidth: 1,
     padding: 15,
     borderRadius: 10,
-    color: 'black',  
+    color: 'black',
   },
   userText: {
-    fontSize: 16,  
+    fontSize: 16,
   },
   noResultsText: {
     fontSize: 16,
@@ -264,14 +266,14 @@ const styles = StyleSheet.create({
 
   buttonContainer: {
     flexGrow: 1,
-    width:"100%",
+    width: "100%",
     // backgroundColor: 'green', // Фон для контента
     justifyContent: 'flex-end', // Align items to the bottom of the container 
-  
+
   },
-  
+
   button: {
-    marginHorizontal: 14, 
+    marginHorizontal: 14,
     paddingVertical: 10,
     backgroundColor: '#007BFF', // Цвет фона кнопки
     textAlign: "center",
@@ -282,30 +284,30 @@ const styles = StyleSheet.create({
   applyText: {
     fontSize: 20,
     color: "#fff",
-    
-    textAlign:"center",
+
+    textAlign: "center",
   },
   applyTextFirst: {
     fontSize: 30,
-    marginTop:"4%",
-    marginBottom:"40%",
+    marginTop: "4%",
+    marginBottom: "40%",
     color: "black",
-    
-    textAlign:"center",
-     
+
+    textAlign: "center",
+
   },
   applyTextSecond: {
     fontSize: 30,
-    marginTop:"4%",
+    marginTop: "4%",
     color: "black",
-    justifyContent:"center",
-    textAlign:"center",
-     
+    justifyContent: "center",
+    textAlign: "center",
+
   },
-  center:{
-    
-    justifyContent:"center",
-    textAlign:"center",
+  center: {
+
+    justifyContent: "center",
+    textAlign: "center",
   },
   // button: {
   //   width: '100%',
