@@ -21,9 +21,9 @@ const ActiveTask: React.FC = () => {
     fetchItemsGroups();
   }, []);
   const router = useRouter()
-  const handleUser = () => { 
+  const handleUser = (groups: any) => { 
     router.push({
-      pathname: "/GroupDetailsPage"
+      pathname: "/UserList"
     })
     
   };

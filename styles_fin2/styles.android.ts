@@ -193,7 +193,7 @@ export default ScaledStyleSheet.create({
   },
 
   listContent: {
-    paddingBottom: 16, // Add padding to ensure the last item isn't cut off
+    // paddingBottom: 16, // Add padding to ensure the last item isn't cut off
   },
   backRowStyle: {
     flexDirection: "row",
