@@ -41,7 +41,7 @@ const AuthScreen: React.FC = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false); 
   // Fetch users from Firestore
   useEffect(() => {
     const fetchUsers = async () => {
@@ -81,24 +81,11 @@ const AuthScreen: React.FC = () => {
   const handleSelectUser = (userId: string) => {
     setSelectedUser(userId === selectedUser ? null : userId); // Переключение выбора
   };
-  return (
-    <>
-      <View style={styles.container}>
 
-        <View>
-          <Text style={styles.title}>Имя Пользователя</Text>
-          <Text style={styles.applyTextFirst}>{nickname}</Text>
-          {/* {nickname} */}
-        </View>
 
-        <View>
-          {/* <Text style={styles.applyTextFirst}>111111111111111</Text> */}
-        </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}  >
-            <Text style={styles.applyText}>Найти пользователя</Text>
-          </TouchableOpacity>
-          <Modal
+  const ModalSelectUsers: React.FC  = () => {
+    return (
+      <Modal
             visible={isModalVisible}
             transparent={true}
             animationType="slide"
@@ -128,8 +115,7 @@ const AuthScreen: React.FC = () => {
                         onPress={() => handleSelectUser(item.uid)}
                       >
                         {/* Круг выбора */}
-                        <View
-                          style={[
+                        <View style={[
                             styles.selectionCircle,
                             selectedUser === item.uid && styles.selectedCircle,
                           ]}
@@ -155,6 +141,32 @@ const AuthScreen: React.FC = () => {
               </View>
             </View>
           </Modal>
+    );
+  }
+
+
+
+
+  return (
+    <>
+      <View style={styles.container}>
+
+        <View>
+          <Text style={styles.title}>Имя Пользователя</Text>
+          <Text style={styles.applyTextFirst}>{nickname}</Text>
+          {/* {nickname} */}
+        </View>
+
+        <View>
+          {/* <Text style={styles.applyTextFirst}>111111111111111</Text> */}
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}  >
+            <Text style={styles.applyText}>Найти пользователя</Text>
+          </TouchableOpacity>
+          
+            <ModalSelectUsers/>
+          
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleLog} >
