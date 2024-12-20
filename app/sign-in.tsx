@@ -64,6 +64,7 @@ const AuthScreen: React.FC = () => {
         } else {
           router.push({
             pathname: '/sign-up',
+            
           });
         }
       }

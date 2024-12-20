@@ -8,6 +8,7 @@ import { db } from './services/firebaseConfig';
 const AddTaskScreen: React.FC = () => {
   // Состояния для формы 
   const [groupId, setGroupId] = useState('');
+  const [owner, setOwner] = useState('');
   const [groupName, setGroupName] = useState('');
   // const [isPending, setIsPending] = useState('');
   const [startTime, setStartTime] = useState(new Date());
@@ -38,7 +39,7 @@ const AddTaskScreen: React.FC = () => {
   };
   // Функция добавления задачи в Firebase
   const addTask = async () => {
-    if (!description   || !startTime || !endTime  || !groupName ) {
+    if (!description   || !startTime || !endTime  || !groupName || !owner ) {
       alert('Пожалуйста, заполните все поля!');
       return;
     }
@@ -48,6 +49,7 @@ const AddTaskScreen: React.FC = () => {
       endTime: endTime.toISOString(),
       groupId,
       groupName,
+      owner,
       // isPending,
       description,
     };
@@ -58,6 +60,7 @@ const AddTaskScreen: React.FC = () => {
       // setTitle('');
       setGroupId('');
       setGroupName('');
+      setOwner('');
       // setIsPending(false);
       setStartTime(new Date());
       setEndTime(new Date());
@@ -86,6 +89,13 @@ const AddTaskScreen: React.FC = () => {
           placeholder="Введите название группы"
           value={groupName}
           onChangeText={setGroupName}
+        />
+         <Text style={styles.header}>Имя админа:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Введите имя админа"
+          value={owner}
+          onChangeText={setOwner}
         />
          <Text style={styles.header}>Id:</Text>
         <TextInput

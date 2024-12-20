@@ -3,7 +3,7 @@
 // import Svg, { Circle, Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
 // import { Link, router } from 'expo-router'
 import { Dimensions } from 'react-native';
- 
+import AuthCheck from '../components/AuthCheck';
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { View, Image, StyleSheet } from "react-native";

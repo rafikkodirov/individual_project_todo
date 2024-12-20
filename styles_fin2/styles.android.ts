@@ -153,7 +153,7 @@ export default ScaledStyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 5,
+    marginTop: 30,
   },
   detailsButton: {
     backgroundColor: "#F0F0F0",
@@ -597,7 +597,7 @@ export default ScaledStyleSheet.create({
     borderRadius: 16,
     padding: 12,
     marginHorizontal: 16,
-    height:200,
+    height: 200,
     marginBottom: 16,
   },
   // card: {
@@ -697,7 +697,7 @@ export default ScaledStyleSheet.create({
     alignItems: 'stretch', // Center items vertically
   },
   cardContainer: {
-    padding: 16,
+    padding: 24, 
     borderWidth: 1,
     borderColor: '#000',
     borderRadius: 8,
@@ -755,80 +755,83 @@ export default ScaledStyleSheet.create({
     color: "#333",
   },
   // topSection: {
-  //   flexDirection: "row",
-  //   alignItems: "stretch",
+  // cardContainer: {
+  //   padding: 16,
+  //   borderWidth: 1,
+  //   borderColor: '#000',
+  //   borderRadius: 8,
+  //   margin: 8,
+  //   backgroundColor: '#fff',
   // },
-  // rowStyleContainer: {
-  //   flex: 1, // Ensures the rowStyleContainer takes up remaining space
-  //   alignItems: "stretch",
-  // },
-  // rowStyle: {
-  //   justifyContent: "space-between", // Distributes space between elements
-  //   marginBottom: 5, // Adds some vertical spacing between rows
-  //   flexDirection: "row",
-  // },
-
-  // logo: {
-  //   width: 45,
-  //   height: 45,
-  //   marginRight: 10,
-  // },
+  content: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   // title: {
-  //   fontSize: 20,
-  //   fontWeight: "bold",
-  // },
-  // subtitle: {
-  //   color: "#231F20",
-  //   fontSize: 12,
-  //   textAlign: "left",
-  //   flex: 1,
-  // },
-  // amount: {
   //   fontSize: 16,
-  //   fontWeight: "bold",
-  //   marginLeft: "auto",
+  //   fontWeight: 'bold',
+  //   marginBottom: 8,
   // },
-  // ratingContainer: {
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  //   marginLeft: "auto",
-  // },
-  // ratingText: {
-  //   fontSize: 16,
-  //   marginRight: 5,
-  // },
-  // reviews: {
-  //   color: "#888",
-  //   fontSize: 14,
-  // },
-  // buttonContainer: {
-  //   flexDirection: "row",
-  //   justifyContent: "space-between",
-  //   marginTop: 4,
-  // },
-  // detailsButton: {
-  //   backgroundColor: "#F0F0F0",
-  //   padding: 10,
-  //   marginStart: "-1%",
-  //   borderRadius: 5,
-  //   width: "15%",
-  //   alignItems: "center",
-  // },
-  // detailsText: {
-  //   fontSize: 14,
-  //   color: "#333",
-  // },
-  // applyButton: {
-  //   backgroundColor: "#007AFF",
-  //   padding: 10,
-  //   marginLeft: "25%",
-  //   borderRadius: 5,
-  //   width: "48%",
-  //   alignItems: "center",
-  // },
-  // applyText: {
-  //   fontSize: 14,
-  //   color: "#fff",
-  // },
-})
+  timeContainer: {
+    flex: 1,                  // Контейнер занимает всю доступную область
+    justifyContent: 'flex-start', // Выравнивание по верхнему краю
+    alignItems: 'flex-start',    // Выравнивание по левому краю
+    marginTop: 20,             // Опционально для отступа сверху
+  },
 
+  circle: {
+    width: 25,                // Ширина круга
+    height: 25,               // Высота круга
+    borderRadius: 25,         // Полукруглый радиус (для создания круга)
+    position: 'absolute',     // Абсолютное позиционирование
+    top: -20,                    // Отступ от верхнего края
+    right: 0,                 // Отступ от правого края
+  },
+  timeText: {
+    fontSize: 12,
+    color: '#555',
+  },
+  bottomSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
+    justifyContent: 'space-between',
+  },
+  buttonR: {
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginLeft: "1%",
+    width: "50%"
+  },
+  buttonL: {
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+
+    marginRight: "1%",
+    width: "50%"
+  },
+  // buttonText: {
+  //   fontSize: 16,
+  //   fontWeight: 'bold',
+  //   textAlign: 'center',
+
+  // },
+  commentBubble: {
+    width: 20,
+    height: 20,
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 10,
+    marginLeft: 8,
+  },
+  category: {
+    fontSize: 12,
+    color: '#aaa',
+  },
+})

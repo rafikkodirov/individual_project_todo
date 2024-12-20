@@ -23,7 +23,7 @@ const TaskCard: React.FC<TaskProps> = ({
 }) => {
   const getTime = (fbsDate?: Timestamp) =>{
     if(!fbsDate) return '***'
-    return  dayjs(fbsDate.toDate()).format("DD/MM/YYYY HH:mm")
+    return  dayjs(fbsDate.toDate()).format("DD/MM/YYYY")
   }
   return (
     <View style={styles.cardContainer}>
@@ -42,7 +42,8 @@ const TaskCard: React.FC<TaskProps> = ({
         <TouchableOpacity style={styles.button} onPress={onComplete}>
           <Text style={styles.buttonText}>Завершить</Text>
         </TouchableOpacity> 
-        <Text style={styles.category}>{task.groupName}</Text>
+        <Text style={styles.owner}>{task.owner}</Text>
+        <Text style={styles.owner}>{task.groupName}</Text>
       </View>
     </View>
   );

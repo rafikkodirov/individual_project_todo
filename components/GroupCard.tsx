@@ -7,17 +7,18 @@ import { Platform } from 'react-native';
 // import styles from '../styles_fin2/styles.android' 
 
 import dayjs from "dayjs"
+const styles = Platform.OS === 'android' 
+  ? require('../styles_fin2/styles.android').default 
+  : require('../styles_fin2/styles.android').default; 
 
 interface GroupsProps {
   groups: any;  // URL or image source 
-  // onDetailsPress: (task: any) => void;
-  // onApplyPress: (task: any) => void;
+  onDetailsPress: (groups: any) => void; 
 }
 
 const GroupCard: React.FC<GroupsProps> = ({
   groups, 
-  // onDetailsPress,
-  // onApplyPress,
+  onDetailsPress, 
 }) => {
   // const getTime = (fbsDate?: Timestamp) =>{
   //   if(!fbsDate) return '***'
@@ -27,100 +28,29 @@ const GroupCard: React.FC<GroupsProps> = ({
     <View style={styles.cardContainer}>
       {/* Заголовок и даты */}
       <View style={styles.content}>
-          <Text style={styles.title}>{groups.title}</Text> 
+          <Text style={styles.title}>{groups.groupName}</Text> 
         <View style={styles.timeContainer}>
           <View
             style={[styles.circle, { backgroundColor: groups.color }]} // Используем динамический цвет
           />
         </View>
+       
       </View>
 
       {/* Кнопка завершения и категория */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.detailsButton} onPress={onDetailsPress}>
+          {/* (loan) */}
+          <Text style={styles.detailsText}>Участники</Text>
+        </TouchableOpacity>
+        <View style={styles.title}>
+        <Text>{groups.owner}</Text>
+      </View>
+      </View>
       
     </View>
   );
 };
 
-const styles = ScaledStyleSheet.create({
-  cardContainer: {
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 8,
-    margin: 8,
-    backgroundColor: '#fff',
-  },
-  content: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  timeContainer: {
-    flex: 1,                  // Контейнер занимает всю доступную область
-    justifyContent: 'flex-start', // Выравнивание по верхнему краю
-    alignItems: 'flex-start',    // Выравнивание по левому краю
-    marginTop: 20,             // Опционально для отступа сверху
-  },
-
-  circle: {
-    width: 25,                // Ширина круга
-    height: 25,               // Высота круга
-    borderRadius: 25,         // Полукруглый радиус (для создания круга)
-    position: 'absolute',     // Абсолютное позиционирование
-    top: -20,                    // Отступ от верхнего края
-    right: 0,                 // Отступ от правого края
-  },
-  timeText: {
-    fontSize: 12,
-    color: '#555',
-  },
-  bottomSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 16,
-    justifyContent: 'space-between',
-  },
-  buttonR: {
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    marginLeft: "1%",
-    width: "50%"
-  },
-  buttonL: {
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-
-    marginRight: "1%",
-    width: "50%"
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-
-  },
-  commentBubble: {
-    width: 20,
-    height: 20,
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 10,
-    marginLeft: 8,
-  },
-  category: {
-    fontSize: 12,
-    color: '#aaa',
-  },
-});
-
+ 
 export default GroupCard; 

@@ -11,16 +11,23 @@ const ActiveTask: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
  const [refreshing, setRefreshing] = useState(false); 
   useEffect(() => {
-    const fetchItems = async () => {
-      const fetchedItems: any[]= await getItems("groups");
+    const fetchItemsGroups = async () => {
+      const fetchedItemsGroups: any[]= await getItems("groups");
 
 
-      setItems(fetchedItems);
+      setItems(fetchedItemsGroups);
     };
 
-    fetchItems();
+    fetchItemsGroups();
   }, []);
   const router = useRouter()
+  const handleUser = () => { 
+    router.push({
+      pathname: "/GroupDetailsPage"
+    })
+    
+  };
+ 
   const handleComplete = () => { 
     router.push({
       pathname: "/GroupDetailsPage"
@@ -48,7 +55,9 @@ console.log(items,'11111111111')
         <View>
           <TouchableOpacity onPress={handleComplete}>
           <GroupCard
-          groups={item}  />
+          groups={item} 
+          onDetailsPress={handleUser} 
+          />
           </TouchableOpacity>
         </View>
         

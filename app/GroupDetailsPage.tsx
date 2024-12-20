@@ -8,18 +8,27 @@ import { useRouter } from 'expo-router';
 
 const GroupDetailsPage: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
+  const [groups, setGroups] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false); // Состояние для отслеживания загрузки
 
   useEffect(() => {
-    const fetchItems = async () => {
-      const fetchedItems: any[] = await getItems("tasks");
-
-
-      setItems(fetchedItems);
+    const fetchData = async () => {
+      try {
+        const fetchedTasks = await getItems('tasks');
+        const fetchedGroups = await getItems('groups');
+        setItems(fetchedTasks);
+        setGroups(fetchedGroups);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     };
-
-    fetchItems();
+  
+    fetchData();
   }, []);
+  const filteredTasks = items.filter((task) =>
+    groups.some((group) => group.groupName === task.groupName)
+  );
+  
   const onRefresh = async () => {
     setRefreshing(true); // Включаем индикатор загрузки
     const fetchedItems: any[] = await getItems("tasks");
@@ -47,43 +56,29 @@ const GroupDetailsPage: React.FC = () => {
     // await addElementToTheFirebase("/tasks", newElement)
   };
   console.log(items, '11111111111')
-
+ 
   return (
-<>
-    <FlatList
-      data={items} // Передаем данные в FlatList
-      keyExtractor={(item) => item.key} // Уникальный ключ для каждого элемента
-      renderItem={({ item }) => (
-        <View>
-          <TaskCard
-            task={item}
-            onComplete={handleComplete} />
-        </View>
-
-        //   <View style={{ padding: 8, borderBottomWidth: 1, borderColor: '#ccc' }}>
-        //     {/* <Text style={{ fontSize: 16 }}>ID: {item.key}</Text> */}
-        //     <Text>Название: {item.title || 'Нет названия'}</Text>
-        //     <Text>Описание: {item.description || 'Нет описания'}</Text>
-        //   </View>
-        // )}
-        // ListEmptyComponent={<Text>Нет активных задач</Text>
-        
-      )} // Если данных нет
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-      ListEmptyComponent={<Text>Нет активных задач</Text>}
-      
-    />
-    <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleTask}>
-            <Text style={styles.applyText}>Добавить Задачу</Text>
-          </TouchableOpacity>
-        </View>
-  
-</>
-  )
-}
+    <>
+      <FlatList
+        data={filteredTasks}
+        keyExtractor={(item) => item.key}
+        renderItem={({ item }) => (
+          <View>
+            <TaskCard task={item} onComplete={handleComplete} />
+          </View>
+        )}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        ListEmptyComponent={<Text style={styles.title}>Нет активных задач</Text>}
+      />
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={handleTask}>
+          <Text style={styles.applyText}>Добавить Задачу</Text>
+        </TouchableOpacity>
+      </View>
+    </>
+  );}
 const styles = ScaledStyleSheet.create({
   container: {
     flex: 1,
@@ -145,8 +140,9 @@ const styles = ScaledStyleSheet.create({
   },
 
   title: {
-    fontSize: 17,
-    fontWeight: "bold",
+    fontSize: 25,
+    textAlign:"center",
+    fontWeight: 'bold',
   },
   subtitle: {
     // marginTop: 2,
