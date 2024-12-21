@@ -23,7 +23,7 @@ const UserListCard: React.FC<UsersProps> = ({
   //   return  dayjs(fbsDate.toDate()).format("DD/MM/YYYY HH:mm")
   // }
   return (
-    <View style={styles.cardContainer}>
+    <View style={styles.card}>
       {/* Заголовок и даты */}
       <View style={styles.content}>
           <Text style={styles.title}>{users.nickname}</Text> 

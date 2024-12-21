@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, ScrollView, Platform, Switch } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, ScrollView, Platform, Switch, TouchableOpacity, FlatList } from 'react-native';
 import { addDoc, collection } from 'firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { db } from './services/firebaseConfig';  
+import groups from './(tabs)/groups';
+import { getItems } from './services/firestore';
 // import {v4 as uuidv4} from 'uuid';
 // Пример использования
 const AddTaskScreen: React.FC = () => {
   // Состояния для формы 
   const [groupId, setGroupId] = useState('');
-  const [owner, setOwner] = useState('');
+  const [owner, setOwner] = useState(''); 
   const [groupName, setGroupName] = useState('');
   // const [isPending, setIsPending] = useState('');
   const [startTime, setStartTime] = useState(new Date());
@@ -18,9 +20,25 @@ const AddTaskScreen: React.FC = () => {
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const [dateEnd, setDateEnd] = useState(new Date());
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [groups, setGroups] = useState<any[]>([]);
+  const [filteredGroups, setFilteredGroups] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [show, setShow] = useState(false);
   const [showEnd, setShowEnd] = useState(false);
-
+  useEffect(() => {
+    const fetchGroups = async () => {
+      const fetchedGroups: any[] = await getItems('groups');
+      const fetchedUsers: any[] = await getItems('users');
+      setGroups(fetchedGroups);
+      setFilteredGroups(fetchedGroups);
+      setUsers(fetchedUsers);
+      setFilteredUsers(fetchedUsers);
+    };
+    fetchGroups();
+  }, []);
   const onChange = (event: any, selectedDate?: Date) => {
     setShow(false); // Закрыть пикер после выбора
     if (selectedDate) setDate(selectedDate);
@@ -37,20 +55,30 @@ const AddTaskScreen: React.FC = () => {
   const showDatePickerEnd = () => {
     setShowEnd(true);
   };
+  const selectGroup = (id: string, name: string) => {
+    setGroupId(id);
+    setGroupName(name);
+    setSearchQuery(name);
+  };
+
   // Функция добавления задачи в Firebase
   const addTask = async () => {
     if (!description   || !startTime || !endTime  || !groupName || !owner ) {
       alert('Пожалуйста, заполните все поля!');
       return;
     }
-
-    const newTask = { 
-      startTime: startTime.toISOString(), // Сохраняем в формате ISO строки
+    const selectedGroupData = groups.find(group => group.id === groupId);
+    if (!selectedGroupData) {
+      
+    console.log(setGroupId(groupId),"/ddddddddddddddddddddddddddd")
+      alert('Выбранная группа не существует!');
+      return;
+    }
+    const newTask = {
+      startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
-      groupId,
-      groupName,
-      owner,
-      // isPending,
+      groupId: selectedGroupData.id,
+      groupName: selectedGroupData.title,
       description,
     };
 
@@ -83,12 +111,24 @@ const AddTaskScreen: React.FC = () => {
           value={description}
           onChangeText={setDescription}
         />
-        <Text style={styles.header}>Название группы:</Text>
+         <Text style={styles.header}>Выберите группу:</Text>
         <TextInput
           style={styles.input}
-          placeholder="Введите название группы"
-          value={groupName}
-          onChangeText={setGroupName}
+          placeholder="Поиск группы"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+        <FlatList
+          data={filteredGroups}
+          keyExtractor={item => item.key}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.groupItem}
+              onPress={() => selectGroup(item.key, item.groupName)}
+            >
+              <Text style={styles.groupText}>{item.groupName}</Text>
+            </TouchableOpacity>
+          )}
         />
          <Text style={styles.header}>Имя админа:</Text>
         <TextInput
@@ -97,13 +137,7 @@ const AddTaskScreen: React.FC = () => {
           value={owner}
           onChangeText={setOwner}
         />
-         <Text style={styles.header}>Id:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Введите Id"
-          value={groupId}
-          onChangeText={setGroupId}
-        />
+        
      
         {/* DateTimePicker для StartTime */}
         <Text style={styles.header}>Время начала:</Text>
@@ -181,6 +215,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 8,
     backgroundColor: '#fff',
+  },
+  groupItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  groupText: {
+    fontSize: 16,
   },
 });
 

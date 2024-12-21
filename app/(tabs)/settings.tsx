@@ -30,8 +30,9 @@ import { ScaledStyleSheet } from '../ScaledStyleSheet';
 import { getItems } from '../services/firestore';
 import { auth } from '../services/firebaseConfig';
 import { logout } from '../services/authUtils';
+import ModalSearchUsers from '../ModalSearchUser';
 
-const AuthScreen: React.FC = () => {
+const Settings: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [users, setUsers] = useState<any[]>([]);
@@ -41,7 +42,7 @@ const AuthScreen: React.FC = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
-  const [isModalVisible, setModalVisible] = useState(false); 
+  const [isModalVisible, setModalVisible] = useState(false);
   // Fetch users from Firestore
   useEffect(() => {
     const fetchUsers = async () => {
@@ -83,66 +84,66 @@ const AuthScreen: React.FC = () => {
   };
 
 
-  const ModalSelectUsers: React.FC  = () => {
-    return (
-      <Modal
-            visible={isModalVisible}
-            transparent={true}
-            animationType="slide"
-            onRequestClose={() => setModalVisible(false)}
-          >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <Text style={styles.modalTitle}>Поиск пользователя</Text>
+  // const ModalSelectUsers: React.FC  = () => {
+  //   return (
+  //     <Modal
+  //           visible={isModalVisible}
+  //           transparent={true}
+  //           animationType="slide"
+  //           onRequestClose={() => setModalVisible(false)}
+  //         >
+  //           <View style={styles.modalContainer}>
+  //             <View style={styles.modalContent}>
+  //               <Text style={styles.modalTitle}>Поиск пользователя</Text>
 
-                {/* Поле ввода для поиска */}
-                <TextInput
-                  style={styles.input}
-                  placeholder="Введите имя пользователя"
-                  value={searchQuery}
-                  onChangeText={handleSearch}
-                />
+  //               {/* Поле ввода для поиска */}
+  //               <TextInput
+  //                 style={styles.input}
+  //                 placeholder="Введите имя пользователя"
+  //                 value={searchQuery}
+  //                 onChangeText={handleSearch}
+  //               />
 
-                {/* Список результатов поиска */}
-                <FlatList
-                  data={filteredUsers}
-                  keyExtractor={(item) => item.uid}
-                  renderItem={({ item }) => (
+  //               {/* Список результатов поиска */}
+  //               <FlatList
+  //                 data={filteredUsers}
+  //                 keyExtractor={(item) => item.uid}
+  //                 renderItem={({ item }) => (
 
-                    <View style={{flex: 1, width: '100%'}}>
-                      <TouchableOpacity
-                        style={styles.userItem}
-                        onPress={() => handleSelectUser(item.uid)}
-                      >
-                        {/* Круг выбора */}
-                        <View style={[
-                            styles.selectionCircle,
-                            selectedUser === item.uid && styles.selectedCircle,
-                          ]}
-                        />
-                        <Text style={styles.userText}>{item.nickname}</Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                  ListEmptyComponent={
-                    searchQuery !== ''
-                      ? <Text style={styles.noResultsText}>Пользователи не найдены</Text>
-                      : null
-                  }
-                />
+  //                   <View style={{flex: 1, width: '100%'}}>
+  //                     <TouchableOpacity
+  //                       style={styles.userItem}
+  //                       onPress={() => handleSelectUser(item.uid)}
+  //                     >
+  //                       {/* Круг выбора */}
+  //                       <View style={[
+  //                           styles.selectionCircle,
+  //                           selectedUser === item.uid && styles.selectedCircle,
+  //                         ]}
+  //                       />
+  //                       <Text style={styles.userText}>{item.nickname}</Text>
+  //                     </TouchableOpacity>
+  //                   </View>
+  //                 )}
+  //                 ListEmptyComponent={
+  //                   searchQuery !== ''
+  //                     ? <Text style={styles.noResultsText}>Пользователи не найдены</Text>
+  //                     : null
+  //                 }
+  //               />
 
-                {/* Кнопка закрытия */}
-                <TouchableOpacity
-                  style={styles.closeButton}
-                  onPress={() => setModalVisible(false)}
-                >
-                  <Text style={styles.closeButtonText}>Закрыть</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
-    );
-  }
+  //               {/* Кнопка закрытия */}
+  //               <TouchableOpacity
+  //                 style={styles.closeButton}
+  //                 onPress={() => setModalVisible(false)}
+  //               >
+  //                 <Text style={styles.closeButtonText}>Закрыть</Text>
+  //               </TouchableOpacity>
+  //             </View>
+  //           </View>
+  //         </Modal>
+  //   );
+  // }
 
 
 
@@ -164,9 +165,16 @@ const AuthScreen: React.FC = () => {
           <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}  >
             <Text style={styles.applyText}>Найти пользователя</Text>
           </TouchableOpacity>
-          
-            <ModalSelectUsers/>
-          
+          <ModalSearchUsers
+            isVisible={isModalVisible}
+            onClose={() => setModalVisible(false)}
+            users={users}
+            filteredUsers={filteredUsers}
+            searchQuery={searchQuery}
+            onSearch={handleSearch}
+            selectedUser={selectedUser}
+            onSelectUser={handleSelectUser}
+          />
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleLog} >
@@ -177,6 +185,7 @@ const AuthScreen: React.FC = () => {
     </>
   );
 };
+
 
 const styles = StyleSheet.create({
   // container: {
@@ -346,8 +355,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AuthScreen;
-function setSelectedUser(arg0: string | null) {
-  throw new Error('Function not implemented.');
-}
+export default Settings;
+
 

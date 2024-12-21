@@ -105,7 +105,7 @@ const TabsLayout = () => {
               />
             }
           }} />
-          <Tabs.Screen name="frame2"
+          <Tabs.Screen name="groups"
           options={{
             title: 'Группы', 
             headerRight: () => (
@@ -136,7 +136,7 @@ const TabsLayout = () => {
               />
             }
           }} />
-           <Tabs.Screen name="frame3"
+           <Tabs.Screen name="settings"
           options={{
             title: 'Настройки', 
             tabBarLabel:"Настройки", 

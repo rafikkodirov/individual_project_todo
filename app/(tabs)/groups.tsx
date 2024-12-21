@@ -7,7 +7,7 @@ import { useRouter } from 'expo-router';
 import { ScaledStyleSheet } from '../ScaledStyleSheet';
 
  
-const ActiveTask: React.FC = () => {
+const Groups: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
  const [refreshing, setRefreshing] = useState(false); 
   useEffect(() => {
@@ -84,4 +84,4 @@ const styles = ScaledStyleSheet.create({
     textAlign: 'center',
   },
 })
-export default ActiveTask
+export default Groups

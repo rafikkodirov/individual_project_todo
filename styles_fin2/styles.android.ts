@@ -1,4 +1,5 @@
 import { ScaledStyleSheet } from '@/app/ScaledStyleSheet';
+import { withDecay } from 'react-native-reanimated';
 
 
 export default ScaledStyleSheet.create({
@@ -202,13 +203,13 @@ export default ScaledStyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 16,
     padding: 18,
-    marginHorizontal: 16,
+    // marginHorizontal: 16,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 2,
-    marginBottom: 16,
+    marginBottom: 16,  
   },
 
 
@@ -764,8 +765,8 @@ export default ScaledStyleSheet.create({
   //   backgroundColor: '#fff',
   // },
   content: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'row',  
+    // justifyContent: 'space-between',
   },
   // title: {
   //   fontSize: 16,
