@@ -148,23 +148,7 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
             onSelectUser={handleSelectUser}
           />
         </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => setModalVisibleGroups(true)}  >
-            <Text style={styles.applyText}>Удалить группу</Text>
-          </TouchableOpacity>
-          <ModalDeleteGroups
-            isVisible={isModalVisibleGroups}
-            onClose={() => setModalVisibleGroups(false)}
-            groups={groups}
-            filteredGroups={filteredGroups}
-            searchQuery={searchQuery}
-            onSearch={handleSearchGroups}
-            selectedGroup={selectedGroup}
-            onSelectGroup={(groupId) => setSelectedGroup(groupId)}
-            docPath="groups" // Путь к коллекции
-            onDeleteSuccess={handleDeleteSuccess}
-          />
-        </View>
+        
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleLog} >
             <Text style={styles.applyText}>Выйти из аккаунта</Text>

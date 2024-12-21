@@ -18,19 +18,14 @@ const GroupSelector: React.FC<GroupSelectorProps> = ({ groups, visible, onClose,
     setFilteredGroups(filtered);
   };
 
+  const displayedGroups = searchQuery.trim() ? filteredGroups : groups;
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text style={styles.header}>Выберите группу:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Поиск группы"
-            value={searchQuery}
-            onChangeText={handleSearch}
-          />
+          
           <FlatList
-            data={filteredGroups}
+            data={displayedGroups}
             keyExtractor={item => item.key}
             renderItem={({ item }) => (
               <TouchableOpacity

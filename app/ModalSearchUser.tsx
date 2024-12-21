@@ -19,7 +19,7 @@ interface ModalSearchUsersProps {
   selectedUser: string | null;
   onSelectUser: (userId: string) => void;
 }
-
+ 
 const ModalSearchUsers: React.FC<ModalSearchUsersProps> = ({
   isVisible,
   onClose,
@@ -30,6 +30,8 @@ const ModalSearchUsers: React.FC<ModalSearchUsersProps> = ({
   selectedUser,
   onSelectUser,
 }) => {
+
+  const displayedUsers = searchQuery.trim() ? filteredUsers : users;
   return (
     <Modal
       visible={isVisible}
@@ -51,7 +53,7 @@ const ModalSearchUsers: React.FC<ModalSearchUsersProps> = ({
 
           {/* Список результатов поиска */}
           <FlatList
-            data={filteredUsers}
+            data={displayedUsers}
             keyExtractor={(item) => item.key}
             renderItem={({ item }) => (
               <TouchableOpacity
