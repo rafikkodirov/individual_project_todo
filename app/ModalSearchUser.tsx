@@ -52,16 +52,16 @@ const ModalSearchUsers: React.FC<ModalSearchUsersProps> = ({
           {/* Список результатов поиска */}
           <FlatList
             data={filteredUsers}
-            keyExtractor={(item) => item.uid}
+            keyExtractor={(item) => item.key}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.userItem}
-                onPress={() => onSelectUser(item.uid)}
+                onPress={() => onSelectUser(item.key)}
               >
                 <View
                   style={[
                     styles.selectionCircle,
-                    selectedUser === item.uid && styles.selectedCircle,
+                    selectedUser === item.key && styles.selectedCircle,
                   ]}
                 />
                 <Text style={styles.userText}>{item.nickname}</Text>

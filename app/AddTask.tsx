@@ -2,15 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, ScrollView, Platform, Switch, TouchableOpacity, FlatList } from 'react-native';
 import { addDoc, collection } from 'firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { db } from './services/firebaseConfig';  
+import { db } from './services/firebaseConfig';
 import groups from './(tabs)/groups';
 import { getItems } from './services/firestore';
+import GroupSelector from './GroupSelector';
 // import {v4 as uuidv4} from 'uuid';
 // Пример использования
-const AddTaskScreen: React.FC = () => {
+interface AddTaskScreenProps {
+  userId: string; // Идентификатор текущего пользователя
+}
+const AddTaskScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
   // Состояния для формы 
   const [groupId, setGroupId] = useState('');
-  const [owner, setOwner] = useState(''); 
+  const [owner, setOwner] = useState('');
   const [groupName, setGroupName] = useState('');
   // const [isPending, setIsPending] = useState('');
   const [startTime, setStartTime] = useState(new Date());
@@ -27,23 +31,39 @@ const AddTaskScreen: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [show, setShow] = useState(false);
-  const [showEnd, setShowEnd] = useState(false);
+  const [showEnd, setShowEnd] = useState(false); 
+  const [nickname, setNickname] = useState('');
+  const [isGroupSelectorVisible, setGroupSelectorVisible] = useState(false);
   useEffect(() => {
-    const fetchGroups = async () => {
-      const fetchedGroups: any[] = await getItems('groups');
-      const fetchedUsers: any[] = await getItems('users');
-      setGroups(fetchedGroups);
-      setFilteredGroups(fetchedGroups);
-      setUsers(fetchedUsers);
-      setFilteredUsers(fetchedUsers);
+    const fetchData = async () => {
+      try {
+        const fetchedUsers: any[] = await getItems('users');
+        const fetchedGroups: any[] = await getItems('groups');
+        setGroups(fetchedGroups);
+        setFilteredGroups(fetchedGroups);
+        setUsers(fetchedUsers);
+        setFilteredUsers(fetchedUsers);
+      
+      
+        // Найти nickname текущего пользователя
+        const currentUser = fetchedUsers.find(user => user.id === userId);
+        if (currentUser) {
+          setNickname(currentUser.nickname || '');
+        } else {
+          console.warn('Пользователь не найден');
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки данных:', error);
+      }
     };
-    fetchGroups();
-  }, []);
+ 
+    fetchData();
+  }, [userId]);
   const onChange = (event: any, selectedDate?: Date) => {
     setShow(false); // Закрыть пикер после выбора
     if (selectedDate) setDate(selectedDate);
   };
- 
+
   const showDatePicker = () => {
     setShow(true);
   };
@@ -60,25 +80,23 @@ const AddTaskScreen: React.FC = () => {
     setGroupName(name);
     setSearchQuery(name);
   };
-
+  const handleGroupSelect = (id: string, name: string) => {
+    setGroupId(id);
+    setGroupName(name);
+  };
   // Функция добавления задачи в Firebase
   const addTask = async () => {
-    if (!description   || !startTime || !endTime  || !groupName || !owner ) {
+    if (!description || !startTime || !endTime || !groupName  ) {
       alert('Пожалуйста, заполните все поля!');
       return;
     }
-    const selectedGroupData = groups.find(group => group.id === groupId);
-    if (!selectedGroupData) {
-      
-    console.log(setGroupId(groupId),"/ddddddddddddddddddddddddddd")
-      alert('Выбранная группа не существует!');
-      return;
-    }
+
     const newTask = {
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
-      groupId: selectedGroupData.id,
-      groupName: selectedGroupData.title,
+      groupId,
+      groupName,
+      owner: nickname,
       description,
     };
 
@@ -100,8 +118,8 @@ const AddTaskScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-     
+      <View style={styles.scrollContainer}>
+
 
         {/* Поле для Title */}
         <Text style={styles.header}>Название задачи:</Text>
@@ -111,34 +129,18 @@ const AddTaskScreen: React.FC = () => {
           value={description}
           onChangeText={setDescription}
         />
-         <Text style={styles.header}>Выберите группу:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Поиск группы"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
+       <Text style={styles.header}>Выбранная группа: {groupName || 'Не выбрана'}</Text>
+        <Button title="Выбрать группу" onPress={() => setGroupSelectorVisible(true)} />
+
+        <GroupSelector
+          groups={groups}
+          visible={isGroupSelectorVisible}
+          onClose={() => setGroupSelectorVisible(false)}
+          onSelectGroup={handleGroupSelect}
         />
-        <FlatList
-          data={filteredGroups}
-          keyExtractor={item => item.key}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.groupItem}
-              onPress={() => selectGroup(item.key, item.groupName)}
-            >
-              <Text style={styles.groupText}>{item.groupName}</Text>
-            </TouchableOpacity>
-          )}
-        />
-         <Text style={styles.header}>Имя админа:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Введите имя админа"
-          value={owner}
-          onChangeText={setOwner}
-        />
-        
-     
+       
+
+
         {/* DateTimePicker для StartTime */}
         <Text style={styles.header}>Время начала:</Text>
         <Button title="Выбрать дату" onPress={showDatePicker} />
@@ -151,8 +153,7 @@ const AddTaskScreen: React.FC = () => {
             onChange={onChange}
           />
         )}
-
-        <Button title={`Выбранная дата: ${date.toLocaleDateString()}`} onPress={() => { }} />
+        <Text style={styles.smallThanHeader}> {`Выбранная дата: ${date.toLocaleDateString()}`} </Text>
 
 
         {/* DateTimePicker для EndTime */}
@@ -167,22 +168,22 @@ const AddTaskScreen: React.FC = () => {
             onChange={onChangeEnd}
           />
         )}
-        <Button title={`Выбранная дата: ${dateEnd.toLocaleDateString()}`} onPress={() => { }} />
-        {/* Поле для Category */} 
-        
+        <Text style={styles.smallThanHeader}> {`Выбранная дата: ${dateEnd.toLocaleDateString()}`} </Text>
+        {/* Поле для Category */}
+
 
         {/* Кнопка для отправки */}
         <View style={styles.addTask}>
-        <Button title="Добавить задачу" onPress={addTask} color="#007bff" />
+          <Button title="Добавить задачу" onPress={addTask} color="#007bff" />
         </View>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  addTask:{
-    marginTop:10,
+  addTask: {
+    marginTop: 10,
   },
   container: {
     flex: 1,
@@ -200,6 +201,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    textAlign: 'center',
+    
+  },
+  smallThanHeader: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color:"#ffe033",
     textAlign: 'center',
   },
   label: {
