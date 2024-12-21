@@ -38,9 +38,10 @@ const GroupDetailsPage: React.FC = (GroupDetailsPageProps) => {
     setRefreshing(false); // Выключаем индикатор загрузки
   };
   const router = useRouter()
-  const handleTask = () => {
+  const handleTask = (group: any) => {
     router.push({
-      pathname:"/AddTask"
+      pathname:"/AddTask",
+      params: {groupId: group.groupId}
     })
   }
   const handleComplete = async () => {

@@ -50,6 +50,7 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisibleGroups, setModalVisibleGroups] = useState(false);
   // Fetch users from Firestore
   useEffect(() => {
     const fetchUsers = async () => {
@@ -60,6 +61,8 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
         const currentUser = fetchedUsers.find(user => user.id === userId);
         if (currentUser) {
           setNickname(currentUser.nickname || '');
+          console.log(currentUser,"1111111111111111111111111111111d")
+          
         } else {
           console.warn('Пользователь не найден');
         }
@@ -114,7 +117,7 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
   const handleSelectUser = (userId: string) => {
     setSelectedUser(userId === selectedUser ? null : userId); // Переключение выбора
   };
-
+ 
 
   return (
     <>
@@ -124,8 +127,9 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
           <Text style={styles.title}>Имя Пользователя</Text>
           <Text style={styles.applyTextFirst}>{nickname}</Text>
           {/* {nickname} */}
+          
         </View>
-
+ 
         <View>
           {/* <Text style={styles.applyTextFirst}>111111111111111</Text> */}
         </View>
@@ -145,16 +149,16 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
           />
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}  >
+          <TouchableOpacity style={styles.button} onPress={() => setModalVisibleGroups(true)}  >
             <Text style={styles.applyText}>Удалить группу</Text>
           </TouchableOpacity>
           <ModalDeleteGroups
-            isVisible={isModalVisible}
-            onClose={() => setModalVisible(false)}
+            isVisible={isModalVisibleGroups}
+            onClose={() => setModalVisibleGroups(false)}
             groups={groups}
             filteredGroups={filteredGroups}
             searchQuery={searchQuery}
-            onSearch={handleSearch}
+            onSearch={handleSearchGroups}
             selectedGroup={selectedGroup}
             onSelectGroup={(groupId) => setSelectedGroup(groupId)}
             docPath="groups" // Путь к коллекции

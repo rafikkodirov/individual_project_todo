@@ -29,8 +29,10 @@ const ModalDeleteGroups: React.FC<ModalSearchUsersProps> = ({
   onClose,
   groups,
   filteredGroups,
+  
   searchQuery,
   onSearch,
+  
   selectedGroup,
   onSelectGroup,
   docPath,
