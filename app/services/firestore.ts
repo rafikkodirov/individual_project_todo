@@ -23,16 +23,16 @@ export const updateElementToTheFirebase = (docPath: string, element: any) => {
   delete element.key;
   updateDoc(tasksCollectionRef, element);
 };
-export const deleteElementFromFirebase = async (docPath: string, element: any) => {
+  export const deleteElementFromFirebase = async (docPath: string, element: any) => {
 
-  const elementRef = doc(db, docPath, element.key);
-  await deleteDoc(elementRef);
-}
+    const elementRef = doc(db, docPath, element.key);
+    await deleteDoc(elementRef);
+  }
 
-interface Item {
-  key: string;
-  [key: string]: any;
-}
+  interface Item {
+    key: string;
+    [key: string]: any;
+  }
   
 export const getFilteredItems = async (path: string, key: string, optionWhere: any) => {
   console.log("getFilteredItems", path, key, optionWhere);

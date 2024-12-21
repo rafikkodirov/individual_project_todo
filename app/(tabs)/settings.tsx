@@ -31,8 +31,11 @@ import { getItems } from '../services/firestore';
 import { auth } from '../services/firebaseConfig';
 import { logout } from '../services/authUtils';
 import ModalSearchUsers from '../ModalSearchUser';
-
-const Settings: React.FC = () => {
+import ModalDeleteGroups from '../ModalDeleteGroups';
+interface AddTaskScreenProps {
+  userId: string; // Идентификатор текущего пользователя
+}
+const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [users, setUsers] = useState<any[]>([]);
@@ -40,6 +43,10 @@ const Settings: React.FC = () => {
 
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const router = useRouter();
+
+  const [groups, setGroups] = useState<any[]>([]);
+  const [filteredGroups, setFilteredGroups] = useState<any[]>([]);
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -47,15 +54,30 @@ const Settings: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+
         const fetchedUsers: any[] = await getItems('users');
         setUsers(fetchedUsers);
+        const currentUser = fetchedUsers.find(user => user.id === userId);
+        if (currentUser) {
+          setNickname(currentUser.nickname || '');
+        } else {
+          console.warn('Пользователь не найден');
+        }
       } catch (error) {
-        console.error('Error fetching users:', error);
-        // Alert.alert('Ошибка', 'Не удалось загрузить данные авторизации.');
+        console.error('Ошибка загрузки данных:', error);
       }
     };
-
+ 
     fetchUsers();
+  }, [userId]);
+  const fetchGroups = async () => {
+    const fetchedGroups: any[] = await getItems('groups');
+    setGroups(fetchedGroups);
+    setFilteredGroups(fetchedGroups);
+  };
+
+  useEffect(() => {
+    fetchGroups();
   }, []);
   const [nickname, setNickname] = useState<string>('');
   const handleSearch = (query: string) => {
@@ -71,6 +93,9 @@ const Settings: React.FC = () => {
     );
     setFilteredUsers(filtered);
   };
+  const handleDeleteSuccess = () => {
+    fetchGroups(); // Обновить список групп после удаления
+  };
   const handleLog = async () => {
     // router.push({
     //   pathname:"/sign-in"
@@ -79,73 +104,16 @@ const Settings: React.FC = () => {
     console.log("logout");
 
   }
+  const handleSearchGroups = (query: string) => {
+    setSearchQuery(query);
+    const filtered = groups.filter((group) =>
+      group.title.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredGroups(filtered);
+  };
   const handleSelectUser = (userId: string) => {
     setSelectedUser(userId === selectedUser ? null : userId); // Переключение выбора
   };
-
-
-  // const ModalSelectUsers: React.FC  = () => {
-  //   return (
-  //     <Modal
-  //           visible={isModalVisible}
-  //           transparent={true}
-  //           animationType="slide"
-  //           onRequestClose={() => setModalVisible(false)}
-  //         >
-  //           <View style={styles.modalContainer}>
-  //             <View style={styles.modalContent}>
-  //               <Text style={styles.modalTitle}>Поиск пользователя</Text>
-
-  //               {/* Поле ввода для поиска */}
-  //               <TextInput
-  //                 style={styles.input}
-  //                 placeholder="Введите имя пользователя"
-  //                 value={searchQuery}
-  //                 onChangeText={handleSearch}
-  //               />
-
-  //               {/* Список результатов поиска */}
-  //               <FlatList
-  //                 data={filteredUsers}
-  //                 keyExtractor={(item) => item.uid}
-  //                 renderItem={({ item }) => (
-
-  //                   <View style={{flex: 1, width: '100%'}}>
-  //                     <TouchableOpacity
-  //                       style={styles.userItem}
-  //                       onPress={() => handleSelectUser(item.uid)}
-  //                     >
-  //                       {/* Круг выбора */}
-  //                       <View style={[
-  //                           styles.selectionCircle,
-  //                           selectedUser === item.uid && styles.selectedCircle,
-  //                         ]}
-  //                       />
-  //                       <Text style={styles.userText}>{item.nickname}</Text>
-  //                     </TouchableOpacity>
-  //                   </View>
-  //                 )}
-  //                 ListEmptyComponent={
-  //                   searchQuery !== ''
-  //                     ? <Text style={styles.noResultsText}>Пользователи не найдены</Text>
-  //                     : null
-  //                 }
-  //               />
-
-  //               {/* Кнопка закрытия */}
-  //               <TouchableOpacity
-  //                 style={styles.closeButton}
-  //                 onPress={() => setModalVisible(false)}
-  //               >
-  //                 <Text style={styles.closeButtonText}>Закрыть</Text>
-  //               </TouchableOpacity>
-  //             </View>
-  //           </View>
-  //         </Modal>
-  //   );
-  // }
-
-
 
 
   return (
@@ -174,6 +142,23 @@ const Settings: React.FC = () => {
             onSearch={handleSearch}
             selectedUser={selectedUser}
             onSelectUser={handleSelectUser}
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}  >
+            <Text style={styles.applyText}>Удалить группу</Text>
+          </TouchableOpacity>
+          <ModalDeleteGroups
+            isVisible={isModalVisible}
+            onClose={() => setModalVisible(false)}
+            groups={groups}
+            filteredGroups={filteredGroups}
+            searchQuery={searchQuery}
+            onSearch={handleSearch}
+            selectedGroup={selectedGroup}
+            onSelectGroup={(groupId) => setSelectedGroup(groupId)}
+            docPath="groups" // Путь к коллекции
+            onDeleteSuccess={handleDeleteSuccess}
           />
         </View>
         <View style={styles.buttonContainer}>
