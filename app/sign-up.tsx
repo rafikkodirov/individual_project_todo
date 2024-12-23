@@ -49,9 +49,11 @@ const SignUp: React.FC = () => {
 
 
     try {
-      await registerWithEmail(email, password);
+      const userCredentials= await registerWithEmail(email, password);
 
       // Check if the email is already registered
+      const user = doc(db, `users/${email}`)
+      // проверить есть ли юзер
       const q = query(collection(db, 'users'), where('email', '==', email));
       const querySnapshot = await getDocs(q);
 

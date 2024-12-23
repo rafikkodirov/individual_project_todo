@@ -50,7 +50,7 @@ const AuthScreen: React.FC = () => {
     try {
       console.log("handleLogin 3");
 
-      await loginWithEmail(email, password);
+      const User = await loginWithEmail(email, password);
       console.log(auth.currentUser, "Login successfully");
 
       const user = await getUser(email)
@@ -60,6 +60,9 @@ const AuthScreen: React.FC = () => {
         if (user.isActive) {
           router.push({
             pathname: '/(tabs)/activeTask',
+            params: {
+              user: user
+            }
           });
         } else {
           router.push({
