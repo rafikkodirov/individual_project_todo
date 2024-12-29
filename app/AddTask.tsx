@@ -6,6 +6,7 @@ import { db } from './services/firebaseConfig';
 import groups from './(tabs)/groups';
 import { getItems } from './services/firestore';
 import GroupSelector from './GroupSelector';
+import { getData } from '@/hooks/storageUtils';
 // import {v4 as uuidv4} from 'uuid';
 // Пример использования
 interface AddTaskScreenProps {
@@ -34,6 +35,17 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
   const [showEnd, setShowEnd] = useState(false); 
   const [nickname, setNickname] = useState('');
   const [isGroupSelectorVisible, setGroupSelectorVisible] = useState(false);
+
+  const [userData, setUserData] = useState<any>(null);  
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userDataStr = await getData("userData");
+      const parsedUserData = JSON.parse(userDataStr);
+      setUserData(parsedUserData);
+    };  
+    fetchUserData();
+  }, []);   
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -96,7 +108,8 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
       endTime: endTime.toISOString(),
       groupId,
       groupName,
-      owner: nickname,
+      ownerId: userData.id,
+      ownerName: nickname,
       description,
     };
 

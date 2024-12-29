@@ -6,6 +6,7 @@ import { getItems, getUser } from './services/firestore';
 import { loginWithEmail, loginWithGoogle } from './services/authUtils';
 import { auth } from './services/firebaseConfig';
 import { isLoading } from 'expo-font';
+import { getData, storeData } from '@/hooks/storageUtils';
 
 const AuthScreen: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -24,6 +25,15 @@ const AuthScreen: React.FC = () => {
   //   }
   // };
 
+  useEffect(() => {
+    getData("user").then((data) => {
+      if (data) {
+        const user = JSON.parse(data)
+        setEmail(user.email)
+        setPassword(user.password)
+      }
+    })
+  }, []);
 
 
   // Login Handler
@@ -35,11 +45,11 @@ const AuthScreen: React.FC = () => {
 
   const handleLogin = async () => {
 
-    console.log("handleLogin 1", loading);
+    // console.log("handleLogin 1", loading);
     if (loading)
       return;
     setLoading(true);
-    console.log("handleLogin 2");
+    // console.log("handleLogin 2");
 
     if (!email || !password) {
       Alert.alert('Ошибка', 'Пожалуйста, введите email и пароль.');
@@ -48,16 +58,21 @@ const AuthScreen: React.FC = () => {
     }
 
     try {
-      console.log("handleLogin 3");
+      // console.log("handleLogin 3");
 
       const User = await loginWithEmail(email, password);
-      console.log(auth.currentUser, "Login successfully");
+      // console.log(auth.currentUser, "Login successfully");
 
       const user = await getUser(email)
-      
+      storeData("userData", JSON.stringify({
+        ...user,
+        id: email
+      }));
+ 
       console.log(user, "user");
       if (user) {
         if (user.isActive) {
+          storeData("user", JSON.stringify({email: email, password: password}))
           router.push({
             pathname: '/(tabs)/activeTask',
             params: {

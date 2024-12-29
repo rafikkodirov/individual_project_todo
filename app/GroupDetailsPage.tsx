@@ -33,7 +33,7 @@ const GroupDetailsPage: React.FC = (GroupDetailsPageProps) => {
   
   const onRefresh = async () => {
     setRefreshing(true); // Включаем индикатор загрузки
-    const fetchedItems: any[] = await getItems("tasks");
+    const fetchedItems: any[] = await getFilteredItems("tasks", 'groupId', params?.groupId);
     setItems(fetchedItems); // Обновляем данные
     setRefreshing(false); // Выключаем индикатор загрузки
   };

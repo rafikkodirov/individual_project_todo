@@ -1,19 +1,42 @@
 import { View, Text, Button, Animated, FlatList, RefreshControl } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
-import { addElementToTheFirebase, getItems } from '../services/firestore'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { addElementToTheFirebase, getFilteredItemsV2, getItems, WhereCondition } from '../services/firestore'
 import TaskCard from '@/components/TaskCard';
 import { ScaledStyleSheet } from '../ScaledStyleSheet';
+import { getData } from '@/hooks/storageUtils';
 
 
 const ActiveTask: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false); // Состояние для отслеживания загрузки
 
+
+  const [userData, setUserData] = useState<any>(null);
+  const [whereCondition, setWhereCondition] = useState<any[]>([]);  
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userDataStr = await getData("userData");
+      const parsedUserData = JSON.parse(userDataStr);
+      setUserData(parsedUserData);
+    };  
+    fetchUserData();
+  }, []);  
+  useEffect(() => {
+    if (userData) {
+      setWhereCondition([{
+        key: "ownerId",
+        operator: "==",
+        value: userData.id,
+      }]);
+    }
+  }, [userData]);
+  
+
+
   useEffect(() => {
     const fetchItems = async () => {
-      const fetchedItems: any[] = await getItems("tasks");
-
-
+      // const fetchedItems: any[] = await getItems("tasks");
+      const fetchedItems: any[] = await getFilteredItemsV2("tasks", whereCondition);
       setItems(fetchedItems);
     };
 
@@ -21,7 +44,9 @@ const ActiveTask: React.FC = () => {
   }, []);
   const onRefresh = async () => {
     setRefreshing(true); // Включаем индикатор загрузки
-    const fetchedItems: any[] = await getItems("tasks");
+    // const fetchedItems: any[] = await getItems("tasks");
+    const fetchedItems: any[] = await getFilteredItemsV2("tasks", whereCondition);
+
     setItems(fetchedItems); // Обновляем данные
     setRefreshing(false); // Выключаем индикатор загрузки
   };

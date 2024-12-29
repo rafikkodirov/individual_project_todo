@@ -1,4 +1,4 @@
-import {
+import { 
   addDoc,
   collection,
   deleteDoc,
@@ -8,9 +8,11 @@ import {
   query,
   updateDoc,
   where,
+  WhereFilterOp,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import * as Localization from "expo-localization";
+import { getData, storeData } from "@/hooks/storageUtils";
 
 
 export const addElementToTheFirebase = (path: string, element: any) => {
@@ -55,6 +57,43 @@ export const getFilteredItems = async (path: string, key: string, optionWhere: a
     return [];
   }
 }
+
+
+export interface WhereCondition {
+  key: string;
+  operator: WhereFilterOp; // Use Firestore's WhereFilterOp type for operators
+  value: any;
+}
+
+export const getFilteredItemsV2 = async (path: string, conditions: WhereCondition[]) => {
+  console.log("getFilteredItems", path, conditions);
+  try {
+ 
+    let queryRef = query(collection(db, path));
+    // Apply each "where" condition to the query
+    conditions.forEach(condition => {
+      queryRef = query(queryRef, where(condition.key, condition.operator, condition.value));
+    });
+
+    const querySnapshot = await getDocs(queryRef);
+    const itemsArray: Item[] = [];
+
+    querySnapshot.forEach((doc) => {
+      const elements: Item = {
+        key: doc.id,
+        ...doc.data(),
+      };
+      itemsArray.push(elements);
+    });
+
+    return itemsArray;
+  } catch (error) {
+    console.error('Error fetching data from Firestore:', error);
+    return [];
+  }
+};
+
+
 
 export const getItems = async (path: string): Promise<Item[]> => {
   try {
@@ -106,20 +145,18 @@ export default { addElementToTheFirebase, updateElementToTheFirebase, getItems }
 // }
 
 export const getUser = async (email: string): Promise<any> => {
-  try {
-    console.log("getUser 1");
+  try { 
 
   const userRef = doc(db, `/users/${email}`);
-  console.log("getUser 2");
+  // console.log("getUser 2");
 
-  const docSnapshot = await getDoc(userRef);
-  console.log("getUser 3", docSnapshot);
+  const docSnapshot = await getDoc(userRef); 
     
   if(!docSnapshot.exists())
-        return null;
-
-  console.log("getUser 4", docSnapshot.data());
-      return docSnapshot.data() 
+    return null;
+  const userData = docSnapshot.data();
+    
+    return userData 
   } catch (error) {
     console.error('Ошибка получения данных из Firestore:', error);
     return null;

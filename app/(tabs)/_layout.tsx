@@ -63,6 +63,7 @@ const TabsLayout = () => {
   const router = useRouter(); // Используем useRouter для навигации
 
   const { user, loading } = useAuth();
+  
   useEffect(() => {
     if (!loading && !user) {
       console.log(user, "TabsLayout");
