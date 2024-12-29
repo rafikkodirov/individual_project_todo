@@ -32,6 +32,7 @@ import { auth } from '../services/firebaseConfig';
 import { logout } from '../services/authUtils';
 import ModalSearchUsers from '../ModalSearchUser';
 import ModalDeleteGroups from '../ModalDeleteGroups';
+import { getData } from '@/hooks/storageUtils';
 interface AddTaskScreenProps {
   userId: string; // Идентификатор текущего пользователя
 }
@@ -51,6 +52,26 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isModalVisibleGroups, setModalVisibleGroups] = useState(false);
+
+
+  
+  const [userData, setUserData] = useState<any>(null);
+  const [whereCondition, setWhereCondition] = useState<any[]>([]);  
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userDataStr = await getData("userData");
+      const parsedUserData = JSON.parse(userDataStr);
+      setUserData(parsedUserData);
+    };  
+    fetchUserData();
+  }, []); 
+   
+  useEffect(() => {
+    setNickname(userData?.nickname || '');
+  }, [userData]);  
+
+  
+
   // Fetch users from Firestore
   useEffect(() => {
     const fetchUsers = async () => {
@@ -58,14 +79,14 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
 
         const fetchedUsers: any[] = await getItems('users');
         setUsers(fetchedUsers);
-        const currentUser = fetchedUsers.find(user => user.id === userId);
-        if (currentUser) {
-          setNickname(currentUser.nickname || '');
-          console.log(currentUser,"1111111111111111111111111111111d")
+        // const currentUser = fetchedUsers.find(user => user.id === userId);
+        // if (currentUser) {
+        //   setNickname(currentUser.nickname || '');
+        //   console.log(currentUser,"1111111111111111111111111111111d")
           
-        } else {
-          console.warn('Пользователь не найден');
-        }
+        // } else {
+        //   console.warn('Пользователь не найден');
+        // }
       } catch (error) {
         console.error('Ошибка загрузки данных:', error);
       }
