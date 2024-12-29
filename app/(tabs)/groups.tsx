@@ -21,7 +21,7 @@ const Groups: React.FC = () => {
     fetchItemsGroups();
   }, []);
   const router = useRouter()
-  const handleUser = (groups: any) => { 
+  const handleUser = () => { 
     router.push({
       pathname: "/UserList"
     })
@@ -32,9 +32,14 @@ const Groups: React.FC = () => {
     router.push({
       pathname: "/GroupDetailsPage",
       params: {
-        groupId: group.key
+        groupId: group.key,
+        name: group.groupName, 
       }
     })
+    
+    console.log(group.key, 'group.key//////////////////////////////////////////')
+    
+    console.log(group.groupName, 'group.name//////////////////////////////////////////')
   };
   
 // console.log(items,'11111111111')

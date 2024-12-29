@@ -7,6 +7,8 @@ import Slider from '@react-native-community/slider';
 import { ColorPicker } from 'react-native-color-picker';
 import { db } from './services/firebaseConfig';
 import { getItems } from './services/firestore';
+import { useRoute } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 interface AddTaskScreenProps {
   userId: string; // Идентификатор текущего пользователя
 }
@@ -23,7 +25,7 @@ const AddGroupScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
   const [nickname, setNickname] = useState(''); 
   const [color, setColor] = useState('#ffcf48'); 
     const [items, setItems] = useState<any[]>([]);
-   
+   const router = useRouter()
   useEffect(() => {
      const fetchData = async () => {
        try {
@@ -64,6 +66,7 @@ const AddGroupScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
 
     try {
       await addDoc(collection(db, 'groups'), newGroup);
+      router.back()
       alert('Группа успешно добавлена!');
       setGroupName('');
       setOwner('');

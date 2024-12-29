@@ -7,6 +7,7 @@ import groups from './(tabs)/groups';
 import { getItems } from './services/firestore';
 import GroupSelector from './GroupSelector';
 import { getData } from '@/hooks/storageUtils';
+import { router, useLocalSearchParams } from 'expo-router';
 // import {v4 as uuidv4} from 'uuid';
 // Пример использования
 interface AddTaskScreenProps {
@@ -35,7 +36,16 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
   const [showEnd, setShowEnd] = useState(false); 
   const [nickname, setNickname] = useState('');
   const [isGroupSelectorVisible, setGroupSelectorVisible] = useState(false);
-
+ const params = useLocalSearchParams() 
+ useEffect(() => {
+  if (params.groupId && params.groupName) {
+    const _groupName = Array.isArray(params.groupName) ? params.groupName[0] : params.groupName;
+    const _groupId = Array.isArray(params.groupId) ? params.groupId[0] : params.groupId;
+    setGroupId(_groupId);
+    setGroupName(_groupName);
+    setSearchQuery(_groupName);
+  }
+}, [params.groupId, groups]);
   const [userData, setUserData] = useState<any>(null);  
   useEffect(() => {
     const fetchUserData = async () => {
@@ -115,6 +125,7 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
 
     try {
       await addDoc(collection(db, 'tasks'), newTask);
+      router.back()
       alert('Задача успешно добавлена!');
       // setTitle('');
       setGroupId('');
