@@ -31,17 +31,30 @@ const ActiveTask: React.FC = () => {
     }
   }, [userData]);
   
-
-
+ 
   useEffect(() => {
-    const fetchItems = async () => {
-      // const fetchedItems: any[] = await getItems("tasks");
-      const fetchedItems: any[] = await getFilteredItemsV2("tasks", whereCondition);
-      setItems(fetchedItems);
-    };
+    // Загружаем данные только после того, как whereCondition обновлено
+    if (whereCondition.length > 0) {
+      const fetchItems = async () => {
+        try {
+          const fetchedItems: any[] = await getFilteredItemsV2("tasks", whereCondition);
+          setItems(fetchedItems);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchItems();
+    }
+  }, [whereCondition]); 
+  // useEffect(() => {
+  //   const fetchItems = async () => {
+  //     // const fetchedItems: any[] = await getItems("tasks");
+  //     const fetchedItems: any[] = await getFilteredItemsV2("tasks", whereCondition);
+  //     setItems(fetchedItems);
+  //   };
 
-    fetchItems();
-  }, []);
+  //   fetchItems();
+  // }, []);
   const onRefresh = async () => {
     setRefreshing(true); // Включаем индикатор загрузки
     // const fetchedItems: any[] = await getItems("tasks");

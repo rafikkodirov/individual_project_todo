@@ -1,18 +1,21 @@
 import { View, Text, Button, Animated, FlatList, RefreshControl, TouchableOpacity } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import TaskCard from '@/components/TaskCard';
-import { getFilteredItems, getItems } from './services/firestore';
+import { getFilteredItems, getFilteredItemsV2, getItems } from './services/firestore';
 import { ScaledStyleSheet } from './ScaledStyleSheet';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { getData } from '@/hooks/storageUtils';
 
 interface GroupDetailsPageProps {
   element: any,
 }
 
-const GroupDetailsPage: React.FC = (GroupDetailsPageProps) => {
+const GroupDetailsPage: React.FC = () => {
   const route = useRouter();
   const params = useLocalSearchParams();
 
+  const [userData, setUserData] = useState<any>(null);
+  const [whereCondition, setWhereCondition] = useState<any[]>([]);    
   const [items, setItems] = useState<any[]>([]);
   const [GroupName, setGroupName] = useState<string>('');
   const [GroupId, setGroupId] = useState<string>('');
@@ -31,29 +34,72 @@ const GroupDetailsPage: React.FC = (GroupDetailsPageProps) => {
       console.error('Error fetching data:', error);
     }
   }, [params]);
-  const _groupName = params.groupName
-  const _groupId = params.groupId
-  console.log(_groupName, 'name')
+ 
 
-  console.log(_groupId, 'id')
-
+ 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const filteredTasks = await getFilteredItems('/tasks', 'groupId', params?.groupId)
-        setItems(filteredTasks);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+    const fetchUserData = async () => {
+      const userDataStr = await getData("userData");
+      const parsedUserData = JSON.parse(userDataStr);
+      setUserData(parsedUserData);
+    };  
+    fetchUserData();
+  }, []);  
+  useEffect(() => {
+    if (userData) {
+      setWhereCondition([{
+        key: "ownerId",
+        operator: "==",
+        value: userData.id,
 
-    fetchData();
-  }, []);
+      },{
+        key: "groupId",
+        operator: "==",
+        value: params.groupId,
+      }],);
+    }
+    
+  }, [userData]);
+  useEffect(() => {
+    // Загружаем данные только после того, как whereCondition обновлено
+    if (whereCondition.length > 0) {
+      const fetchItems = async () => {
+        try {
+          const fetchedItems: any[] = await getFilteredItemsV2("tasks", whereCondition);
+          setItems(fetchedItems);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchItems();
+    }
+  }, [whereCondition]); 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const filteredTasks =  await getFilteredItemsV2("tasks", whereCondition);
+  //       setItems(filteredTasks);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
 
+  //   fetchData();
+  // }, []);
+
+  // useEffect(() => {
+  //   const fetchItems = async () => {
+  //     // const fetchedItems: any[] = await getItems("tasks");
+  //     const fetchedItems: any[] = await getFilteredItemsV2("tasks", whereCondition);
+  //     setItems(fetchedItems);
+  //   };
+
+  //   fetchItems();
+  // }, []);
 
   const onRefresh = async () => {
     setRefreshing(true); // Включаем индикатор загрузки
-    const fetchedItems: any[] = await getFilteredItems("tasks", 'groupId', params?.groupId);
+    const fetchedItems: any[] = await getFilteredItemsV2("tasks", whereCondition);
     setItems(fetchedItems); // Обновляем данные
     setRefreshing(false); // Выключаем индикатор загрузки
   };

@@ -43,7 +43,7 @@ export default function RootLayout() {
   // Функция для перехода на экран "Добавить задачу"
   const Performers = () => {
 
-    console.log("clicked");
+    // console.log("clicked");
     router.push({
       pathname: '/UserList', // Путь для экрана с добавлением задачи
     });

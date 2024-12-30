@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, ScrollView, Platform, Switch, TouchableOpacity, FlatList } from 'react-native';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { db } from './services/firebaseConfig';
 import groups from './(tabs)/groups';
@@ -13,7 +13,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 interface AddTaskScreenProps {
   userId: string; // Идентификатор текущего пользователя
 }
-const AddTaskScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
+const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
   // Состояния для формы 
   const [groupId, setGroupId] = useState('');
   const [owner, setOwner] = useState('');
@@ -33,52 +33,56 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
   const [users, setUsers] = useState<any[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [show, setShow] = useState(false);
-  const [showEnd, setShowEnd] = useState(false); 
+  const [showEnd, setShowEnd] = useState(false);
   const [nickname, setNickname] = useState('');
   const [isGroupSelectorVisible, setGroupSelectorVisible] = useState(false);
- const params = useLocalSearchParams() 
- useEffect(() => {
-  if (params.groupId && params.groupName) {
-    const _groupName = Array.isArray(params.groupName) ? params.groupName[0] : params.groupName;
-    const _groupId = Array.isArray(params.groupId) ? params.groupId[0] : params.groupId;
-    setGroupId(_groupId);
-    setGroupName(_groupName);
-    setSearchQuery(_groupName);
-  }
-}, [params.groupId, groups]);
-  const [userData, setUserData] = useState<any>(null);  
+  const params = useLocalSearchParams()
   useEffect(() => {
-    const fetchUserData = async () => {
-      const userDataStr = await getData("userData");
-      const parsedUserData = JSON.parse(userDataStr);
-      setUserData(parsedUserData);
-    };  
-    fetchUserData();
-  }, []);   
+    if (params.groupId && params.groupName) {
+      const _groupName = Array.isArray(params.groupName) ? params.groupName[0] : params.groupName;
+      const _groupId = Array.isArray(params.groupId) ? params.groupId[0] : params.groupId;
+      setGroupId(_groupId);
+      setGroupName(_groupName);
+      setSearchQuery(_groupName);
+    }
+  }, [params.groupId, groups]);
+  const [userData, setUserData] = useState<any>(null);
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     const userDataStr = await getData("userData");
+  //     const parsedUserData = JSON.parse(userDataStr);
+  //     setUserData(parsedUserData);
+  //   };
+  //   fetchUserData();
+  // }, []);
 
   useEffect(() => {
+      const fetchUserData = async () => {
+        try {
+          const userDataStr = await getData("userData");
+          const parsedUserData = JSON.parse(userDataStr);
+          setUserData(parsedUserData);
+          setNickname(parsedUserData?.nickname || ''); // Устанавливаем nickname сразу
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      };
+      fetchUserData();
+    }, []);
+   
+  useEffect(() => {
     const fetchData = async () => {
-      try {
-        const fetchedUsers: any[] = await getItems('users');
+      try { 
         const fetchedGroups: any[] = await getItems('groups');
         setGroups(fetchedGroups);
-        setFilteredGroups(fetchedGroups);
-        setUsers(fetchedUsers);
-        setFilteredUsers(fetchedUsers);
-      
-      
+        setFilteredGroups(fetchedGroups);  
         // Найти nickname текущего пользователя
-        const currentUser = fetchedUsers.find(user => user.id === userId);
-        if (currentUser) {
-          setNickname(currentUser.nickname || '');
-        } else {
-          console.warn('Пользователь не найден');
-        }
+      
       } catch (error) {
         console.error('Ошибка загрузки данных:', error);
       }
     };
- 
+
     fetchData();
   }, [userId]);
   const onChange = (event: any, selectedDate?: Date) => {
@@ -106,16 +110,35 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
     setGroupId(id);
     setGroupName(name);
   };
+  // const formatDate = (date: Date) => {
+  //   const year = date.getFullYear();
+  //   const month = String(date.getMonth() + 1).padStart(2, '0'); // Добавляем ведущий 0
+  //   const day = String(date.getDate()).padStart(2, '0'); // Добавляем ведущий 0
+  //   return `${year}-${month}-${day}`;
+  // };
+  const formatTimeToHHMM = (date: Date) => {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+  const formatDateToDDMMYYYY = (date: Date) => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
   // Функция добавления задачи в Firebase
   const addTask = async () => {
-    if (!description || !startTime || !endTime || !groupName  ) {
+    if (!description || !startTime || !endTime || !groupName) {
       alert('Пожалуйста, заполните все поля!');
       return;
     }
 
     const newTask = {
-      startTime: startTime.toISOString(),
-      endTime: endTime.toISOString(),
+      // startTime: startTime.toISOString(),
+      // endTime: endTime.toISOString(),
+      startDate: Timestamp.now(),
+      endDate: Timestamp.fromDate(new Date()),
       groupId,
       groupName,
       ownerId: userData.id,
@@ -153,7 +176,7 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
           value={description}
           onChangeText={setDescription}
         />
-       <Text style={styles.header}>Выбранная группа: {groupName || 'Не выбрана'}</Text>
+        <Text style={styles.header}>Выбранная группа: {groupName || 'Не выбрана'}</Text>
         <Button title="Выбрать группу" onPress={() => setGroupSelectorVisible(true)} />
 
         <GroupSelector
@@ -162,7 +185,7 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
           onClose={() => setGroupSelectorVisible(false)}
           onSelectGroup={handleGroupSelect}
         />
-       
+
 
 
         {/* DateTimePicker для StartTime */}
@@ -172,12 +195,14 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
         {show && Platform.OS === 'android' && (
           <DateTimePicker
             value={date}
-            mode="date"
+            mode="time"
             display="default"
             onChange={onChange}
           />
         )}
-        <Text style={styles.smallThanHeader}> {`Выбранная дата: ${date.toLocaleDateString()}`} </Text>
+        <Text style={styles.smallThanHeader}>
+          {`Выбранная дата: ${formatDateToDDMMYYYY(date)}`}
+        </Text>
 
 
         {/* DateTimePicker для EndTime */}
@@ -192,7 +217,9 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
             onChange={onChangeEnd}
           />
         )}
-        <Text style={styles.smallThanHeader}> {`Выбранная дата: ${dateEnd.toLocaleDateString()}`} </Text>
+        <Text style={styles.smallThanHeader}>
+          {`Выбранная дата: ${formatDateToDDMMYYYY(dateEnd)}`}
+        </Text>
         {/* Поле для Category */}
 
 
@@ -226,13 +253,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
-    
+
   },
   smallThanHeader: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10,
-    color:"#ffe033",
+    color: "#ffe033",
     textAlign: 'center',
   },
   label: {

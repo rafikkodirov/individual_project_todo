@@ -1,15 +1,48 @@
 import { View, Text, Button, Animated, FlatList, TouchableOpacity, RefreshControl } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import { addElementToTheFirebase, getItems } from '../services/firestore'
+import { addElementToTheFirebase, getFilteredItemsV2, getItems } from '../services/firestore'
 import GroupCard from '@/components/GroupCard'; 
 import { useRoute } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { ScaledStyleSheet } from '../ScaledStyleSheet';
+import { getData } from '@/hooks/storageUtils';
 
  
 const Groups: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
  const [refreshing, setRefreshing] = useState(false); 
+ 
+ const [userData, setUserData] = useState<any>(null);
+ const [whereCondition, setWhereCondition] = useState<any[]>([]);  
+ useEffect(() => {
+   const fetchUserData = async () => {
+     const userDataStr = await getData("userData");
+     const parsedUserData = JSON.parse(userDataStr);
+     setUserData(parsedUserData);
+   };  
+   fetchUserData();
+ }, []);  
+ useEffect(() => {
+   if (userData) {
+     setWhereCondition([{
+       key: "owner",
+       operator: "==",
+       value: userData.nickname,
+     }]);
+   }
+ }, [userData]);
+ 
+
+
+ useEffect(() => {
+   const fetchItems = async () => {
+     // const fetchedItems: any[] = await getItems("tasks");
+     const fetchedItems: any[] = await getFilteredItemsV2("groups", whereCondition);
+     setItems(fetchedItems);
+   };
+
+   fetchItems();
+ }, []);
   useEffect(() => {
     const fetchItemsGroups = async () => {
       const fetchedItemsGroups: any[]= await getItems("groups");
@@ -37,9 +70,9 @@ const Groups: React.FC = () => {
       }
     })
     
-    console.log(group.key, 'group.key//////////////////////////////////////////')
+    // console.log(group.key, 'group.key//////////////////////////////////////////')
     
-    console.log(group.groupName, 'group.name//////////////////////////////////////////')
+    // console.log(group.groupName, 'group.name//////////////////////////////////////////')
   };
   
 // console.log(items,'11111111111')

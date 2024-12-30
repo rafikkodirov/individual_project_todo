@@ -55,8 +55,9 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
 
 
   
-  const [userData, setUserData] = useState<any>(null);
+
   const [whereCondition, setWhereCondition] = useState<any[]>([]);  
+  const [userData, setUserData] = useState<any>(null);
   useEffect(() => {
     const fetchUserData = async () => {
       const userDataStr = await getData("userData");

@@ -9,10 +9,10 @@ import { db } from './services/firebaseConfig';
 import { getItems } from './services/firestore';
 import { useRoute } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
-interface AddTaskScreenProps {
-  userId: string; // Идентификатор текущего пользователя
-}
-const AddGroupScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
+import { getData } from '@/hooks/storageUtils';
+// import { getData } from '@/hooks/storageUtils';
+
+const AddGroupScreen: React.FC = () => {
   // Состояния для формы
  const [owner, setOwner] = useState('');
   const [groupName, setGroupName] = useState('');
@@ -26,31 +26,35 @@ const AddGroupScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
   const [color, setColor] = useState('#ffcf48'); 
     const [items, setItems] = useState<any[]>([]);
    const router = useRouter()
+   const [userData, setUserData] = useState(null);
+   useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDataStr = await getData("userData");
+        const parsedUserData = JSON.parse(userDataStr);
+        setUserData(parsedUserData);
+        setNickname(parsedUserData?.nickname || ''); // Устанавливаем nickname сразу
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
+ 
   useEffect(() => {
      const fetchData = async () => {
        try {
-         const fetchedUsers: any[] = await getItems('users');
          const fetchedGroups: any[] = await getItems('groups');
          setGroups(fetchedGroups);
          setFilteredGroups(fetchedGroups);
-         setUsers(fetchedUsers);
-         setFilteredUsers(fetchedUsers);
-       
-       
-         // Найти nickname текущего пользователя
-         const currentUser = fetchedUsers.find(user => user.id === userId);
-         if (currentUser) {
-           setNickname(currentUser.nickname || '');
-         } else {
-           console.warn('Пользователь не найден');
-         }
+ 
        } catch (error) {
          console.error('Ошибка загрузки данных:', error);
        }
      };
   
      fetchData();
-   }, [userId]);
+   }, []);
   // Функция добавления задачи в Firebase
   const addGroup = async () => {
     if (!groupName ) {
@@ -89,6 +93,8 @@ const AddGroupScreen: React.FC<AddTaskScreenProps> = ({userId}) => {
           onChangeText={setGroupName}
         />
          
+         
+        <Text style={{ marginBottom: 10 }}>Владелец: {nickname}</Text>
         <Text style={{ marginBottom: 10 }}>Выбранный цвет: {color}</Text>
        
   
