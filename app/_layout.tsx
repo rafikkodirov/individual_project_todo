@@ -11,6 +11,7 @@ import { Button, TouchableOpacity, View } from 'react-native';
 import { AuthProvider } from './authProvider';
 import { Ionicons } from '@expo/vector-icons';
 import { ScaledStyleSheet } from './ScaledStyleSheet';
+import { DataProvider } from './DataProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -50,21 +51,23 @@ export default function RootLayout() {
   };
   return (
     <AuthProvider>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="sign-in" options={{ headerShown: true, title: "Авторизация", headerBackVisible: false, headerTitleAlign: 'center' }} />
-        <Stack.Screen
-          name="GroupDetailsPage"
-          options={({ route }) => ({
-            headerShown: true,
-            title: (route.params as RouteParams)?.name || 'Задания группы', // Заголовок
-          })}
-        />
-        <Stack.Screen name="AddTask" options={{ headerShown: true, title: "Добавление задачи", headerBackTitle: "Назад" }} />
-        <Stack.Screen name="AddGroups" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
-        <Stack.Screen name="sign-up" options={{ headerShown: true, title: "Регистрация", headerBackVisible: false, headerTitleAlign: 'center' }} />
-      </Stack>
+      <DataProvider>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="sign-in" options={{ headerShown: true, title: "Авторизация", headerBackVisible: false, headerTitleAlign: 'center' }} />
+          <Stack.Screen
+            name="GroupDetailsPage"
+            options={({ route }) => ({
+              headerShown: true,
+              title: (route.params as RouteParams)?.name || 'Задания группы', // Заголовок
+            })}
+          />
+          <Stack.Screen name="AddTask" options={{ headerShown: true, title: "Добавление задачи", headerBackTitle: "Назад" }} />
+          <Stack.Screen name="AddGroups" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
+          <Stack.Screen name="sign-up" options={{ headerShown: true, title: "Регистрация", headerBackVisible: false, headerTitleAlign: 'center' }} />
+        </Stack>
+      </DataProvider>
     </AuthProvider>
   );
 }

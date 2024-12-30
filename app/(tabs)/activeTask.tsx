@@ -4,13 +4,17 @@ import { addElementToTheFirebase, getFilteredItemsV2, getItems, WhereCondition }
 import TaskCard from '@/components/TaskCard';
 import { ScaledStyleSheet } from '../ScaledStyleSheet';
 import { getData } from '@/hooks/storageUtils';
+import { useDataContext } from '../DataProvider';
 
 
 const ActiveTask: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false); // Состояние для отслеживания загрузки
-
-
+ 
+   const { cachedUsers } = useDataContext();
+  
+  console.log(cachedUsers, 'cachedUsers..........................................');
+  
   const [userData, setUserData] = useState<any>(null);
   const [whereCondition, setWhereCondition] = useState<any[]>([]);  
   useEffect(() => {
