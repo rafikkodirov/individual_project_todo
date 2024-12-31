@@ -2,11 +2,25 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { getFilteredItemsV2 } from './services/firestore';
 import { getData } from '@/hooks/storageUtils';
 import { useAuth } from './authProvider';
-
+import { db } from './services/firebaseConfig';
+import {
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    onSnapshot,
+    getDoc,
+    getDocs,
+    query,
+    updateDoc,
+    where,
+    WhereFilterOp,
+} from "firebase/firestore";
 interface DataContextType {
     cachedUsers: any[];
     cachedTasks: any[];
-    cachedGroups: any[]; 
+    cachedGroups: any[];
+    userDoc: any;
     refreshData: (entityType: DataType) => Promise<void>;
     filteredTasks: (groupId: string) => any[];
     loading: boolean;
@@ -24,7 +38,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [whereCondition, setWhereCondition] = useState<any[]>([]);
     const [whereConditionGroups, setWhereConditionGroups] = useState<any[]>([]);
 
-    const {user} = useAuth()
+    const { user } = useAuth()
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -56,28 +70,39 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, [userData]);
 
-    // useEffect(() => {
-    //     if (whereConditionGroups.length > 0) {
-    //         const fetchItems = async () => {
-    //             try {
-    //                 const fetchedItems: any[] = await getFilteredItemsV2("groups", whereConditionGroups);
-    //                 setCachedGroups(fetchedItems);
-    //             } catch (error) {
-    //                 console.error("Error fetching data:", error);
-    //             }
-    //         };
-    //         fetchItems();
-    //     }
-    // }, [whereConditionGroups]);
-
+    const [userDoc, setUserDoc] = useState<any>(null);
     useEffect(() => {
-        if(user !== undefined) {
+        if (user !== undefined) {
             fetchUserData();
             fetchGroupData();
             fetchActiveTasksData();
-        }  
+
+            if (!user?.email) return;
+            const docRef = doc(db, `users/${user?.email}`);
+            // Start observing the document
+            const unsubscribe = onSnapshot(
+                docRef,
+                (snapshot) => {
+                    if (snapshot.exists()) {
+                        setUserDoc(snapshot.data());
+                    } else {
+                        console.warn('Document does not exist');
+                        setUserDoc(null);
+                    }
+                    setLoading(false);
+                },
+                (error) => {
+                    console.error('Error observing document:', error);
+                    setLoading(false);
+                }
+            );
+
+            // Clean up listener on unmount
+            return () => unsubscribe();
+        }
     }, [user]);
- 
+
+
     const fetchUserData = async () => {
         setLoading(true);
         try {
@@ -89,11 +114,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setLoading(false);
         }
     };
-    
+
     const fetchGroupData = async () => {
         setLoading(true);
         try {
-            const groups = await getFilteredItemsV2('groups',[]);
+            const groups = await getFilteredItemsV2('groups', []);
             setCachedGroups(groups);
         } catch (error) {
             console.error('Ошибка при загрузке данных:', error);
@@ -127,9 +152,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 break;
             default:
                 break;
-        }        
+        }
     };
- 
+
     const filteredTasks = (groupId: string): any[] => {
         try {
             if (cachedTasks.length > 0) {
@@ -137,13 +162,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
             return []
         } catch (error) {
-            return [] 
-        }  
+            return []
+        }
     }
 
 
     return (
-        <DataContext.Provider value={{ cachedUsers, cachedTasks, cachedGroups, refreshData, filteredTasks, loading }}>
+        <DataContext.Provider value={{ cachedUsers, cachedTasks, cachedGroups, refreshData, filteredTasks, userDoc, loading }}>
             {children}
         </DataContext.Provider>
     );

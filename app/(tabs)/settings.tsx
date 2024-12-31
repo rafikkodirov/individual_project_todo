@@ -33,6 +33,7 @@ import { logout } from '../services/authUtils';
 import ModalSearchUsers from '../ModalSearchUser';
 import ModalDeleteGroups from '../ModalDeleteGroups';
 import { getData } from '@/hooks/storageUtils';
+import { useDataContext } from '../DataProvider';
 interface AddTaskScreenProps {
   userId: string; // Идентификатор текущего пользователя
 }
@@ -52,12 +53,12 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isModalVisibleGroups, setModalVisibleGroups] = useState(false);
-
-
-  
-
+ 
   const [whereCondition, setWhereCondition] = useState<any[]>([]);  
   const [userData, setUserData] = useState<any>(null);
+  const { userDoc } = useDataContext(); 
+  
+
   useEffect(() => {
     const fetchUserData = async () => {
       const userDataStr = await getData("userData");
@@ -71,6 +72,7 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
     setNickname(userData?.nickname || '');
   }, [userData]);  
 
+  
   
 
   // Fetch users from Firestore
@@ -147,7 +149,7 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
 
         <View>
           <Text style={styles.title}>Имя Пользователя</Text>
-          <Text style={styles.applyTextFirst}>{nickname}</Text>
+          <Text style={styles.applyTextFirst}>{userDoc.nickname}</Text>
           {/* {nickname} */}
           
         </View>
@@ -351,5 +353,4 @@ const styles = StyleSheet.create({
 });
 
 export default Settings;
-
-
+ 
