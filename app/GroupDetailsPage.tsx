@@ -5,6 +5,7 @@ import { getFilteredItems, getFilteredItemsV2, getItems } from './services/fires
 import { ScaledStyleSheet } from './ScaledStyleSheet';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { getData } from '@/hooks/storageUtils';
+import { DataType, useDataContext } from './DataProvider';
 
 interface GroupDetailsPageProps {
   element: any,
@@ -21,6 +22,9 @@ const GroupDetailsPage: React.FC = () => {
   const [GroupId, setGroupId] = useState<string>('');
   const [group, setGroup] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false); // Состояние для отслеживания загрузки
+  
+  const { refreshData, filteredTasks } = useDataContext(); 
+
   useEffect(() => {
     try {
       // Получаем параметры и преобразуем их в строку, если это массив
@@ -35,45 +39,48 @@ const GroupDetailsPage: React.FC = () => {
     }
   }, [params]);
  
-
+  useEffect(() => {
+    setItems(filteredTasks(GroupId));
+  }, [GroupId]);
  
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const userDataStr = await getData("userData");
-      const parsedUserData = JSON.parse(userDataStr);
-      setUserData(parsedUserData);
-    };  
-    fetchUserData();
-  }, []);  
-  useEffect(() => {
-    if (userData) {
-      setWhereCondition([{
-        key: "ownerId",
-        operator: "==",
-        value: userData.id,
+ 
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     const userDataStr = await getData("userData");
+  //     const parsedUserData = JSON.parse(userDataStr);
+  //     setUserData(parsedUserData);
+  //   };  
+  //   fetchUserData();
+  // }, []);  
+  // useEffect(() => {
+  //   if (userData) {
+  //     setWhereCondition([{
+  //       key: "ownerId",
+  //       operator: "==",
+  //       value: userData.id,
 
-      },{
-        key: "groupId",
-        operator: "==",
-        value: params.groupId,
-      }],);
-    }
+  //     },{
+  //       key: "groupId",
+  //       operator: "==",
+  //       value: params.groupId,
+  //     }],);
+  //   }
     
-  }, [userData]);
-  useEffect(() => {
-    // Загружаем данные только после того, как whereCondition обновлено
-    if (whereCondition.length > 0) {
-      const fetchItems = async () => {
-        try {
-          const fetchedItems: any[] = await getFilteredItemsV2("tasks", whereCondition);
-          setItems(fetchedItems);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-      fetchItems();
-    }
-  }, [whereCondition]); 
+  // }, [userData]);
+  // useEffect(() => {
+  //   // Загружаем данные только после того, как whereCondition обновлено
+  //   if (whereCondition.length > 0) {
+  //     const fetchItems = async () => {
+  //       try {
+  //         const fetchedItems: any[] = await getFilteredItemsV2("tasks", whereCondition);
+  //         setItems(fetchedItems);
+  //       } catch (error) {
+  //         console.error("Error fetching data:", error);
+  //       }
+  //     };
+  //     fetchItems();
+  //   }
+  // }, [whereCondition]); 
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
@@ -99,10 +106,11 @@ const GroupDetailsPage: React.FC = () => {
 
   const onRefresh = async () => {
     setRefreshing(true); // Включаем индикатор загрузки
-    const fetchedItems: any[] = await getFilteredItemsV2("tasks", whereCondition);
-    setItems(fetchedItems); // Обновляем данные
+    await refreshData(DataType.Tasks);
+    setItems(filteredTasks(GroupId));
     setRefreshing(false); // Выключаем индикатор загрузки
   };
+ 
   const router = useRouter()
   const handleTask = (items: any[]) => {
 

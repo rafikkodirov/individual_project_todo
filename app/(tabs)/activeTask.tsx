@@ -4,89 +4,26 @@ import { addElementToTheFirebase, getFilteredItemsV2, getItems, WhereCondition }
 import TaskCard from '@/components/TaskCard';
 import { ScaledStyleSheet } from '../ScaledStyleSheet';
 import { getData } from '@/hooks/storageUtils';
-import { useDataContext } from '../DataProvider';
+import { DataType, useDataContext } from '../DataProvider';
 
 
-const ActiveTask: React.FC = () => {
-  const [items, setItems] = useState<any[]>([]);
-  const [refreshing, setRefreshing] = useState(false); // Состояние для отслеживания загрузки
- 
-   const { cachedUsers } = useDataContext();
-  
-  console.log(cachedUsers, 'cachedUsers..........................................');
-  
-  const [userData, setUserData] = useState<any>(null);
-  const [whereCondition, setWhereCondition] = useState<any[]>([]);  
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const userDataStr = await getData("userData");
-      const parsedUserData = JSON.parse(userDataStr);
-      setUserData(parsedUserData);
-    };  
-    fetchUserData();
-  }, []);  
-  useEffect(() => {
-    if (userData) {
-      setWhereCondition([{
-        key: "ownerId",
-        operator: "==",
-        value: userData.id,
-      }]);
-    }
-  }, [userData]);
-  
- 
-  useEffect(() => {
-    // Загружаем данные только после того, как whereCondition обновлено
-    if (whereCondition.length > 0) {
-      const fetchItems = async () => {
-        try {
-          const fetchedItems: any[] = await getFilteredItemsV2("tasks", whereCondition);
-          setItems(fetchedItems);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-      fetchItems();
-    }
-  }, [whereCondition]); 
-  // useEffect(() => {
-  //   const fetchItems = async () => {
-  //     // const fetchedItems: any[] = await getItems("tasks");
-  //     const fetchedItems: any[] = await getFilteredItemsV2("tasks", whereCondition);
-  //     setItems(fetchedItems);
-  //   };
-
-  //   fetchItems();
-  // }, []);
+const ActiveTask: React.FC = () => { 
+  const [refreshing, setRefreshing] = useState(false);  
+  const { cachedTasks, refreshData } = useDataContext(); 
+   
   const onRefresh = async () => {
-    setRefreshing(true); // Включаем индикатор загрузки
-    // const fetchedItems: any[] = await getItems("tasks");
-    const fetchedItems: any[] = await getFilteredItemsV2("tasks", whereCondition);
-
-    setItems(fetchedItems); // Обновляем данные
+    setRefreshing(true); // Включаем индикатор загрузки 
+    await refreshData(DataType.Tasks); 
     setRefreshing(false); // Выключаем индикатор загрузки
   };
   const handleComplete = async () => {
-    console.log('Задача завершена');
-
-    // const newElement = {
-    //   description:"Task1",
-    //   startDate: new Date(),
-    //   endDate: new Date(),
-    //   groupId:"123",
-    //   groupName:"School",
-    //   isCompleted: false,
-    //   isPending: false
-    // }
-    // await addElementToTheFirebase("/tasks", newElement)
-  };
-  // console.log(items, '11111111111')
+    console.log('Задача завершена'); 
+  }; 
 
   return (
 
     <FlatList
-      data={items} // Передаем данные в FlatList
+      data={cachedTasks} // Передаем данные в FlatList
       keyExtractor={(item) => item.key} // Уникальный ключ для каждого элемента
       renderItem={({ item }) => (
         <View>

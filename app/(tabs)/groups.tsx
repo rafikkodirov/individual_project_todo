@@ -6,14 +6,17 @@ import { useRoute } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { ScaledStyleSheet } from '../ScaledStyleSheet';
 import { getData } from '@/hooks/storageUtils';
+import { DataType, useDataContext } from '../DataProvider';
 
  
-const Groups: React.FC = () => {
-  const [items, setItems] = useState<any[]>([]);
+const Groups: React.FC = () => { 
  const [refreshing, setRefreshing] = useState(false); 
  
  const [userData, setUserData] = useState<any>(null);
  const [whereCondition, setWhereCondition] = useState<any[]>([]);  
+ 
+   const { cachedGroups, refreshData } = useDataContext(); 
+
  useEffect(() => {
    const fetchUserData = async () => {
      const userDataStr = await getData("userData");
@@ -34,25 +37,25 @@ const Groups: React.FC = () => {
  
 
 
- useEffect(() => {
-   const fetchItems = async () => {
-     // const fetchedItems: any[] = await getItems("tasks");
-     const fetchedItems: any[] = await getFilteredItemsV2("groups", whereCondition);
-     setItems(fetchedItems);
-   };
+//  useEffect(() => {
+//    const fetchItems = async () => {
+//      // const fetchedItems: any[] = await getItems("tasks");
+//      const fetchedItems: any[] = await getFilteredItemsV2("groups", whereCondition);
+//      setItems(fetchedItems);
+//    };
 
-   fetchItems();
- }, []);
-  useEffect(() => {
-    const fetchItemsGroups = async () => {
-      const fetchedItemsGroups: any[]= await getItems("groups");
+//    fetchItems();
+//  }, []);
+//   useEffect(() => {
+//     const fetchItemsGroups = async () => {
+//       const fetchedItemsGroups: any[]= await getItems("groups");
 
-      console.log(fetchedItemsGroups,'fetchedItemsGroups')
-      setItems(fetchedItemsGroups);
-    };
+//       console.log(fetchedItemsGroups,'fetchedItemsGroups')
+//       setItems(fetchedItemsGroups);
+//     };
 
-    fetchItemsGroups();
-  }, []);
+//     fetchItemsGroups();
+//   }, []);
   const router = useRouter()
   const handleUser = () => { 
     router.push({
@@ -78,14 +81,13 @@ const Groups: React.FC = () => {
 // console.log(items,'11111111111')
   const onRefresh = async () => {
     setRefreshing(true); // Включаем индикатор загрузки
-    const fetchedItems: any[] = await getItems("groups");
-    setItems(fetchedItems); // Обновляем данные
+    await refreshData(DataType.Groups);
     setRefreshing(false); // Выключаем индикатор загрузки
   };
   return (
 
     <FlatList
-      data={items} // Передаем данные в FlatList
+      data={cachedGroups} // Передаем данные в FlatList
       keyExtractor={(item) => item.key} // Уникальный ключ для каждого элемента
       renderItem={({ item }) => (
         <View>
