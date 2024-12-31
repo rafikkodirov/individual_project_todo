@@ -18,7 +18,21 @@ SplashScreen.preventAutoHideAsync();
 type RouteParams = {
   name: string;
 };
+ // const router = useRouter()
+  // const AddPerson = () => {
+  //   // router.push({
+  //   //   pathname: '/AddGroups', // Путь для экрана с добавлением группы
+  //   // });
+  // };
 
+  // // Функция для перехода на экран "Добавить задачу"
+  // const Performers = () => {
+
+  //   // console.log("clicked");
+  //   router.push({
+  //     pathname: '/UserList', // Путь для экрана с добавлением задачи
+  //   });
+  // };
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -34,21 +48,7 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-  const router = useRouter()
-  const AddPerson = () => {
-    // router.push({
-    //   pathname: '/AddGroups', // Путь для экрана с добавлением группы
-    // });
-  };
-
-  // Функция для перехода на экран "Добавить задачу"
-  const Performers = () => {
-
-    // console.log("clicked");
-    router.push({
-      pathname: '/UserList', // Путь для экрана с добавлением задачи
-    });
-  };
+ 
   return (
     <AuthProvider>
       <DataProvider>
