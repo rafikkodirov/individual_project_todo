@@ -7,14 +7,13 @@ import { loginWithEmail, loginWithGoogle } from './services/authUtils';
 import { auth } from './services/firebaseConfig';
 import { isLoading } from 'expo-font';
 import { getData, storeData } from '@/hooks/storageUtils';
+import { useLoading } from './LoadingProvider';
 
 const AuthScreen: React.FC = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [users, setUsers] = useState<any[]>([]);
+  const [password, setPassword] = useState(''); 
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
+  const { isLoading, setLoading } = useLoading();
   const router = useRouter();
 
   // const handleGoogleLogin = async () => {
@@ -46,8 +45,8 @@ const AuthScreen: React.FC = () => {
   const handleLogin = async () => {
 
     // console.log("handleLogin 1", loading);
-    if (loading)
-      return;
+    if (isLoading) return;
+
     setLoading(true);
     // console.log("handleLogin 2");
 
@@ -68,11 +67,11 @@ const AuthScreen: React.FC = () => {
         ...user,
         id: email
       }));
- 
+
       console.log(user, "user");
       if (user) {
         if (user.isActive) {
-          storeData("user", JSON.stringify({email: email, password: password}))
+          storeData("user", JSON.stringify({ email: email, password: password }))
           router.push({
             pathname: '/(tabs)/activeTask',
             params: {
@@ -82,7 +81,7 @@ const AuthScreen: React.FC = () => {
         } else {
           router.push({
             pathname: '/sign-up',
-            
+
           });
         }
       }

@@ -12,6 +12,7 @@ import { AuthProvider } from './authProvider';
 import { Ionicons } from '@expo/vector-icons';
 import { ScaledStyleSheet } from './ScaledStyleSheet';
 import { DataProvider } from './DataProvider';
+import { LoadingProvider } from './LoadingProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -52,6 +53,7 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <DataProvider>
+        <LoadingProvider>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -67,6 +69,7 @@ export default function RootLayout() {
           <Stack.Screen name="AddGroups" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
           <Stack.Screen name="sign-up" options={{ headerShown: true, title: "Регистрация", headerBackVisible: false, headerTitleAlign: 'center' }} />
         </Stack>
+        </LoadingProvider>
       </DataProvider>
     </AuthProvider>
   );

@@ -11,7 +11,7 @@ export const Loading02Icon: React.FC<SvgProps> = (props) => {
     Animated.loop(
       Animated.timing(rotateValue, {
         toValue: 1,
-        duration: 3000, // 3 seconds for a full rotation
+        duration: 2000, // 3 seconds for a full rotation
         useNativeDriver: true, // Use the native driver for better performance
       })
     ).start();
