@@ -6,8 +6,8 @@ import { getItems, getUser } from './services/firestore';
 import { loginWithEmail, loginWithGoogle } from './services/authUtils';
 import { auth } from './services/firebaseConfig';
 import { isLoading } from 'expo-font';
-import { getData, storeData } from '@/hooks/storageUtils';
-import { useLoading } from './LoadingProvider';
+import { getData, storeData } from '@/hooks/storageUtils'; 
+import { useLoading } from '@/providers/LoadingProvider';
 
 const AuthScreen: React.FC = () => {
   const [email, setEmail] = useState('');

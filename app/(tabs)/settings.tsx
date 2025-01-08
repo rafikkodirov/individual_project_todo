@@ -33,7 +33,7 @@ import { logout } from '../services/authUtils';
 import ModalSearchUsers from '../ModalSearchUser';
 import ModalDeleteGroups from '../ModalDeleteGroups';
 import { getData } from '@/hooks/storageUtils';
-import { useDataContext } from '../DataProvider';
+import { useDataContext, DataType } from '@/providers/DataProvider';
 interface AddTaskScreenProps {
   userId: string; // Идентификатор текущего пользователя
 }

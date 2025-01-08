@@ -1,6 +1,6 @@
+import { Loading02Icon } from '@/app/Loading02Icon';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { View, StyleSheet } from 'react-native';  
-import {Loading02Icon} from './Loading02Icon';
+import { View, StyleSheet } from 'react-native';   
 
 interface LoadingContextType {
   isLoading: boolean;

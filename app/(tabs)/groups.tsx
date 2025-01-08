@@ -5,8 +5,8 @@ import GroupCard from '@/components/GroupCard';
 import { useRoute } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { ScaledStyleSheet } from '../ScaledStyleSheet';
-import { getData } from '@/hooks/storageUtils';
-import { DataType, useDataContext } from '../DataProvider';
+import { getData } from '@/hooks/storageUtils'; 
+import { useDataContext, DataType } from '@/providers/DataProvider';
 
  
 const Groups: React.FC = () => { 

@@ -7,8 +7,8 @@ import { Ionicons } from '@expo/vector-icons';
 import react_logo from '../../assets/images/react-logo.png'
 import cards_tab from '../../assets/icons/cards_tab.png'
 import Unknown from '../../assets/icons/Unknown.png'
-import { ScaledStyleSheet } from '../ScaledStyleSheet' 
-import { useAuth } from '../authProvider';
+import { ScaledStyleSheet } from '../ScaledStyleSheet'  
+import { useAuth } from '@/providers/authProvider';
 // import ZaymIcon from "../assets/icons/ZaymIcon.png"
 interface TabIcon {
   color: string,

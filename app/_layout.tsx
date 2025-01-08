@@ -1,18 +1,15 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack, useRouter } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
+import * as SplashScreen from 'expo-splash-screen'; 
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { Button, TouchableOpacity, View } from 'react-native';
-import { AuthProvider } from './authProvider';
-import { Ionicons } from '@expo/vector-icons';
-import { ScaledStyleSheet } from './ScaledStyleSheet';
-import { DataProvider } from './DataProvider';
-import { LoadingProvider } from './LoadingProvider';
+import { useColorScheme } from '@/hooks/useColorScheme'; 
+import { ScaledStyleSheet } from './ScaledStyleSheet';  
+import { DataProvider } from '@/providers/DataProvider';
+import { LoadingProvider } from '@/providers/LoadingProvider';
+import { AuthProvider } from '@/providers/authProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

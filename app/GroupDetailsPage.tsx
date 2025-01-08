@@ -5,7 +5,7 @@ import { getFilteredItems, getFilteredItemsV2, getItems } from './services/fires
 import { ScaledStyleSheet } from './ScaledStyleSheet';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { getData } from '@/hooks/storageUtils';
-import { DataType, useDataContext } from './DataProvider';
+import { useDataContext, DataType } from '@/providers/DataProvider';
 
 interface GroupDetailsPageProps {
   element: any,

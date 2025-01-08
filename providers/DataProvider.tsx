@@ -1,14 +1,14 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { getFilteredItemsV2 } from './services/firestore';
+import React, { createContext, useState, useContext, useEffect } from 'react'; 
 import { getData } from '@/hooks/storageUtils';
-import { useAuth } from './authProvider';
-import { db } from './services/firebaseConfig';
+import { useAuth } from './authProvider'; 
 import {
 
     doc,
     onSnapshot,
  
 } from "firebase/firestore";
+import { getFilteredItemsV2 } from '@/app/services/firestore';
+import { db } from '@/app/services/firebaseConfig';
 interface DataContextType {
     cachedUsers: any[];
     cachedTasks: any[];

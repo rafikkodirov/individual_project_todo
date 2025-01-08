@@ -3,8 +3,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { addElementToTheFirebase, getFilteredItemsV2, getItems, WhereCondition } from '../services/firestore'
 import TaskCard from '@/components/TaskCard';
 import { ScaledStyleSheet } from '../ScaledStyleSheet';
-import { getData } from '@/hooks/storageUtils';
-import { DataType, useDataContext } from '../DataProvider';
+import { getData } from '@/hooks/storageUtils'; 
+import { useDataContext, DataType } from '@/providers/DataProvider';
 
 
 const ActiveTask: React.FC = () => { 
