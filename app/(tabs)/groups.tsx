@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 import { ScaledStyleSheet } from '../ScaledStyleSheet'; 
 import { useDataContext, DataType } from '@/providers/DataProvider';
 import { SecureStore } from '@/stores/global.store';
+import { useLoading } from '@/providers/LoadingProvider';
 
  
 const Groups: React.FC = () => { 
@@ -14,7 +15,11 @@ const Groups: React.FC = () => {
  const [userData, setUserData] = useState<any>(null);
  const [whereCondition, setWhereCondition] = useState<any[]>([]);  
  
+     const {isLoading, setLoading} = useLoading()
    const { cachedGroups, refreshData } = useDataContext(); 
+   useEffect(() => {
+     setLoading(false)
+   }, [cachedGroups]);
  
   const router = useRouter()
   const handleUser = () => { 
