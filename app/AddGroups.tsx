@@ -8,8 +8,9 @@ import { ColorPicker } from 'react-native-color-picker';
 import { db } from './services/firebaseConfig';
 import { getItems } from './services/firestore';
 import { useRoute } from '@react-navigation/native';
-import { useRouter } from 'expo-router';
-import { getData } from '@/hooks/storageUtils';
+import { useRouter } from 'expo-router'; 
+import { AsyncStore } from '@/stores/global.store';
+import { FSUserInfo } from '@/providers/DataProvider';
 // import { getData } from '@/hooks/storageUtils';
 
 const AddGroupScreen: React.FC = () => {
@@ -26,14 +27,15 @@ const AddGroupScreen: React.FC = () => {
   const [color, setColor] = useState('#ffcf48'); 
     const [items, setItems] = useState<any[]>([]);
    const router = useRouter()
-   const [userData, setUserData] = useState(null);
+  //  const [userData, setUserData] = useState(null);
    useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userDataStr = await getData("userData");
-        const parsedUserData = JSON.parse(userDataStr);
-        setUserData(parsedUserData);
-        setNickname(parsedUserData?.nickname || ''); // Устанавливаем nickname сразу
+          AsyncStore.get<FSUserInfo>("USER_DATA").then((savedUser) => {
+          // setUserData(savedUser);
+          setNickname(savedUser?.nickname || ''); // Устанавливаем nickname сразу
+        }) 
+        
       } catch (error) {
         console.error("Error fetching user data:", error);
       }

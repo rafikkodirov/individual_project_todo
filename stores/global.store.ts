@@ -4,11 +4,11 @@ import * as SecureStorage from 'expo-secure-store';
 const keys = {
   secure: {
     USER: 'user',
-    REFRESH_TOKEN: 'refreshToken',
-    SIGNUP_STATUS: 'signupStatus',
+    TOKEN: 'token',  
   },
   async: {
     THEME: 'theme', 
+    USER_DATA: 'userData',
   },
 };
 

@@ -1,5 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react'; 
-import { getData } from '@/hooks/storageUtils';
+import React, { createContext, useState, useContext, useEffect } from 'react';  
 import { useAuth } from './authProvider'; 
 import {
 
@@ -9,6 +8,7 @@ import {
 } from "firebase/firestore";
 import { getFilteredItemsV2 } from '@/app/services/firestore';
 import { db } from '@/app/services/firebaseConfig';
+import { AsyncStore, SecureStore } from '@/stores/global.store';
 interface DataContextType {
     cachedUsers: any[];
     cachedTasks: any[];
@@ -17,6 +17,12 @@ interface DataContextType {
     refreshData: (entityType: DataType) => Promise<void>;
     filteredTasks: (groupId: string) => any[];
     loading: boolean;
+}
+
+export interface FSUserInfo {
+    id: string;
+    isActive: boolean;
+    nickname: string;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -35,9 +41,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const userDataStr = await getData("userData");
-            const parsedUserData = JSON.parse(userDataStr);
-            setUserData(parsedUserData);
+            const savedUser = await AsyncStore.get<FSUserInfo>("USER_DATA");
+            setUserData(savedUser);
         };
         fetchUserData();
     }, []);
@@ -47,7 +52,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setWhereConditionGroups([{
                 key: "owner",
                 operator: "==",
-                value: userData.nickname,
+                value: userData.email,
             }]);
         }
     }, [userData]);
@@ -59,7 +64,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 operator: "==",
                 value: userData.id,
             }]);
-            console.log(whereCondition, "whereCondition............................................123");
+            console.log(userData.id, "userData.id............................................123");
         }
     }, [userData]);
 

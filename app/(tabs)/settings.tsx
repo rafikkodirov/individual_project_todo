@@ -31,9 +31,9 @@ import { getItems } from '../services/firestore';
 import { auth } from '../services/firebaseConfig';
 import { logout } from '../services/authUtils';
 import ModalSearchUsers from '../ModalSearchUser';
-import ModalDeleteGroups from '../ModalDeleteGroups';
-import { getData } from '@/hooks/storageUtils';
+import ModalDeleteGroups from '../ModalDeleteGroups'; 
 import { useDataContext, DataType } from '@/providers/DataProvider';
+import { SecureStore } from '@/stores/global.store';
 interface AddTaskScreenProps {
   userId: string; // Идентификатор текущего пользователя
 }
@@ -57,16 +57,7 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
   const [whereCondition, setWhereCondition] = useState<any[]>([]);  
   const [userData, setUserData] = useState<any>(null);
   const { userDoc } = useDataContext(); 
-  
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const userDataStr = await getData("userData");
-      const parsedUserData = JSON.parse(userDataStr);
-      setUserData(parsedUserData);
-    };  
-    fetchUserData();
-  }, []); 
+   
    
   useEffect(() => {
     setNickname(userData?.nickname || '');
@@ -127,7 +118,11 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
     // router.push({
     //   pathname:"/sign-in"
     // })
+    SecureStore.delete(["USER"])
     await logout()
+    router.push({
+      pathname: "/sign-in"
+    })
     console.log("logout");
 
   }

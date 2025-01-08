@@ -6,8 +6,9 @@ import { db } from './services/firebaseConfig';
 import groups from './(tabs)/groups';
 import { getItems } from './services/firestore';
 import GroupSelector from './GroupSelector';
-import { getData } from '@/hooks/storageUtils';
 import { router, useLocalSearchParams } from 'expo-router';
+import { FSUserInfo } from '@/providers/DataProvider';
+import { AsyncStore } from '@/stores/global.store';
 // import {v4 as uuidv4} from 'uuid';
 // Пример использования
 interface AddTaskScreenProps {
@@ -57,27 +58,28 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
   // }, []);
 
   useEffect(() => {
-      const fetchUserData = async () => {
-        try {
-          const userDataStr = await getData("userData");
-          const parsedUserData = JSON.parse(userDataStr);
-          setUserData(parsedUserData);
-          setNickname(parsedUserData?.nickname || ''); // Устанавливаем nickname сразу
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
-      };
-      fetchUserData();
-    }, []);
-   
+    const fetchUserData = async () => {
+      try {
+        AsyncStore.get<FSUserInfo>("USER_DATA").then((savedUser) => {
+          // setUserData(savedUser);
+          setNickname(savedUser?.nickname || ''); // Устанавливаем nickname сразу
+        })
+
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
-      try { 
+      try {
         const fetchedGroups: any[] = await getItems('groups');
         setGroups(fetchedGroups);
-        setFilteredGroups(fetchedGroups);  
+        setFilteredGroups(fetchedGroups);
         // Найти nickname текущего пользователя
-      
+
       } catch (error) {
         console.error('Ошибка загрузки данных:', error);
       }

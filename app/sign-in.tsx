@@ -4,16 +4,17 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { getItems, getUser } from './services/firestore';
 import { loginWithEmail, loginWithGoogle } from './services/authUtils';
-import { auth } from './services/firebaseConfig';
-import { isLoading } from 'expo-font';
-import { getData, storeData } from '@/hooks/storageUtils'; 
 import { useLoading } from '@/providers/LoadingProvider';
+import { AsyncStore, SecureStore } from '@/stores/global.store';
+import { AppUser, useAuth } from '@/providers/authProvider';
+import { FSUserInfo } from '@/providers/DataProvider';
 
 const AuthScreen: React.FC = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState(''); 
+  const [password, setPassword] = useState('');
   const [error, setError] = useState("");
   const { isLoading, setLoading } = useLoading();
+  const user = useAuth()
   const router = useRouter();
 
   // const handleGoogleLogin = async () => {
@@ -25,14 +26,29 @@ const AuthScreen: React.FC = () => {
   // };
 
   useEffect(() => {
-    getData("user").then((data) => {
-      if (data) {
-        const user = JSON.parse(data)
-        setEmail(user.email)
-        setPassword(user.password)
+    console.log(user, 'userSignIn User changed');
+    setLoading(true);
+    if (user) {
+      const savedUser = SecureStore.get<AppUser>("USER");
+      if (savedUser !== null) {
+        setEmail(savedUser.email)
+        console.log(savedUser, 'userSignIn savedUser in signin');
+        getUser(savedUser.email).then((userFromFb) => {
+          console.log(userFromFb, 'userSignIn userFromFb in signin');
+          if (userFromFb) {
+            console.log(userFromFb, 'userSignIn userFromFb in signin push activeTask');
+            router.push({
+              pathname: '/(tabs)/activeTask',
+              params: {
+                user: userFromFb
+              }
+            });
+          }
+        })
       }
-    })
-  }, []);
+    }
+    setLoading(false);
+  }, [user])
 
 
   // Login Handler
@@ -59,19 +75,25 @@ const AuthScreen: React.FC = () => {
     try {
       // console.log("handleLogin 3");
 
-      const User = await loginWithEmail(email, password);
+      const userData = await loginWithEmail(email, password);
       // console.log(auth.currentUser, "Login successfully");
-
+      SecureStore.save<AppUser>('USER', { email, password });
       const user = await getUser(email)
-      storeData("userData", JSON.stringify({
-        ...user,
-        id: email
-      }));
+      const userData2: FSUserInfo = {
+        id: email, // user.id,
+        isActive: user.isActive,
+        nickname: user.nickname, 
+      }
+      console.log(userData2, "savedUser.......7");
+      
+      await AsyncStore.save<FSUserInfo>('USER_DATA', userData2);
+
+      const savedUser = await AsyncStore.get<FSUserInfo>("USER_DATA");
+      console.log(savedUser, "savedUser.......1234566");
 
       console.log(user, "user");
       if (user) {
         if (user.isActive) {
-          storeData("user", JSON.stringify({ email: email, password: password }))
           router.push({
             pathname: '/(tabs)/activeTask',
             params: {

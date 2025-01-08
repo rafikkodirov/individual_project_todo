@@ -11,8 +11,7 @@ import {
   WhereFilterOp,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
-import * as Localization from "expo-localization";
-import { getData, storeData } from "@/hooks/storageUtils";
+import * as Localization from "expo-localization"; 
 
 
 export const addElementToTheFirebase = (path: string, element: any) => {
@@ -66,7 +65,7 @@ export interface WhereCondition {
 }
 
 export const getFilteredItemsV2 = async (path: string, conditions: WhereCondition[]) => {
-  // console.log("getFilteredItems", path, conditions);
+ console.log("getFilteredItems222", path, conditions);
   try {
  
     let queryRef = query(collection(db, path));

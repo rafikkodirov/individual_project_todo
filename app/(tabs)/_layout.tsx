@@ -8,7 +8,9 @@ import react_logo from '../../assets/images/react-logo.png'
 import cards_tab from '../../assets/icons/cards_tab.png'
 import Unknown from '../../assets/icons/Unknown.png'
 import { ScaledStyleSheet } from '../ScaledStyleSheet'  
-import { useAuth } from '@/providers/authProvider';
+import { AppUser, useAuth } from '@/providers/authProvider';
+import { SecureStore } from '@/stores/global.store';
+import { useLoading } from '@/providers/LoadingProvider';
 // import ZaymIcon from "../assets/icons/ZaymIcon.png"
 interface TabIcon {
   color: string,
@@ -62,18 +64,31 @@ const styles = ScaledStyleSheet.create({
 const TabsLayout = () => {
   const router = useRouter(); // Используем useRouter для навигации
 
-  const { user, loading } = useAuth();
-  
+  const { user, loading, reLogin } = useAuth();
+  const {setLoading} = useLoading()
+
+  useEffect(() => {
+    setLoading(true)
+  }, [])
+
+
+  useEffect((): void => {
+    if(reLogin === true)
+      router.replace("/sign-in");
+  }, [reLogin])
+
   useEffect(() => {
     if (!loading && !user) {
       console.log(user, "TabsLayout");
-      router.replace("/sign-in");
+      const savedUser = SecureStore.get<AppUser>("USER");
+      if (savedUser === null) 
+        router.replace("/sign-in");
     }
   }, [user, loading]);
 
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
+  // if (loading) {
+  //   return <Text>Loading...</Text>;
+  // }
 
 
   // Функция для перехода на экран "Добавить группу"
