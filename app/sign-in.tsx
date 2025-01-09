@@ -7,7 +7,7 @@ import { loginWithEmail, loginWithGoogle } from './services/authUtils';
 import { useLoading } from '@/providers/LoadingProvider';
 import { AsyncStore, SecureStore } from '@/stores/global.store';
 import { AppUser, useAuth } from '@/providers/authProvider';
-import { FSUserInfo } from '@/providers/DataProvider';
+import { FSUserInfo, useDataContext } from '@/providers/DataProvider';
 
 const AuthScreen: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -16,6 +16,7 @@ const AuthScreen: React.FC = () => {
   const { isLoading, setLoading } = useLoading();
   const user = useAuth()
   const router = useRouter();
+  const {refreshRequest} = useDataContext()
 
   // const handleGoogleLogin = async () => {
   //   try {
@@ -26,17 +27,17 @@ const AuthScreen: React.FC = () => {
   // };
 
   useEffect(() => {
-    console.log(user, 'userSignIn User changed');
+    // console.log(user, 'userSignIn User changed');
     setLoading(true);
     if (user) {
       const savedUser = SecureStore.get<AppUser>("USER");
       if (savedUser !== null) {
         setEmail(savedUser.email)
-        console.log(savedUser, 'userSignIn savedUser in signin');
+        // console.log(savedUser, 'userSignIn savedUser in signin');
         getUser(savedUser.email).then((userFromFb) => {
-          console.log(userFromFb, 'userSignIn userFromFb in signin');
+          // console.log(userFromFb, 'userSignIn userFromFb in signin');
           if (userFromFb) {
-            console.log(userFromFb, 'userSignIn userFromFb in signin push activeTask');
+            // console.log(userFromFb, 'userSignIn userFromFb in signin push activeTask');
             router.push({
               pathname: '/(tabs)/activeTask',
               params: {
@@ -84,14 +85,15 @@ const AuthScreen: React.FC = () => {
         isActive: user.isActive,
         nickname: user.nickname, 
       }
-      console.log(userData2, "savedUser.......7");
+      // console.log(userData2, "savedUser.......7");
       
       await AsyncStore.save<FSUserInfo>('USER_DATA', userData2);
+      refreshRequest();
 
-      const savedUser = await AsyncStore.get<FSUserInfo>("USER_DATA");
-      console.log(savedUser, "savedUser.......1234566");
+      // const savedUser = await AsyncStore.get<FSUserInfo>("USER_DATA");
+      // console.log(savedUser, "savedUser.......1234566");
 
-      console.log(user, "user");
+      // console.log(user, "user");
       if (user) {
         if (user.isActive) {
           router.push({

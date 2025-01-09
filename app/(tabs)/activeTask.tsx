@@ -23,34 +23,28 @@ const ActiveTask: React.FC = () => {
   }, [cachedTasks]);
 
   const onRefresh = async () => {
-    setRefreshing(true); // Включаем индикатор загрузки 
+    setRefreshing(true);  
     await refreshData(DataType.Tasks); 
-    setRefreshing(false); // Выключаем индикатор загрузки
+    setRefreshing(false);  
   };
+
   const handleComplete = async () => {
+    // TODO handle complete task
     console.log('Задача завершена'); 
   }; 
 
   return (
 
     <FlatList
-      data={cachedTasks} // Передаем данные в FlatList
-      keyExtractor={(item) => item.key} // Уникальный ключ для каждого элемента
+      data={cachedTasks}  
+      keyExtractor={(item) => item.key}  
       renderItem={({ item }) => (
         <View>
           <TaskCard
             task={item}
             onComplete={handleComplete} />
-        </View>
-
-        //   <View style={{ padding: 8, borderBottomWidth: 1, borderColor: '#ccc' }}>
-        //     {/* <Text style={{ fontSize: 16 }}>ID: {item.key}</Text> */}
-        //     <Text>Название: {item.title || 'Нет названия'}</Text>
-        //     <Text>Описание: {item.description || 'Нет описания'}</Text>
-        //   </View>
-        // )}
-        // ListEmptyComponent={<Text>Нет активных задач</Text>
-      )} // Если данных нет
+        </View> 
+      )}  
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }

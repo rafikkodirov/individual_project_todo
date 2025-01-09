@@ -64,7 +64,7 @@ export interface WhereCondition {
 }
 
 export const getFilteredItemsV2 = async (path: string, conditions: WhereCondition[]) => {
- console.log("getFilteredItems222", path, conditions);
+//  console.log("getFilteredItems222", path, conditions);
   try {
  
     let queryRef = query(collection(db, path)); 
