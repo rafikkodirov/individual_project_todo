@@ -7,7 +7,7 @@ import groups from './(tabs)/groups';
 import { getItems } from './services/firestore';
 import GroupSelector from './GroupSelector';
 import { router, useLocalSearchParams } from 'expo-router';
-import { FSUserInfo } from '@/providers/DataProvider';
+import { FSUserInfo, useDataContext } from '@/providers/DataProvider';
 import { AsyncStore } from '@/stores/global.store';
 // import {v4 as uuidv4} from 'uuid';
 // Пример использования
@@ -38,6 +38,7 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
   const [nickname, setNickname] = useState('');
   const [isGroupSelectorVisible, setGroupSelectorVisible] = useState(false);
   const params = useLocalSearchParams()
+  // const { addTask } = useDataContext();
   useEffect(() => {
     if (params.groupId && params.groupName) {
       const _groupName = Array.isArray(params.groupName) ? params.groupName[0] : params.groupName;

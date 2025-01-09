@@ -2,10 +2,12 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useAuth } from './authProvider';
 import {
 
+    addDoc,
     collection,
     doc,
     onSnapshot,
     query,
+    where,
 
 } from "firebase/firestore";
 import { getFilteredItemsV2 } from '@/app/services/firestore';
@@ -19,7 +21,7 @@ interface DataContextType {
     refreshData: (entityType: DataType) => Promise<void>;
     filteredTasks: (groupId: string) => any[];
     loading: boolean;
-    // addTask: (newTask: any) => Promise<void>;
+    addTask: (newTask: any) => Promise<void>;
     // updateTask: (task: any) => Promise<void>;
     // deleteTask: (task: any) => Promise<void>;
 }
@@ -44,26 +46,79 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [whereConditionGroups, setWhereConditionGroups] = useState<any[]>([]);
 
     const { user } = useAuth()
-    const subscribeToCollection = (
-        collectionPath: string,
-        conditions: any[],
-        onUpdate: (data: any[]) => void
-      ) => {
-        const q = query(collection(db, collectionPath), ...conditions);
-        return onSnapshot(
-          q,
-          (querySnapshot) => {
-            const data: any[] = [];
-            querySnapshot.forEach((doc) => {
-              data.push({ key: doc.id, ...doc.data() });
-            });
-            onUpdate(data);
-          },
-          (error: any) => {
-            console.error(`Ошибка при подписке на ${collectionPath}:`, error);
-          }
-        );
+    const addElementToTheFirebase = (path: string, element: any) => {
+      const tasksCollectionRef = collection(db, path);
+      addDoc(tasksCollectionRef, element);
+    };
+    const addTask = async (newTask: any) => {
+        try {
+          await addElementToTheFirebase('tasks', newTask);
+          await fetchActiveTasksData(); // Перезагрузите данные
+        } catch (error) {
+          console.error('Ошибка при добавлении задачи:', error);
+        }
       };
+    // const subscribeToCollection = (
+    //     collectionPath: string,
+    //     conditions: any[],
+    //     onUpdate: (data: any[]) => void
+    //   ) => {
+    //     const q = query(collection(db, collectionPath), ...conditions);
+    //     return onSnapshot(
+    //       q,
+    //       (querySnapshot) => {
+    //         const data: any[] = [];
+    //         querySnapshot.forEach((doc) => {
+    //           data.push({ key: doc.id, ...doc.data() });
+    //         });
+    //         onUpdate(data);
+    //       },
+    //       (error: any) => {
+    //         console.error(`Ошибка при подписке на ${collectionPath}:`, error);
+    //       }
+    //     );
+    //   };
+    //   useEffect(() => {
+    //     if (userData && userData.id) {
+    //       const unsubscribeTasks = subscribeToCollection(
+    //         'tasks',
+    //         [where('ownerId', '==', userData.id)],
+    //         setCachedTasks
+    //       );
+      
+    //       const unsubscribeGroups = subscribeToCollection(
+    //         'groups',
+    //         [where('owner', '==', userData.email)],
+    //         setCachedGroups
+    //       );
+      
+    //       return () => {
+    //         unsubscribeTasks();
+    //         unsubscribeGroups();
+    //       };
+    //     }
+    //   }, [userData]);
+      
+    //   useEffect(() => {
+    //     if (userData && userData.id) {
+    //       const unsubscribe = onSnapshot(
+    //         query(collection(db, 'tasks'), where('ownerId', '==', userData.id)),
+    //         (querySnapshot) => {
+    //           const tasks: any[] = [];
+    //           querySnapshot.forEach((doc) => {
+    //             tasks.push({ key: doc.id, ...doc.data() });
+    //           });
+    //           setCachedTasks(tasks); // Обновляем задачи в состоянии
+    //         },
+    //         (error) => {
+    //           console.error('Ошибка при получении задач через onSnapshot:', error);
+    //         }
+    //       );
+      
+    //       // Отписываемся при размонтировании компонента
+    //       return () => unsubscribe();
+    //     }
+    //   }, [userData]);
       
     useEffect(() => {
         const fetchUserData = async () => {
@@ -162,6 +217,26 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setLoading(false);
         }
     };
+    useEffect(() => {
+        if (userData && userData.id) {
+          const unsubscribe = onSnapshot(
+            query(collection(db, 'tasks'), where('ownerId', '==', userData.id)),
+            (querySnapshot) => {
+              const tasks: any[] = [];
+              querySnapshot.forEach((doc) => {
+                tasks.push({ key: doc.id, ...doc.data() });
+              });
+              setCachedTasks(tasks); // Обновляем задачи в состоянии
+            },
+            (error) => {
+              console.error('Ошибка при получении задач через onSnapshot:', error);
+            }
+          );
+      
+          // Отписываемся при размонтировании компонента
+          return () => unsubscribe();
+        }
+      }, [userData]);
 
     const refreshData = async (entityType: DataType) => {
         switch (entityType) {
@@ -201,7 +276,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 filteredTasks,
                 userDoc,
                 loading,
-                // addTask,
+                addTask,
                 // updateTask,
                 // deleteTask,
             }}
