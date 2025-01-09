@@ -1,10 +1,12 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';  
-import { useAuth } from './authProvider'; 
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { useAuth } from './authProvider';
 import {
 
+    collection,
     doc,
     onSnapshot,
- 
+    query,
+
 } from "firebase/firestore";
 import { getFilteredItemsV2 } from '@/app/services/firestore';
 import { db } from '@/app/services/firebaseConfig';
@@ -17,7 +19,11 @@ interface DataContextType {
     refreshData: (entityType: DataType) => Promise<void>;
     filteredTasks: (groupId: string) => any[];
     loading: boolean;
+    // addTask: (newTask: any) => Promise<void>;
+    // updateTask: (task: any) => Promise<void>;
+    // deleteTask: (task: any) => Promise<void>;
 }
+
 
 export interface FSUserInfo {
     id: string;
@@ -38,7 +44,27 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [whereConditionGroups, setWhereConditionGroups] = useState<any[]>([]);
 
     const { user } = useAuth()
-
+    const subscribeToCollection = (
+        collectionPath: string,
+        conditions: any[],
+        onUpdate: (data: any[]) => void
+      ) => {
+        const q = query(collection(db, collectionPath), ...conditions);
+        return onSnapshot(
+          q,
+          (querySnapshot) => {
+            const data: any[] = [];
+            querySnapshot.forEach((doc) => {
+              data.push({ key: doc.id, ...doc.data() });
+            });
+            onUpdate(data);
+          },
+          (error: any) => {
+            console.error(`Ошибка при подписке на ${collectionPath}:`, error);
+          }
+        );
+      };
+      
     useEffect(() => {
         const fetchUserData = async () => {
             const savedUser = await AsyncStore.get<FSUserInfo>("USER_DATA");
@@ -166,7 +192,20 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 
     return (
-        <DataContext.Provider value={{ cachedUsers, cachedTasks, cachedGroups, refreshData, filteredTasks, userDoc, loading }}>
+        <DataContext.Provider
+            value={{
+                cachedUsers,
+                cachedTasks,
+                cachedGroups,
+                refreshData,
+                filteredTasks,
+                userDoc,
+                loading,
+                // addTask,
+                // updateTask,
+                // deleteTask,
+            }}
+        >
             {children}
         </DataContext.Provider>
     );

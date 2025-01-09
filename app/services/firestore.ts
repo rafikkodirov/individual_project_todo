@@ -10,8 +10,7 @@ import {
   where,
   WhereFilterOp,
 } from "firebase/firestore";
-import { db } from "./firebaseConfig";
-import * as Localization from "expo-localization"; 
+import { db } from "./firebaseConfig"; 
 
 
 export const addElementToTheFirebase = (path: string, element: any) => {
@@ -68,8 +67,7 @@ export const getFilteredItemsV2 = async (path: string, conditions: WhereConditio
  console.log("getFilteredItems222", path, conditions);
   try {
  
-    let queryRef = query(collection(db, path));
-    // Apply each "where" condition to the query
+    let queryRef = query(collection(db, path)); 
     conditions.forEach(condition => {
       queryRef = query(queryRef, where(condition.key, condition.operator, condition.value));
     });
@@ -104,15 +102,7 @@ export const getItems = async (path: string): Promise<Item[]> => {
         key: doc.id,
         ...doc.data(),
       };
-
-      // if (elements['startDate']) {
-      //   elements['startDate'] = elements['startDate'].toDate()
-      // }
-      // // if (elements['endDate']) {
-      // //   elements['endDate'] = elements['endDate'].toDate()
-      // // }
-      // console.log(elements)
-      
+ 
       itemsArray.push(elements);
     });
 
@@ -124,24 +114,7 @@ export const getItems = async (path: string): Promise<Item[]> => {
 };
 
 export default { addElementToTheFirebase, updateElementToTheFirebase, getItems }
-
-// export const getItems = async () => {
-//   const path = `/tasks`
-//   try {
-//     const querySnapshot = await getDocs(collection(db, path));
-//     const itemsArray: any[] = [];
-
-//     querySnapshot.forEach((doc) => {
-//       const elements = {
-//         key: doc.id,
-//         ...JSON.parse(JSON.stringify(doc.data())),
-//       };
-//       itemsArray.push(elements);
-//     });
-//   }catch (error) {
-//     console.error('Ошибка получения данных из Firestore:', error);
-// }
-// }
+ 
 
 export const getUser = async (email: string): Promise<any> => {
   try { 
@@ -161,118 +134,4 @@ export const getUser = async (email: string): Promise<any> => {
     return null;
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export enum OfferCollection {
-//   FAQ = 0,
-//   LOANS = 1,
-//   CARDS = 2,
-// }
-// let appVersion = "v1";
-// const rootCollection = appVersion === "v1" ? "collection_v1" : "collection_v2";
-// const offerCollections = ["faq/articles", "loans", "cards"];
-
-// import testOfferV1 from "./offer_v1.json";
-// import testLoanV2 from "./loan_v2.json";
-
-
-
-// export const getItems = async (offerCollectionIndex: OfferCollection) => {
-//   const path =`/test`
-//   //   offerCollectionIndex == 0
-//   //     ? `/${rootCollection}/${offerCollections[offerCollectionIndex]}`
-//   //     : `/${rootCollection}/${i18n.locale}/${offerCollections[offerCollectionIndex]}`;
-//   try {
-//     const querySnapshot = await getDocs(collection(db, path));
-//     const itemsArray: any[] = [];
-
-//     querySnapshot.forEach((doc) => {
-//       const elements = {
-//         key: doc.id,
-//         ...JSON.parse(JSON.stringify(doc.data())),
-//       };
-//       itemsArray.push(elements);
-//     });
-
-//     console.log(itemsArray, "................................");
-
-//     if (itemsArray.length === 0) {
-//       addTestOfferToTheFirebase(offerCollectionIndex);
-//     }
-
-//     if (appVersion !== "v1" && offerCollectionIndex === OfferCollection.CARDS) {
-//       const plCards: any[] = itemsArray.filter(
-//         (item: any) => item.isPlastCard === true
-//       );
-//       const creds: any[] = itemsArray.filter(
-//         (item: any) => item.isPlastCard !== true
-//       );
-//       plCards[0].type = "Кредитные карты";
-//       creds[0].type = "Кредиты";
-//       const result = [...plCards, ...creds];
-//       return result;
-//     } else {
-//       return itemsArray;
-//     }
-//   } catch (error) {
-//     console.error("Error fetching items: ", error);
-//     return [];
-//   }
-// };
-
-// export const setItemClick = async (
-//   offerCollectionIndex: OfferCollection,
-//   offer: any
-// ) => {
-//   try {
-//     // Step 1: Get the language code and Firestore path
-//     /* The line `// const path = ` is a commented-out line of code in TypeScript. This means that this
-//     line is not being executed by the program and is simply there for reference or as a placeholder.
-//     In this specific context, it seems like the line was originally intended to define the `path`
-//     variable for some purpose, but it is currently commented out and not used in the code. */
-//     const path = `/test`
-//     // `/${rootCollection}/${i18n.locale}/${offerCollections[offerCollectionIndex]}/${offer.key}`;
-//     const offerDocRef = doc(db, path);
-
-//     // Step 2: Retrieve the document's current data
-//     const offerDocSnapshot = await getDoc(offerDocRef);
-//     if (!offerDocSnapshot.exists()) {
-//       console.error("Document does not exist:", path);
-//       return;
-//     }
-
-//     // Step 3: Get the current views field
-//     const currentData = offerDocSnapshot.data();
-//     const currentViewsCount = currentData?.views || 0;
-
-//     // Step 4: Increment the viewsCount by 1
-//     const updatedViewsCount = currentViewsCount + 1;
-
-//     // Step 5: Update the viewsCount in Firestore
-//     await updateDoc(offerDocRef, { views: updatedViewsCount });
-
-//     console.log(
-//       `Updated viewsCount to ${updatedViewsCount} for document:`,
-//       path
-//     );
-//   } catch (error) {
-//     console.error("Error updating viewsCount:", error);
-//   }
-// };
+ 
