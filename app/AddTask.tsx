@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, ScrollView, Platform, Switch, TouchableOpacity, FlatList } from 'react-native';
-import { addDoc, collection, Timestamp } from 'firebase/firestore';
+import {  collection, Timestamp } from 'firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { db } from './services/firebaseConfig';
 import groups from './(tabs)/groups';
@@ -37,8 +37,7 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
   const [showEnd, setShowEnd] = useState(false);
   const [nickname, setNickname] = useState('');
   const [isGroupSelectorVisible, setGroupSelectorVisible] = useState(false);
-  const params = useLocalSearchParams()
-  // const { addTask } = useDataContext();
+  const params = useLocalSearchParams() 
   useEffect(() => {
     if (params.groupId && params.groupName) {
       const _groupName = Array.isArray(params.groupName) ? params.groupName[0] : params.groupName;
@@ -49,6 +48,7 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
     }
   }, [params.groupId, groups]);
   const [userData, setUserData] = useState<any>(null);
+  const { addTask } = useDataContext();
   // useEffect(() => {
   //   const fetchUserData = async () => {
   //     const userDataStr = await getData("userData");
@@ -131,7 +131,7 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
     return `${day}/${month}/${year}`;
   };
   // Функция добавления задачи в Firebase
-  const addTask = async () => {
+  const addTaskFunc = async () => {
     
     console.log("Pressed")
     if (!description || !startTime || !endTime || !groupName) {
@@ -152,8 +152,10 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
     };
 
     try {
-      await addDoc(collection(db, 'tasks'), newTask);
-      router.back()
+      // await addTask(collection(db, 'tasks'));
+      // 
+      await addTask(newTask); 
+      // router.back()
       alert('Задача успешно добавлена!');
       // setTitle('');
       setGroupId('');
@@ -200,7 +202,7 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
         {show && Platform.OS === 'android' && (
           <DateTimePicker
             value={date}
-            mode="time"
+            mode="date"
             display="default"
             onChange={onChange}
           />
@@ -230,7 +232,7 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
 
         {/* Кнопка для отправки */}
         <View style={styles.addTask}>
-          <Button title="Добавить задачу" onPress={addTask} color="#007bff" />
+          <Button title="Добавить задачу" onPress={addTaskFunc} color="#007bff" />
           {/* console.log() */}
           
         </View>

@@ -153,10 +153,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addElementToTheFirebase = (path: string, element: any) => {
     const tasksCollectionRef = collection(db, path);
-    addDoc(tasksCollectionRef, element);
+    return addDoc(tasksCollectionRef, element);
   };
   const addTask = async (newTask: any) => {
     try {
+
+    // console.log("Добавление задачи:", newTask);
       await addElementToTheFirebase("tasks", newTask);
       //   await fetchActiveTasksData(); // Перезагрузите данные
     } catch (error) {
