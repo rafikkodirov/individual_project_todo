@@ -4,14 +4,16 @@ import { Tabs, Redirect, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons';
 // import Tab1 from '../assets/icons/Tab1. 
 // import react_logo from '../../assets/react_logo.png'
-import react_logo from '../../assets/images/react-logo.png'
+import people from '../../assets/images/people.png'
+import edit from '../../assets/images/edit.png'
+import settings from '../../assets/images/settings.png'
 import cards_tab from '../../assets/icons/cards_tab.png'
 import Unknown from '../../assets/icons/Unknown.png'
 import { ScaledStyleSheet } from '../ScaledStyleSheet'  
 import { AppUser, useAuth } from '@/providers/authProvider';
 import { SecureStore } from '@/stores/global.store';
 import { useLoading } from '@/providers/LoadingProvider';
-// import ZaymIcon from "../assets/icons/ZaymIcon.png"
+// import ZaymIcon from "../assets/icons/ZaymIcon.png" 
 interface TabIcon {
   color: string,
   name: string
@@ -114,7 +116,7 @@ const TabsLayout = () => {
             tabBarLabel:"Задания",
             tabBarIcon: ({ color, focused }) => {
               return <TabIcon 
-                icon={react_logo}
+                icon={edit}
                 color={color}
                 name="Задания"
                 focused={focused}
@@ -145,7 +147,7 @@ const TabsLayout = () => {
             tabBarLabel:"Группы", 
             tabBarIcon: ({ color, focused }) => {
               return <TabIcon 
-                icon={react_logo}
+                icon={people}
                 color={color}
                 name="Группы"
                 focused={focused}
@@ -158,7 +160,7 @@ const TabsLayout = () => {
             tabBarLabel:"Настройки", 
             tabBarIcon: ({ color, focused }) => {
               return <TabIcon 
-                icon={react_logo}
+                icon={settings}
                 color={color}
                 name="Настройки"
                 focused={focused}

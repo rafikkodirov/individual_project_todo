@@ -152,7 +152,7 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
         <View>
           {/* <Text style={styles.applyTextFirst}>111111111111111</Text> */}
         </View>
-        <View style={styles.buttonContainer}>
+        {/* <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}  >
             <Text style={styles.applyText}>Найти пользователя</Text>
           </TouchableOpacity>
@@ -166,7 +166,7 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
             selectedUser={selectedUser}
             onSelectUser={handleSelectUser}
           />
-        </View>
+        </View> */}
         
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleLog} >

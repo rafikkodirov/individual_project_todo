@@ -132,6 +132,8 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
   };
   // Функция добавления задачи в Firebase
   const addTask = async () => {
+    
+    console.log("Pressed")
     if (!description || !startTime || !endTime || !groupName) {
       alert('Пожалуйста, заполните все поля!');
       return;
@@ -229,6 +231,8 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
         {/* Кнопка для отправки */}
         <View style={styles.addTask}>
           <Button title="Добавить задачу" onPress={addTask} color="#007bff" />
+          {/* console.log() */}
+          
         </View>
       </View>
     </SafeAreaView>

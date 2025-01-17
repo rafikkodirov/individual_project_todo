@@ -1,17 +1,17 @@
 {
   "expo": {
-    "name": "individ",
-    "slug": "individ",
+    "name": "Tasks/Groups",
+    "slug": "Tasks",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/react_logo.png",
+    "icon": "./assets/images/Group_full_edit.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/react_logo.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    // "splash": {
+    //   "image": "./assets/images/Group_full_edit.png",
+    //   "resizeMode": "contain",
+    //   "backgroundColor": "#ffffff"
+    // },
     "ios": {
       "supportsTablet": true
     },

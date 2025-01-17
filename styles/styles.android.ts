@@ -98,7 +98,7 @@ export default ScaledStyleSheet.create({
   logo: {
     width: 45,
     height: 45,
-    marginRight: 10,
+    // marginRight: 10,
   },
   // title: {
   //   fontSize: 20,

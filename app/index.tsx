@@ -50,7 +50,7 @@ const IndexScreen = () => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../assets/images/react_logo.png')} // Укажите путь к вашему логотипу
+        source={require('../assets/images/Group_full_edit1024.png')} // Укажите путь к вашему логотипу
         style={styles.logo}
       // resizeMode="contain"
       />
@@ -71,7 +71,7 @@ const styles = ScaledStyleSheet.create({
   logo: {
 
     // marginHorizontal:"-50%",
-    width: "150%", // Ширина логотипа
+    width: "100%", // Ширина логотипа
     height: "50%", // Высота логотипа
   },
 });
