@@ -1,12 +1,12 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack, useRouter } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen'; 
+import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/useColorScheme'; 
-import { ScaledStyleSheet } from './ScaledStyleSheet';  
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { ScaledStyleSheet } from './ScaledStyleSheet';
 import { DataProvider } from '@/providers/DataProvider';
 import { LoadingProvider } from '@/providers/LoadingProvider';
 import { AuthProvider } from '@/providers/authProvider';
@@ -15,7 +15,7 @@ import { AuthProvider } from '@/providers/authProvider';
 SplashScreen.preventAutoHideAsync();
 type RouteParams = {
   name: string;
-}; 
+};
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -31,28 +31,28 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
- 
+
   return (
     <AuthProvider>
-      <DataProvider>
-        <LoadingProvider>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="sign-in" options={{ headerShown: true, title: "Авторизация", headerBackVisible: false, headerTitleAlign: 'center' }} />
-          <Stack.Screen
-            name="GroupDetailsPage"
-            options={({ route }) => ({
-              headerShown: true,
-              title: (route.params as RouteParams)?.name || 'Задания группы', // Заголовок
-            })}
-          />
-          <Stack.Screen name="AddTask" options={{ headerShown: true, title: "Добавление задачи", headerBackTitle: "Назад" }} />
-          <Stack.Screen name="AddGroups" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
-          <Stack.Screen name="sign-up" options={{ headerShown: true, title: "Регистрация", headerBackVisible: false, headerTitleAlign: 'center' }} />
-        </Stack>
-        </LoadingProvider>
-      </DataProvider>
+      <LoadingProvider>
+        <DataProvider>
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="sign-in" options={{ headerShown: true, title: "Авторизация", headerBackVisible: false, headerTitleAlign: 'center' }} />
+            <Stack.Screen
+              name="GroupDetailsPage"
+              options={({ route }) => ({
+                headerShown: true,
+                title: (route.params as RouteParams)?.name || 'Задания группы', // Заголовок
+              })}
+            />
+            <Stack.Screen name="AddTask" options={{ headerShown: true, title: "Добавление задачи", headerBackTitle: "Назад" }} />
+            <Stack.Screen name="AddGroups" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
+            <Stack.Screen name="sign-up" options={{ headerShown: true, title: "Регистрация", headerBackVisible: false, headerTitleAlign: 'center' }} />
+          </Stack>
+        </DataProvider>
+      </LoadingProvider>
     </AuthProvider>
   );
 }

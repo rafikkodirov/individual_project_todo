@@ -46,33 +46,9 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
       setGroupName(_groupName);
       setSearchQuery(_groupName);
     }
-  }, [params.groupId, groups]);
-  const [userData, setUserData] = useState<any>(null);
-  const { addTask } = useDataContext();
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     const userDataStr = await getData("userData");
-  //     const parsedUserData = JSON.parse(userDataStr);
-  //     setUserData(parsedUserData);
-  //   };
-  //   fetchUserData();
-  // }, []);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        AsyncStore.get<FSUserInfo>("USER_DATA").then((savedUser) => {
-          // setUserData(savedUser);
-          setNickname(savedUser?.nickname || ''); // Устанавливаем nickname сразу
-        })
-
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-    fetchUserData();
-  }, []);
-
+  }, [params.groupId, groups]); 
+  const { addTask , userData } = useDataContext(); 
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -138,22 +114,20 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
       alert('Пожалуйста, заполните все поля!');
       return;
     }
-
-    const newTask = {
+ 
+    
+    console.log("Pressed2")
+    const newTask = { 
       // startTime: startTime.toISOString(),
       // endTime: endTime.toISOString(),
       startDate: Timestamp.now(),
       endDate: Timestamp.fromDate(new Date()),
       groupId,
-      groupName,
-      ownerId: userData.id,
-      ownerName: nickname,
+      groupName,  
       description,
     };
 
-    try {
-      // await addTask(collection(db, 'tasks'));
-      // 
+    try { 
       await addTask(newTask); 
       // router.back()
       alert('Задача успешно добавлена!');

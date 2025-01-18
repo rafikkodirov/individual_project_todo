@@ -36,8 +36,8 @@ const AuthScreen: React.FC = () => {
         // console.log(savedUser, 'userSignIn savedUser in signin');
         getUser(savedUser.email).then((userFromFb) => {
           // console.log(userFromFb, 'userSignIn userFromFb in signin');
-          if (userFromFb) {
-            // console.log(userFromFb, 'userSignIn userFromFb in signin push activeTask');
+          if (userFromFb) { 
+            console.log(userFromFb, 'userSignIn userFromFb in signin push activeTask');
             router.push({
               pathname: '/(tabs)/activeTask',
               params: {
@@ -85,8 +85,8 @@ const AuthScreen: React.FC = () => {
         isActive: user.isActive,
         nickname: user.nickname, 
       }
-      // console.log(userData2, "savedUser.......7");
-      
+
+      console.log("Signin..................Launched");
       await AsyncStore.save<FSUserInfo>('USER_DATA', userData2);
       refreshRequest();
 

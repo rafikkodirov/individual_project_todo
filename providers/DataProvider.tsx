@@ -12,14 +12,15 @@ import {
 import { getFilteredItemsV2 } from "@/app/services/firestore";
 import { db } from "@/app/services/firebaseConfig";
 import { AsyncStore, SecureStore } from "@/stores/global.store";
+import { useLoading } from "./LoadingProvider";
 interface DataContextType {
   cachedUsers: any[];
   cachedTasks: any[];
   cachedGroups: any[];
   userDoc: any;
+  userData: any,
   refreshData: (entityType: DataType) => Promise<void>;
-  filteredTasks: (groupId: string) => any[];
-  loading: boolean;
+  filteredTasks: (groupId: string) => any[]; 
   addTask: (newTask: any) => Promise<void>;
   // updateTask: (task: any) => Promise<void>;
   // deleteTask: (task: any) => Promise<void>;
@@ -41,27 +42,25 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const [cachedUsers, setCachedUsers] = useState<any[]>([]);
   const [cachedGroups, setCachedGroups] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading2] = useState(false);
 
   const [userData, setUserData] = useState<any>(null);
   const [whereConditionTasks, setWhereConditionTasks] = useState<any[]>([]);
   const [whereConditionGroups, setWhereConditionGroups] = useState<any[]>([]);
+  const {setLoading} = useLoading()
+
 
   const { user } = useAuth();
 
   useEffect(() => {
-    if (user !== undefined) {
-      console.log(user, "refreshRequest ............... 3");
-
+    if (user !== undefined && user !== null) {
       refreshRequest();
     } else {
     }
   }, [user]);
 
   const refreshRequest = () => {
-    console.log("refreshRequest ............... 1");
     AsyncStore.get<FSUserInfo>("USER_DATA").then((data) => {
-      console.log(data, "refreshRequest ............... 2");
       setUserData(data);
     });
   };
@@ -85,11 +84,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         const data: any[] = [];
         querySnapshot.forEach((doc) => {
           data.push({ key: doc.id, ...doc.data() });
-        });
+        }); 
         onUpdate(data);
+        setLoading(false); 
       },
       (error: any) => {
         console.error(`Ошибка при подписке на ${collectionPath}:`, error);
+        setLoading(false);
       }
     );
   };
@@ -97,6 +98,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     console.log("refreshRequest ............... 4");
     if (userData && userData.id && whereConditionTasks.length > 0) {
       console.log(whereConditionTasks, "whereConditionTasks...............");
+
+      setLoading(true);
 
       const unsubscribeTasks = subscribeToCollection(
         "tasks",
@@ -157,10 +160,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   };
   const addTask = async (newTask: any) => {
     try {
-
-    // console.log("Добавление задачи:", newTask);
+      newTask.ownerId = userData.id;
+      newTask.ownerName = userData.nickname;
       await addElementToTheFirebase("tasks", newTask);
-      //   await fetchActiveTasksData(); // Перезагрузите данные
     } catch (error) {
       console.error("Ошибка при добавлении задачи:", error);
     }
@@ -299,9 +301,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         cachedGroups,
         refreshData,
         filteredTasks,
-        userDoc,
-        loading,
+        userDoc, 
         addTask,
+        userData,
         // updateTask,
         // deleteTask,
         refreshRequest,

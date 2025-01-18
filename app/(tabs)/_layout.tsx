@@ -65,15 +65,9 @@ const styles = ScaledStyleSheet.create({
 });
 const TabsLayout = () => {
   const router = useRouter(); // Используем useRouter для навигации
-
-  const { user, loading, reLogin } = useAuth();
-  const {setLoading} = useLoading()
-
-  useEffect(() => {
-    setLoading(true)
-  }, [])
-
-
+  const { setLoading } = useLoading();
+  const { user, loading, reLogin } = useAuth(); 
+  
   useEffect((): void => {
     if(reLogin === true)
       router.replace("/sign-in");
@@ -87,13 +81,7 @@ const TabsLayout = () => {
         router.replace("/sign-in");
     }
   }, [user, loading]);
-
-  // if (loading) {
-  //   return <Text>Loading...</Text>;
-  // }
-
-
-  // Функция для перехода на экран "Добавить группу"
+   
   const handleGroups = () => {
     router.push({
       pathname: '/AddGroups', // Путь для экрана с добавлением группы

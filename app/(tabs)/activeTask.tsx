@@ -18,26 +18,6 @@ const ActiveTask: React.FC = () => {
 
   }
 
-  // useEffect(() => {
-  //   if (cachedTasks && cachedTasks.length > 0) {
-  //     setLoading(false); // Выключить загрузку только если есть элементы в cachedTasks
-  //   }
-  // }, [cachedTasks]);
-  useEffect(() => {
-    if (cachedTasks && cachedTasks.length > 0) {
-      setLoading(false); // Если в cachedTasks есть данные, сразу отключаем loading
-    } else {
-      // Устанавливаем таймер на 10 секунд
-      const timer = setTimeout(() => {
-        if (!cachedTasks || cachedTasks.length === 0) {
-          setLoading(false); // Если через 10 секунд ничего нет, отключаем loading
-        }
-      }, 4000);
-
-      // Очистка таймера при изменении cachedTasks или размонтировании
-      return () => clearTimeout(timer);
-    }
-  }, [cachedTasks]);
 
   const onRefresh = async () => {
     setRefreshing(true);
