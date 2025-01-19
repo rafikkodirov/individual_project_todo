@@ -70,7 +70,7 @@ const AddGroupScreen: React.FC = () => {
   };
   return (
     <SafeAreaView style={styles.containerAddGroup}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView contentContainerStyle={{ padding: 16}}>
         <Text style={styles.header}>Название группы:</Text>
         <TextInput
           style={styles.input}

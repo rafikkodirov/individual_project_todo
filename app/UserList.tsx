@@ -23,8 +23,8 @@ const UserList = () => {
           <Text style={styles.TextTitle}>Пользователи</Text>
 
           <FlatList
-            style={styles.freeHeight}
-            contentContainerStyle={styles.listContent}
+            style={{flexGrow: 1}}
+            contentContainerStyle={{paddingBottom: 16, }}
             data={items}
             keyExtractor={(item) => item.key}
             renderItem={({ item }) => (
