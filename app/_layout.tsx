@@ -1,23 +1,15 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack, useRouter } from 'expo-router';
+import { Stack} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { ScaledStyleSheet } from './ScaledStyleSheet';
 import { DataProvider } from '@/providers/DataProvider';
 import { LoadingProvider } from '@/providers/LoadingProvider';
 import { AuthProvider } from '@/providers/authProvider';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 type RouteParams = {
   name: string;
 };
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -55,31 +47,4 @@ export default function RootLayout() {
       </LoadingProvider>
     </AuthProvider>
   );
-}
-const styles = ScaledStyleSheet.create({
-  icon: {
-    width: 24,
-    height: 24,
-  },
-  text: {
-    fontSize: 12,
-  },
-  headerButtonsContainer: {
-    flexDirection: 'row',
-    // marginRight: 10,
-  },
-  button1: {
-    marginTop: 5,
-    marginLeft: 10,
-    padding: 5,
-  },
-  button2: {
-    marginTop: 10,
-    marginLeft: 10,
-    padding: 3,
-  },
-  buttonText: {
-    fontSize: 18,
-    color: '#007AFF', // Цвет текста кнопок
-  },
-});
+} 
