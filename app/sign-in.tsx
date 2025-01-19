@@ -1,9 +1,7 @@
-import { View, Text, TextInput, TouchableOpacity, Alert, Platform } from 'react-native';
-import { ScaledStyleSheet } from './ScaledStyleSheet';
+import { View, Text, TouchableOpacity, Alert, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { getUser } from './services/firestore';
-import { loginWithEmail } from './services/authUtils';
 import { useLoading } from '@/providers/LoadingProvider';
 import { AsyncStore, SecureStore } from '@/stores/global.store';
 import { AppUser, useAuth } from '@/providers/authProvider';

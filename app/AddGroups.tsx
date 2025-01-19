@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Text, TextInput, Button, SafeAreaView, ScrollView, Platform } from 'react-native';
-import { addDoc, collection } from 'firebase/firestore';
-import { db } from './services/firebaseConfig';
 import { getItems } from './services/firestore';
 import { useRouter } from 'expo-router';
 import { AsyncStore } from '@/stores/global.store';
@@ -14,12 +12,9 @@ const AddGroupScreen: React.FC = () => {
   // Состояния для формы
   const [owner, setOwner] = useState('');
   const [groupName, setGroupName] = useState('');
-  const [groups, setGroups] = useState<any[]>([]);
-  const [filteredGroups, setFilteredGroups] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
+  const [groups, setGroups] = useState<any[]>([]); 
   const [nickname, setNickname] = useState('');
-  const [color, setColor] = useState('#ffcf48');
-  const [items, setItems] = useState<any[]>([]);
+  const [color, setColor] = useState('#ffcf48'); 
   const router = useRouter()
 
   const { addGroups, userData } = useDataContext();
@@ -41,8 +36,7 @@ const AddGroupScreen: React.FC = () => {
     const fetchData = async () => {
       try {
         const fetchedGroups: any[] = await getItems('groups');
-        setGroups(fetchedGroups);
-        setFilteredGroups(fetchedGroups);
+        setGroups(fetchedGroups); 
 
       } catch (error) {
         console.error('Ошибка загрузки данных:', error);

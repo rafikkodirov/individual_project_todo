@@ -1,12 +1,12 @@
-import { View, Text, FlatList, TouchableOpacity, RefreshControl } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, RefreshControl, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import GroupCard from '@/components/GroupCard';
 import { useRouter } from 'expo-router';
-import { ScaledStyleSheet } from '../ScaledStyleSheet';
 import { useDataContext, DataType } from '@/providers/DataProvider';
 import { useLoading } from '@/providers/LoadingProvider';
-
-
+const styles = Platform.OS === 'android'
+  ? require('../../styles/styles.android').default
+  : require('../../styles/styles.android').default;
 const Groups: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const { isLoading, setLoading } = useLoading()
@@ -20,9 +20,7 @@ const Groups: React.FC = () => {
     router.push({
       pathname: "/UserList"
     })
-
-  };
-
+  }; 
   const handleGotoGroupDetails = (group: any) => {
     router.push({
       pathname: "/GroupDetailsPage",
@@ -58,16 +56,7 @@ const Groups: React.FC = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
       ListEmptyComponent={<Text style={styles.header}>Нет групп</Text>}
-    />
-
+    /> 
   )
-}
-const styles = ScaledStyleSheet.create({
-  header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-})
+} 
 export default Groups

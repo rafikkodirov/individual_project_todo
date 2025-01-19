@@ -1,13 +1,18 @@
-import { ScaledStyleSheet } from '@/app/ScaledStyleSheet';
+import { ScaledStyleSheet } from '@/Common/ScaledStyleSheet';
 
 
 export default ScaledStyleSheet.create({
-  applyButtonDetails: {
-    marginHorizontal: 16,
-    backgroundColor: "#007AFF",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
+  applyTextFirst: {
+    fontSize: 30,
+    marginTop: "4%",
+    marginBottom: "40%",
+    color: "black",
+    textAlign: "center",
+  },
+  titleInSettings: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    // marginBottom: 20,
   },
   applyTextDetails: {
     fontSize: 22,
@@ -202,8 +207,9 @@ export default ScaledStyleSheet.create({
     alignItems: "center",
   },
   applyText: {
-    fontSize: 16,
+    fontSize: 20,
     color: "#fff",
+    alignSelf:"center"
   },
 
   rowStyle: {
@@ -291,6 +297,25 @@ export default ScaledStyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: '#E0E0E0', // Серый фон для Android
   },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }, 
+  buttonContainerInDetails: {
+    flexGrow: 1, 
+    justifyContent: 'flex-end',  
+    padding:16,
+  },
+  Button: {
+    width: '100%',
+    marginTop:'5%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+   
+    alignItems: 'center',
+  },
   banner: {
     flex: 1,
     zIndex: 0,
@@ -318,6 +343,15 @@ export default ScaledStyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
+  },
+  buttonInDetails: {
+    marginHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#007BFF', // Цвет фона кнопки
+    textAlign: "center",
+    alignItems: 'center', // Центрирование по горизонтали
+    borderRadius: 10,
+    color: 'white',
   },
   button: {
     marginTop: 100,

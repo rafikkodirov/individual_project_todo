@@ -6,11 +6,9 @@ import Dialog from '@/components/DialogComponent ';
 import people from '../../assets/images/people.png'
 import edit from '../../assets/images/edit.png'
 import settings from '../../assets/images/settings.png'
-import { ScaledStyleSheet } from '../ScaledStyleSheet'
+import { ScaledStyleSheet } from '../../Common/ScaledStyleSheet'
 import { AppUser, useAuth } from '@/providers/authProvider';
-import { SecureStore } from '@/stores/global.store';
-import { useLoading } from '@/providers/LoadingProvider';
-// import ZaymIcon from "../assets/icons/ZaymIcon.png" 
+import { SecureStore } from '@/stores/global.store'; 
 interface TabIcon {
   color: string,
   name: string
@@ -23,22 +21,11 @@ const TabIcon: React.FC<TabIcon> = ({ icon, focused, color, name }) => {
       <Image
         source={icon}
         resizeMode="contain"
-        style={[styles.icon, { tintColor: color }]} />
-      {/* {focused && <Text className="text-xs">{name}</Text>} */}
+        style={[styles.icon, { tintColor: color }]} /> 
     </View>
   )
 }
-//  const router = useRouter();
-//   const handleGroupes = () => {
-//     router.push({
-//       pathname: "/AddGroups"
-//     })
-//   }
-// const handleTasks =  () => { 
-//   router.push({
-//     pathname: "/AddTask"
-//   })
-// };
+ 
 const styles = ScaledStyleSheet.create({
   icon: {
     width: 24,
@@ -57,19 +44,14 @@ const styles = ScaledStyleSheet.create({
   },
   buttonText: {
     fontSize: 18,
-    color: '#007AFF', // Цвет текста кнопок
+    color: '#007AFF', 
   },
 });
 const TabsLayout = () => {
-  const router = useRouter(); // Используем useRouter для навигации
-  const { setLoading } = useLoading();
+  const router = useRouter();  
   const { user, loading, reLogin } = useAuth();
   const [isConfirmationDialogVisible, setIsConfirmationDialogVisible] = useState<boolean>(false);
-
-
-  const handleItemDeletePress = async (element: any) => {
-    setIsConfirmationDialogVisible(true)
-  };
+ 
   useEffect((): void => {
     if (reLogin === true)
       router.replace("/sign-in");
@@ -86,14 +68,13 @@ const TabsLayout = () => {
 
   const handleGroups = () => {
     router.push({
-      pathname: '/AddGroups', // Путь для экрана с добавлением группы
+      pathname: '/AddGroups',  
     });
   };
-
-  // Функция для перехода на экран "Добавить задачу"
+ 
   const handleTasks = () => {
     router.push({
-      pathname: '/AddTask', // Путь для экрана с добавлением задачи
+      pathname: '/AddTask',  
     });
   };
   return (
@@ -130,14 +111,11 @@ const TabsLayout = () => {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={handleGroups}
-
-                  // onPress={() => setIsConfirmationDialogVisible(true)}
                 >
 
                   <Ionicons name="people" size={24} color="black" />
                   <Dialog isVisible={isConfirmationDialogVisible} onClose={() => setIsConfirmationDialogVisible(false)} dialogWidth={100} scrollable={false} children={undefined}>
-                    {/* <ConfirmationDialog setIsConfirmationDialogVisible={setIsConfirmationDialogVisible} itemDeleteAction={itemDeleteAction} requestText='Вы уверены, что хотите удалить этот оффер?' /> */}
-                  </Dialog>
+                 </Dialog>
                 </TouchableOpacity>
               </View>),
             tabBarLabel: "Группы",
@@ -162,12 +140,8 @@ const TabsLayout = () => {
                 focused={focused}
               />
             }
-          }} />
-
-
-      </Tabs>
-
-
+          }} /> 
+      </Tabs> 
     </>
   )
 }

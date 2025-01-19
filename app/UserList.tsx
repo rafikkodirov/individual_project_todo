@@ -11,17 +11,11 @@ const UserList = () => {
   useEffect(() => {
     const fetchItems = async () => {
       const fetchedItems = await getItems('users');
-
       setItems(fetchedItems);
       setLoading(false);
     };
-
     fetchItems();
   }, []);
- 
-
-   
-
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -45,8 +39,5 @@ const UserList = () => {
     </>
   );
 };
- 
-
-
 export default UserList
 

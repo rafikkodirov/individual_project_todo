@@ -1,4 +1,4 @@
-import { ScaledStyleSheet } from "@/app/ScaledStyleSheet";
+import { ScaledStyleSheet } from "@/Common/ScaledStyleSheet";
 import { Timestamp } from "firebase/firestore";
 // import i18n from "@/i18n/i18n";
 import React from "react";

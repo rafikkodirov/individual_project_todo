@@ -1,26 +1,20 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated } from 'react-native';
 import Svg, { Path, SvgProps } from 'react-native-svg';
-
-export const Loading02Icon: React.FC<SvgProps> = (props) => {
-  // Animated value to track the rotation
-  const rotateValue = useRef(new Animated.Value(0)).current;
-
-  // Start the animation with an infinite loop
+export const Loading02Icon: React.FC<SvgProps> = (props) => { 
+  const rotateValue = useRef(new Animated.Value(0)).current; 
   useEffect(() => {
     Animated.loop(
       Animated.timing(rotateValue, {
         toValue: 1,
-        duration: 2000, // 3 seconds for a full rotation
-        useNativeDriver: true, // Use the native driver for better performance
+        duration: 2000,  
+        useNativeDriver: true,  
       })
     ).start();
-  }, [rotateValue]);
-
-  // Interpolate the animated value to degrees
+  }, [rotateValue]); 
   const rotateAnimation = rotateValue.interpolate({
     inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'], // Rotate from 0 degrees to 360 degrees
+    outputRange: ['0deg', '360deg'],  
   });
 
   return (
