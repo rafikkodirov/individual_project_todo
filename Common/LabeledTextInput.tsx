@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TextInput, Text, Platform, TextStyle } from "react-native";
+import { TextInput, Text, Platform, TextStyle, KeyboardTypeOptions } from "react-native";
 
 const styles = Platform.OS === 'android'
     ? require('../styles/styles.android').default
@@ -10,7 +10,8 @@ export enum TextInputType {
     numeric = 'numeric',
     phone = 'phone-pad',
     default = 'default',
-    password = 'password'
+    password = 'password',
+    confirmPassword = 'confirmPassword'
 }
 
 interface LabeledTextInputProps {
@@ -20,7 +21,7 @@ interface LabeledTextInputProps {
     label?: string;
     placeholder?: string;
     secureTextEntry?: boolean;
-    keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
+    keyboardType?: KeyboardTypeOptions;
     autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
     styleUI?: { label?: TextStyle, input?: TextStyle };
 }
@@ -36,11 +37,11 @@ const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
     styleUI,
 }) => {
     const [placeholderState, setPlaceholderState] = useState<any>(null);
-    const [labelState, setLabelState] = useState<any>(null);
-    const [secureTextEntryState, setSecureTextEntryState] = useState<any>(null);
-    const [keyboardTypeState, setKeyboardTypeState] = useState<any>(null);
-    const [autoCapitalizeState, setAutoCapitalizeState] = useState<any>(null);
- 
+    const [labelState, setLabelState] = useState<string>('');
+    const [secureTextEntryState, setSecureTextEntryState] = useState<boolean>(false);
+    const [keyboardTypeState, setKeyboardTypeState] = useState<KeyboardTypeOptions>('default');
+    const [autoCapitalizeState, setAutoCapitalizeState] = useState<'none' | 'sentences' | 'words' | 'characters' | undefined>('none');
+
     useEffect(() => {
         switch (inputType) {
             case TextInputType.email:
@@ -53,8 +54,14 @@ const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
                 keyboardType = 'numeric';
                 break;
             case TextInputType.password:
+                keyboardType = 'default';
                 placeholder = "Введите пароль"
                 label = 'Password'
+                secureTextEntry = true
+                break;
+            case TextInputType.confirmPassword:
+                keyboardType = 'default';
+                placeholder = "Подтвердить пароль" 
                 secureTextEntry = true
                 break;
             case TextInputType.phone:
@@ -67,7 +74,7 @@ const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
         setKeyboardTypeState(keyboardType);
         setPlaceholderState(placeholder);
         setAutoCapitalizeState(autoCapitalize);
-        setLabelState(label);
+        setLabelState(label ?? '');
         setSecureTextEntryState(secureTextEntry);
 
 
@@ -76,7 +83,7 @@ const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
 
     return (
         <>
-            {value.length > 0 && <Text style={{
+            {value.length > 0 && labelState.length > 0 && <Text style={{
                 marginLeft: 4,
                 marginBottom: 4,
                 fontSize: 14,

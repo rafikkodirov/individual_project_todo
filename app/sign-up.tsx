@@ -15,7 +15,7 @@ const SignUp: React.FC = () => {
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [IsConfirmPassword, setIsConfirmPassword] = useState('');
   const router = useRouter();
 
   const [error, setError] = useState("");
@@ -30,7 +30,7 @@ const SignUp: React.FC = () => {
     })
   }
   const handleRegister = async () => {
-    if (!nickname || !email || !password || !confirmPassword) {
+    if (!nickname || !email || !password || !IsConfirmPassword) {
       Alert.alert('Ошибка', 'Заполните все поля.');
       return;
     }
@@ -40,7 +40,7 @@ const SignUp: React.FC = () => {
       return;
     }
 
-    if (password !== confirmPassword) {
+    if (password !== IsConfirmPassword) {
       Alert.alert('Ошибка', 'Пароли не совпадают.');
       return;
     }
@@ -90,31 +90,16 @@ const SignUp: React.FC = () => {
   return (
     <View style={styles.containerSignUp}>
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <TextInput
-        style={styles.input}
-        placeholder="Введите имя пользователя"
-        value={nickname}
-        onChangeText={setNickname}
-        autoCapitalize="none"
-      />
+      <LabeledTextInput value={nickname} onChangeText={setNickname} label='Nickname'  placeholder='Введите имя пользователя' />
       <LabeledTextInput value={email} onChangeText={setEmail} inputType={TextInputType.email} />
       <LabeledTextInput value={password} onChangeText={setPassword} inputType={TextInputType.password} />
-
-
-      <TextInput
-        style={styles.input}
-        placeholder="Подтвердите пароль"
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-
-        secureTextEntry={!isPasswordVisible}
-      />
+      <LabeledTextInput value={IsConfirmPassword} onChangeText={setIsConfirmPassword} inputType={TextInputType.confirmPassword} />
 
       <TouchableOpacity style={styles.buttonSignIn} onPress={handleRegister}>
         <Text style={styles.buttonText}>Регистрация</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={{alignSelf:"center",padding:12}} onPress={handleLogin}>
-        <Text style={{fontSize:18, color:"#007bff"}}>Авторизация</Text>
+      <TouchableOpacity style={{ alignSelf: "center", padding: 12 }} onPress={handleLogin}>
+        <Text style={{ fontSize: 18, color: "#007bff" }}>Авторизация</Text>
       </TouchableOpacity>
     </View>
   );
