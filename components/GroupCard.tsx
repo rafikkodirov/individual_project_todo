@@ -19,11 +19,7 @@ interface GroupsProps {
 const GroupCard: React.FC<GroupsProps> = ({
   groups, 
   onDetailsPress, 
-}) => {
-  // const getTime = (fbsDate?: Timestamp) =>{
-  //   if(!fbsDate) return '***'
-  //   return  dayjs(fbsDate.toDate()).format("DD/MM/YYYY HH:mm")
-  // }
+}) => { 
   return (
     <View style={styles.cardContainer}>
       {/* Заголовок и даты */}
