@@ -54,15 +54,11 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [isModalVisibleGroups, setModalVisibleGroups] = useState(false);
  
-  const [whereCondition, setWhereCondition] = useState<any[]>([]);  
-  const [userData, setUserData] = useState<any>(null);
+  const [whereCondition, setWhereCondition] = useState<any[]>([]);   
   const { userDoc } = useDataContext(); 
    
-   
-  useEffect(() => {
-    setNickname(userData?.nickname || '');
-  }, [userData]);  
-
+ 
+   const { userData } = useDataContext(); 
   
   
 
@@ -144,7 +140,7 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
 
         <View>
           <Text style={styles.title}>Имя Пользователя</Text>
-          <Text style={styles.applyTextFirst}>{userDoc.nickname}</Text>
+          <Text style={styles.applyTextFirst}>{userData.nickname}</Text>
           {/* {nickname} */}
           
         </View>

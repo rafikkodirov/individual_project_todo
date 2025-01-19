@@ -4,8 +4,9 @@ import TaskCard from '@/components/TaskCard';
 import { ScaledStyleSheet } from '../ScaledStyleSheet';
 import { useDataContext, DataType } from '@/providers/DataProvider';
 import { useLoading } from '@/providers/LoadingProvider';
+import { useRootNavigationState } from 'expo-router';
 
-
+ 
 const ActiveTask: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const { cachedTasks, refreshData } = useDataContext();

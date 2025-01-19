@@ -1,6 +1,6 @@
 import { Loading02Icon } from '@/app/Loading02Icon';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { View, StyleSheet } from 'react-native';   
+import { View, StyleSheet } from 'react-native';
 
 interface LoadingContextType {
   isLoading: boolean;
@@ -8,12 +8,12 @@ interface LoadingContextType {
 }
 
 const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
-
+ 
 export const LoadingProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   return (
-    <LoadingContext.Provider value={{ isLoading, setLoading: setIsLoading }}>
+    <LoadingContext.Provider value={{ isLoading, setLoading }}>
       <View style={{ flex: 1 }}>
         {children}
         {isLoading && (

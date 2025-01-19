@@ -20,9 +20,8 @@ export default ScaledStyleSheet.create({
     // backgroundColor: 'red', // Фон для контента
   }, 
   backButton: {
-    padding: 16,
-  },  
-  
+    padding: 16
+  },   
   PageTitle: {
     fontSize: 15,
     marginBottom: 5,
@@ -97,20 +96,8 @@ export default ScaledStyleSheet.create({
   
   logo: {
     width: 45,
-    height: 45,
-    // marginRight: 10,
-  },
-  // title: {
-  //   fontSize: 20,
-  //   fontWeight: "bold", 
-  // },
-  // subtitle: {
-  //   color: "#231F20",
-  //   fontSize: 12,
-  //   textAlign:"left",
-  //   flex: 1,
-  //   marginTop:8,
-  // },
+    height: 45, 
+  }, 
   middleSection: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -164,12 +151,12 @@ export default ScaledStyleSheet.create({
   // Body Text Style
   TextBody: {
     fontSize: 14.5, 
-    marginBottom:16 ,// Slightly smaller than the title
-    fontWeight: 'normal', // Regular weight
-    color: '#666666', // A lighter gray for body text
-    lineHeight: 16, // Spacing between lines for better readability
-    textAlign: 'center', // Center-align the body text
-    marginHorizontal: 16, // Add some horizontal margins for better readability
+    marginBottom:16 ,
+    fontWeight: 'normal', 
+    color: '#666666',
+    lineHeight: 16, 
+    textAlign: 'center',  
+    marginHorizontal: 16, 
   },
 
   // Free Height Filler
@@ -298,6 +285,14 @@ export default ScaledStyleSheet.create({
     backgroundColor: 'blue', // Зеленый цвет для активной кнопки
     borderRadius: 7,
   },
+  containerSignUp: {
+    height: "100%",
+    flex: 1,
+    justifyContent: 'center',
+    // alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     alignItems: 'center',
@@ -312,8 +307,25 @@ export default ScaledStyleSheet.create({
   },
   buttonText: {
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 18,
     color: '#FFF',
+  },
+  input: {
+    width: '100%',
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+  },
+  buttonSignIn: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#007bff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
   },
   button: {
     marginTop: 100,
@@ -323,5 +335,22 @@ export default ScaledStyleSheet.create({
     textAlign: "center",
     width: 300,
     borderRadius: 15, // Меньший радиус для Android
+  }, 
+  containerSignIn: {
+    flex: 1,
+    justifyContent: 'center', 
+    padding: 20,
+    backgroundColor: '#fff',
   },
+  buttonDown: {
+    width: '100%',
+    
+    height: 50,
+    marginTop: "4%",
+    backgroundColor: '#007bff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  error: { color: "red", marginBottom: 10 },
 });

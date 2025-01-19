@@ -1,0 +1,101 @@
+import { useEffect, useState } from "react";
+import { TextInput, Text, Platform, TextStyle } from "react-native";
+
+const styles = Platform.OS === 'android'
+    ? require('../styles/styles.android').default
+    : require('../styles/styles.android').default;
+
+export enum TextInputType {
+    email = 'email-address',
+    numeric = 'numeric',
+    phone = 'phone-pad',
+    default = 'default',
+    password = 'password'
+}
+
+interface LabeledTextInputProps {
+    value: string;
+    onChangeText: (text: string) => void;
+    inputType?: TextInputType;
+    label?: string;
+    placeholder?: string;
+    secureTextEntry?: boolean;
+    keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
+    autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+    styleUI?: { label?: TextStyle, input?: TextStyle };
+}
+const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
+    label,
+    value,
+    onChangeText,
+    placeholder = '',
+    inputType = TextInputType.default,
+    secureTextEntry = false,
+    keyboardType = 'default',
+    autoCapitalize = 'none',
+    styleUI,
+}) => {
+    const [placeholderState, setPlaceholderState] = useState<any>(null);
+    const [labelState, setLabelState] = useState<any>(null);
+    const [secureTextEntryState, setSecureTextEntryState] = useState<any>(null);
+    const [keyboardTypeState, setKeyboardTypeState] = useState<any>(null);
+    const [autoCapitalizeState, setAutoCapitalizeState] = useState<any>(null);
+ 
+    useEffect(() => {
+        switch (inputType) {
+            case TextInputType.email:
+                keyboardType = 'email-address';
+                placeholder = "Введите почту"
+                autoCapitalize = "none"
+                label = 'Email'
+                break;
+            case TextInputType.numeric:
+                keyboardType = 'numeric';
+                break;
+            case TextInputType.password:
+                placeholder = "Введите пароль"
+                label = 'Password'
+                secureTextEntry = true
+                break;
+            case TextInputType.phone:
+                keyboardType = 'phone-pad';
+                break;
+            default:
+                keyboardType = 'default';
+                break;
+        }
+        setKeyboardTypeState(keyboardType);
+        setPlaceholderState(placeholder);
+        setAutoCapitalizeState(autoCapitalize);
+        setLabelState(label);
+        setSecureTextEntryState(secureTextEntry);
+
+
+    }, [])
+
+
+    return (
+        <>
+            {value.length > 0 && <Text style={{
+                marginLeft: 4,
+                marginBottom: 4,
+                fontSize: 14,
+                fontWeight: '500',
+                color: 'dark-gray',
+                ...styleUI?.label
+            }}>{labelState}</Text>}
+            <TextInput
+                style={{ ...styles.input, ...styleUI?.input }}
+                value={value}
+                onChangeText={onChangeText}
+                placeholder={placeholderState}
+                secureTextEntry={secureTextEntryState}
+                keyboardType={keyboardTypeState}
+                autoCapitalize={autoCapitalizeState}
+            />
+        </>
+    )
+}
+
+
+export default LabeledTextInput
