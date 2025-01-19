@@ -66,7 +66,7 @@ const GroupDetailsPage: React.FC = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        ListEmptyComponent={<Text style={styles.title}>Нет активных задач</Text>}
+        ListEmptyComponent={<Text style={styles.header}>Нет активных задач</Text>}
       />
       <View style={styles.buttonContainerInDetails}>
         <TouchableOpacity style={styles.buttonInDetails} onPress={() => handleTask(items)}>

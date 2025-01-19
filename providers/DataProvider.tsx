@@ -22,10 +22,7 @@ interface DataContextType {
   refreshData: (entityType: DataType) => Promise<void>;
   filteredTasks: (groupId: string) => any[]; 
   addTask: (newTask: any) => Promise<void>;
-  addGroups: (newTask: any) => Promise<void>;
-  
-  // updateTask: (task: any) => Promise<void>;
-  // deleteTask: (task: any) => Promise<void>;
+  addGroups: (newTask: any) => Promise<void>; 
   refreshRequest: () => void;
 }
 
@@ -43,8 +40,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   const [cachedTasks, setCachedTasks] = useState<any[]>([]);
 
   const [cachedUsers, setCachedUsers] = useState<any[]>([]);
-  const [cachedGroups, setCachedGroups] = useState<any[]>([]);
-  // const [loading, setLoading2] = useState(false);
+  const [cachedGroups, setCachedGroups] = useState<any[]>([]); 
 
   const [userData, setUserData] = useState<any>(null);
   const [whereConditionTasks, setWhereConditionTasks] = useState<any[]>([]);
@@ -108,31 +104,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         whereConditionTasks,
         setCachedTasks
       );
-
-      //   const unsubscribeGroups = subscribeToCollection(
-      //     'groups',
-      //     [where('owner', '==', userData.email)],
-      //     setCachedGroups
-      //   );
-
+ 
       return () => {
-        unsubscribeTasks();
-        // unsubscribeGroups();
+        unsubscribeTasks(); 
       };
     }
-  }, [userData, whereConditionTasks]);
-
-  // const fetchActiveTasksData = async () => {
-  //     setLoading(true);
-  //     try {
-  //         const tasks = await getFilteredItemsV2('tasks', whereConditionTasks);
-  //         setCachedTasks(tasks);
-  //     } catch (error) {
-  //         console.error('Ошибка при загрузке данных:', error);
-  //     } finally {
-  //         setLoading(false);
-  //     }
-  // };
+  }, [userData, whereConditionTasks]); 
 
   useEffect(() => {
     if (userData) {
@@ -147,12 +124,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
           operator: "==",
           value: userData.id,
         },
-      ]);
-      // setWhereConditionGroups([{
-      //     key: "owner",
-      //     operator: "==",
-      //     value: userData.email,
-      // }]);
+      ]); 
     }
   }, [userData]);
 
@@ -175,39 +147,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch (error) {
       console.error("Ошибка при добавлении задачи:", error);
     }
-  };
-
-  //   useEffect(() => {
-  //     if (userData && userData.id) {
-  //       const unsubscribe = onSnapshot(
-  //         query(collection(db, 'tasks'), where('ownerId', '==', userData.id)),
-  //         (querySnapshot) => {
-  //           const tasks: any[] = [];
-  //           querySnapshot.forEach((doc) => {
-  //             tasks.push({ key: doc.id, ...doc.data() });
-  //           });
-  //           setCachedTasks(tasks); // Обновляем задачи в состоянии
-  //         },
-  //         (error) => {
-  //           console.error('Ошибка при получении задач через onSnapshot:', error);
-  //         }
-  //       );
-
-  //       // Отписываемся при размонтировании компонента
-  //       return () => unsubscribe();
-  //     }
-  //   }, [userData]);
-
+  }; 
   const [userDoc, setUserDoc] = useState<any>(null);
   useEffect(() => {
-    if (user !== undefined) {
-      // fetchUserData();
-      fetchGroupData();
-      // fetchActiveTasksData();
+    if (user !== undefined) { 
+      fetchGroupData(); 
 
       if (!user?.email) return;
-      const docRef = doc(db, `users/${user?.email}`);
-      // Start observing the document
+      const docRef = doc(db, `users/${user?.email}`); 
       const unsubscribe = onSnapshot(
         docRef,
         (snapshot) => {
@@ -223,25 +170,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
           console.error("Error observing document:", error);
           setLoading(false);
         }
-      );
-
-      // Clean up listener on unmount
+      ); 
       return () => unsubscribe();
     }
-  }, [user]);
-
-  // const fetchUserData = async () => {
-  //     setLoading(true);
-  //     try {
-  //         const users = await getFilteredItemsV2('users', []);
-  //         setCachedUsers(users);
-  //     } catch (error) {
-  //         console.error('Ошибка при загрузке данных:', error);
-  //     } finally {
-  //         setLoading(false);
-  //     }
-  // };
-
+  }, [user]); 
   const fetchGroupData = async () => {
     setLoading(true);
     try {
@@ -252,36 +184,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       setLoading(false);
     }
-  };
-
-  // useEffect(() => {
-  //     if (userData && userData.id) {
-  //       const unsubscribe = onSnapshot(
-  //         query(collection(db, 'tasks'), where('ownerId', '==', userData.id)),
-  //         (querySnapshot) => {
-  //           const tasks: any[] = [];
-  //           querySnapshot.forEach((doc) => {
-  //             tasks.push({ key: doc.id, ...doc.data() });
-  //           });
-  //           setCachedTasks(tasks); // Обновляем задачи в состоянии
-  //         },
-  //         (error) => {
-  //           console.error('Ошибка при получении задач через onSnapshot:', error);
-  //         }
-  //       );
-
-  //       // Отписываемся при размонтировании компонента
-  //       return () => unsubscribe();
-  //     }
-  //   }, [userData]);
-
+  }; 
   const refreshData = async (entityType: DataType) => {
     switch (entityType) {
-      case DataType.Users:
-        // await fetchUserData();
+      case DataType.Users: 
         break;
-      case DataType.Tasks:
-        // await fetchActiveTasksData()
+      case DataType.Tasks: 
         break;
       case DataType.Groups:
         await fetchGroupData();
@@ -328,9 +236,7 @@ export enum DataType {
   Users,
   Tasks,
   Groups,
-}
-
-// Хук для доступа к данным
+} 
 export const useDataContext = () => {
   const context = useContext(DataContext);
   if (!context) {
