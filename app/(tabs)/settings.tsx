@@ -23,97 +23,16 @@
       <TouchableOpacity style={styles.buttonDown} onPress={handleReg}>
         <Text style={styles.buttonText}>Зарегистрироваться</Text>
       </TouchableOpacity>*/}
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Modal, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { ScaledStyleSheet } from '../ScaledStyleSheet';
-import { getItems } from '../services/firestore';
-import { auth } from '../services/firebaseConfig';
 import { logout } from '../services/authUtils';
-import ModalSearchUsers from '../ModalSearchUser';
-import ModalDeleteGroups from '../ModalDeleteGroups'; 
-import { useDataContext, DataType } from '@/providers/DataProvider';
+import { useDataContext } from '@/providers/DataProvider';
 import { SecureStore } from '@/stores/global.store';
-interface AddTaskScreenProps {
-  userId: string; // Идентификатор текущего пользователя
-}
-const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [users, setUsers] = useState<any[]>([]);
-  // const [user, setUser] = useState<any>(null);
-
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+ 
+const Settings: React.FC = ()=> { 
   const router = useRouter();
-
-  const [groups, setGroups] = useState<any[]>([]);
-  const [filteredGroups, setFilteredGroups] = useState<any[]>([]);
-  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [isModalVisibleGroups, setModalVisibleGroups] = useState(false);
- 
-  const [whereCondition, setWhereCondition] = useState<any[]>([]);   
-  const { userDoc } = useDataContext(); 
-   
- 
    const { userData } = useDataContext(); 
-  
-  
-
-  // Fetch users from Firestore
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-
-        const fetchedUsers: any[] = await getItems('users');
-        setUsers(fetchedUsers);
-        // const currentUser = fetchedUsers.find(user => user.id === userId);
-        // if (currentUser) {
-        //   setNickname(currentUser.nickname || '');
-        //   console.log(currentUser,"1111111111111111111111111111111d")
-          
-        // } else {
-        //   console.warn('Пользователь не найден');
-        // }
-      } catch (error) {
-        console.error('Ошибка загрузки данных:', error);
-      }
-    };
- 
-    fetchUsers();
-  }, [userId]);
-  const fetchGroups = async () => {
-    const fetchedGroups: any[] = await getItems('groups');
-    setGroups(fetchedGroups);
-    setFilteredGroups(fetchedGroups);
-  };
-
-  useEffect(() => {
-    fetchGroups();
-  }, []);
-  const [nickname, setNickname] = useState<string>('');
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-
-    if (query.trim() === '') {
-      setFilteredUsers([]);
-      return;
-    }
-
-    const filtered = users.filter((user) =>
-      user.nickname.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredUsers(filtered);
-  };
-  const handleDeleteSuccess = () => {
-    fetchGroups(); // Обновить список групп после удаления
-  };
-  const handleLog = async () => {
-    // router.push({
-    //   pathname:"/sign-in"
-    // })
+  const handleLog = async () => { 
     SecureStore.delete(["USER"])
     await logout()
     router.push({
@@ -121,49 +40,16 @@ const Settings: React.FC<AddTaskScreenProps> = ({userId}) => {
     })
     console.log("logout");
 
-  }
-  const handleSearchGroups = (query: string) => {
-    setSearchQuery(query);
-    const filtered = groups.filter((group) =>
-      group.title.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredGroups(filtered);
-  };
-  const handleSelectUser = (userId: string) => {
-    setSelectedUser(userId === selectedUser ? null : userId); // Переключение выбора
-  };
- 
-
+  } 
   return (
     <>
       <View style={styles.container}>
-
         <View>
           <Text style={styles.title}>Имя Пользователя</Text>
           <Text style={styles.applyTextFirst}>{userData.nickname}</Text>
-          {/* {nickname} */}
-          
-        </View>
- 
-        <View>
-          {/* <Text style={styles.applyTextFirst}>111111111111111</Text> */}
-        </View>
-        {/* <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}  >
-            <Text style={styles.applyText}>Найти пользователя</Text>
-          </TouchableOpacity>
-          <ModalSearchUsers
-            isVisible={isModalVisible}
-            onClose={() => setModalVisible(false)}
-            users={users}
-            filteredUsers={filteredUsers}
-            searchQuery={searchQuery}
-            onSearch={handleSearch}
-            selectedUser={selectedUser}
-            onSelectUser={handleSelectUser}
-          />
-        </View> */}
-        
+        </View> 
+        <View> 
+        </View>  
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleLog} >
             <Text style={styles.applyText}>Выйти из аккаунта</Text>

@@ -1,84 +1,65 @@
-import { View, Text, Button, Animated, FlatList, TouchableOpacity, RefreshControl } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
-import GroupCard from '@/components/GroupCard'; 
-import { useRoute } from '@react-navigation/native';
+import { View, Text, FlatList, TouchableOpacity, RefreshControl } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import GroupCard from '@/components/GroupCard';
 import { useRouter } from 'expo-router';
-import { ScaledStyleSheet } from '../ScaledStyleSheet'; 
+import { ScaledStyleSheet } from '../ScaledStyleSheet';
 import { useDataContext, DataType } from '@/providers/DataProvider';
-import { SecureStore } from '@/stores/global.store';
 import { useLoading } from '@/providers/LoadingProvider';
 
- 
-const Groups: React.FC = () => { 
- const [refreshing, setRefreshing] = useState(false); 
- 
- const [userData, setUserData] = useState<any>(null);
- const [whereCondition, setWhereCondition] = useState<any[]>([]);  
- 
-     const {isLoading, setLoading} = useLoading()
-   const { cachedGroups, refreshData } = useDataContext(); 
-   useEffect(() => {
-     setLoading(false)
-   }, [cachedGroups]);
- 
+
+const Groups: React.FC = () => {
+  const [refreshing, setRefreshing] = useState(false);
+  const { isLoading, setLoading } = useLoading()
+  const { cachedGroups, refreshData } = useDataContext();
+  useEffect(() => {
+    setLoading(false)
+  }, [cachedGroups]);
+
   const router = useRouter()
-  const handleUser = () => { 
+  const handleUser = () => {
     router.push({
       pathname: "/UserList"
     })
-    
+
   };
- 
-  const handleGotoGroupDetails = (group: any) => { 
+
+  const handleGotoGroupDetails = (group: any) => {
     router.push({
       pathname: "/GroupDetailsPage",
       params: {
         groupId: group.key,
-        name: group.groupName, 
+        name: group.groupName,
       }
     })
-    
-    // console.log(group.key, 'group.key//////////////////////////////////////////')
-    
-    // console.log(group.groupName, 'group.name//////////////////////////////////////////')
   };
-  
-// console.log(items,'11111111111')
+
   const onRefresh = async () => {
-    setRefreshing(true); // Включаем индикатор загрузки
+    setRefreshing(true);
     await refreshData(DataType.Groups);
-    setRefreshing(false); // Выключаем индикатор загрузки
+    setRefreshing(false);
   };
   return (
 
     <FlatList
-      data={cachedGroups} // Передаем данные в FlatList
-      keyExtractor={(item) => item.key} // Уникальный ключ для каждого элемента
+      data={cachedGroups}
+      keyExtractor={(item) => item.key}
       renderItem={({ item }) => (
         <View>
-          <TouchableOpacity onPress={()=>handleGotoGroupDetails(item)}>
-          <GroupCard
-          groups={item} 
-          onDetailsPress={handleUser} 
-          />
+          <TouchableOpacity onPress={() => handleGotoGroupDetails(item)}>
+            <GroupCard
+              groups={item}
+              onDetailsPress={handleUser}
+            />
           </TouchableOpacity>
         </View>
-        
-        //   <View style={{ padding: 8, borderBottomWidth: 1, borderColor: '#ccc' }}>
-        //     {/* <Text style={{ fontSize: 16 }}>ID: {item.key}</Text> */}
-        //     <Text>Название: {item.title || 'Нет названия'}</Text>
-        //     <Text>Описание: {item.description || 'Нет описания'}</Text>
-        //   </View>
-        // )}
-        // ListEmptyComponent={<Text>Нет активных задач</Text>
       )
-      } // Если данных нет
-        refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            ListEmptyComponent={<Text style={styles.header}>Нет групп</Text>}
+      }
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      ListEmptyComponent={<Text style={styles.header}>Нет групп</Text>}
     />
-    
+
   )
 }
 const styles = ScaledStyleSheet.create({

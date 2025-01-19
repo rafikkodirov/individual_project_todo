@@ -1,21 +1,13 @@
-import { View, Text, FlatList, Alert, SafeAreaView } from 'react-native'
+import { View, Text, FlatList, SafeAreaView } from 'react-native'
 import React, { useEffect, useState } from 'react' 
 import UserListCard from '@/components/UserListCard';
-import { Button, GestureResponderEvent, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
-
-import Svg, { Circle, Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
-import { Link, router, useLocalSearchParams } from 'expo-router'
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { ScaledStyleSheet } from './ScaledStyleSheet'; 
-// import LoanCard from '../components/LoanCard';
-import { Platform } from 'react-native'; 
+import { useLocalSearchParams } from 'expo-router' 
 import { getItems } from './services/firestore';
-import styles from "../styles_fin2/styles.android" 
-const Loans = () => {
+import styles from "../styles/styles.android" 
+const UserList = () => {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const card = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
   useEffect(() => {
     const fetchItems = async () => {
       const fetchedItems = await getItems('users');
@@ -45,8 +37,7 @@ const Loans = () => {
               <View  >
                 <UserListCard
                   users={item}
-                />
-                {/* <Text>{item.name}</Text> */}
+                /> 
               </View>
             )} />
         </View>
@@ -57,5 +48,5 @@ const Loans = () => {
  
 
 
-export default Loans
+export default UserList
 

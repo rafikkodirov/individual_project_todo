@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, Platform } from 'react-native';
 import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { db } from './services/firebaseConfig';
 import { useRouter } from 'expo-router';
-import { registerWithEmail } from './services/authUtils';
 import LabeledTextInput, { TextInputType } from '@/Common/LabeledTextInput';
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
   : require('../styles/styles.android').default;
 
 const SignUp: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [naming, setName] = useState('');
+  const [email, setEmail] = useState(''); 
   const [nickname, setNickname] = useState('');
-  const [password, setPassword] = useState('');
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [password, setPassword] = useState(''); 
   const [IsConfirmPassword, setIsConfirmPassword] = useState('');
   const router = useRouter();
 
@@ -49,14 +46,8 @@ const SignUp: React.FC = () => {
       Alert.alert('Ошибка', 'Пароль должен быть не менее 6 символов.');
       return;
     }
-
-
+ 
     try {
-      const userCredentials = await registerWithEmail(email, password);
-
-      // Check if the email is already registered
-      const user = doc(db, `users/${email}`)
-      // проверить есть ли юзер
       const q = query(collection(db, 'users'), where('email', '==', email));
       const querySnapshot = await getDocs(q);
 
@@ -65,13 +56,11 @@ const SignUp: React.FC = () => {
 
         return;
       }
-      const isActive: Boolean = true
-      // Save the new user to Firestore
+      const isActive: Boolean = true 
       const newUser = {
         nickname,
-        isActive// Ideally, hash the password before storing it
+        isActive 
       };
-
       await setDoc(doc(db, `users/${email}`), newUser);
       Alert.alert('Успех', 'Вы успешно зарегистрировались!');
       router.push('/sign-in');
@@ -79,14 +68,8 @@ const SignUp: React.FC = () => {
     } catch (err: any) {
       setError(err.message);
     }
-
-
-
-
   };
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
-  };
+ 
   return (
     <View style={styles.containerSignUp}>
       {error ? <Text style={styles.error}>{error}</Text> : null}

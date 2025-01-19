@@ -1,43 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, ScrollView, Platform, Switch, TouchableOpacity, FlatList } from 'react-native';
-import {  collection, Timestamp } from 'firebase/firestore';
+import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, Platform } from 'react-native';
+import { Timestamp } from 'firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { db } from './services/firebaseConfig';
-import groups from './(tabs)/groups';
 import { getItems } from './services/firestore';
 import GroupSelector from './GroupSelector';
 import { router, useLocalSearchParams } from 'expo-router';
-import { FSUserInfo, useDataContext } from '@/providers/DataProvider';
-import { AsyncStore } from '@/stores/global.store';
-// import {v4 as uuidv4} from 'uuid';
-// Пример использования
-interface AddTaskScreenProps {
-  userId: string; // Идентификатор текущего пользователя
-}
-const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
-  // Состояния для формы 
+import { useDataContext } from '@/providers/DataProvider';
+const styles = Platform.OS === 'android'
+  ? require('../styles/styles.android').default
+  : require('../styles/styles.android').default; 
+const AddTaskScreen: React.FC= () => { 
   const [groupId, setGroupId] = useState('');
   const [owner, setOwner] = useState('');
-  const [groupName, setGroupName] = useState('');
-  // const [isPending, setIsPending] = useState('');
+  const [groupName, setGroupName] = useState(''); 
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
-  const [description, setDescription] = useState('');
-  const [showStartPicker, setShowStartPicker] = useState(false);
-  const [showEndPicker, setShowEndPicker] = useState(false);
+  const [description, setDescription] = useState(''); 
   const [date, setDate] = useState(new Date());
-  const [dateEnd, setDateEnd] = useState(new Date());
-
+  const [dateEnd, setDateEnd] = useState(new Date()); 
   const [searchQuery, setSearchQuery] = useState('');
   const [groups, setGroups] = useState<any[]>([]);
-  const [filteredGroups, setFilteredGroups] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
+  const [filteredGroups, setFilteredGroups] = useState<any[]>([]); 
   const [show, setShow] = useState(false);
-  const [showEnd, setShowEnd] = useState(false);
-  const [nickname, setNickname] = useState('');
+  const [showEnd, setShowEnd] = useState(false); 
   const [isGroupSelectorVisible, setGroupSelectorVisible] = useState(false);
-  const params = useLocalSearchParams() 
+  const params = useLocalSearchParams()
   useEffect(() => {
     if (params.groupId && params.groupName) {
       const _groupName = Array.isArray(params.groupName) ? params.groupName[0] : params.groupName;
@@ -46,26 +33,24 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
       setGroupName(_groupName);
       setSearchQuery(_groupName);
     }
-  }, [params.groupId, groups]); 
-  const { addTask , userData } = useDataContext(); 
- 
+  }, [params.groupId, groups]);
+  const { addTask, userData } = useDataContext();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const fetchedGroups: any[] = await getItems('groups');
         setGroups(fetchedGroups);
-        setFilteredGroups(fetchedGroups);
-        // Найти nickname текущего пользователя
-
+        setFilteredGroups(fetchedGroups); 
       } catch (error) {
         console.error('Ошибка загрузки данных:', error);
       }
     };
 
     fetchData();
-  }, [userId]);
+  }, []);
   const onChange = (event: any, selectedDate?: Date) => {
-    setShow(false); // Закрыть пикер после выбора
+    setShow(false); 
     if (selectedDate) setDate(selectedDate);
   };
 
@@ -73,69 +58,44 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
     setShow(true);
   };
   const onChangeEnd = (event: any, selectedDate?: Date) => {
-    setShowEnd(false); // Закрыть пикер после выбора
+    setShowEnd(false); 
     if (selectedDate) setDateEnd(selectedDate);
   };
-
   const showDatePickerEnd = () => {
     setShowEnd(true);
-  };
-  const selectGroup = (id: string, name: string) => {
-    setGroupId(id);
-    setGroupName(name);
-    setSearchQuery(name);
-  };
+  }; 
   const handleGroupSelect = (id: string, name: string) => {
     setGroupId(id);
     setGroupName(name);
   };
-  // const formatDate = (date: Date) => {
-  //   const year = date.getFullYear();
-  //   const month = String(date.getMonth() + 1).padStart(2, '0'); // Добавляем ведущий 0
-  //   const day = String(date.getDate()).padStart(2, '0'); // Добавляем ведущий 0
-  //   return `${year}-${month}-${day}`;
-  // };
-  const formatTimeToHHMM = (date: Date) => {
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${hours}:${minutes}`;
-  };
   const formatDateToDDMMYYYY = (date: Date) => {
     const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
+    const month = String(date.getMonth() + 1).padStart(2, '0');  
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
-  // Функция добавления задачи в Firebase
-  const addTaskFunc = async () => {
-    
-    console.log("Pressed")
+  const addTaskFunc = async () => { 
     if (!description || !startTime || !endTime || !groupName) {
       alert('Пожалуйста, заполните все поля!');
       return;
-    }
- 
-    
-    console.log("Pressed2")
-    const newTask = { 
-      // startTime: startTime.toISOString(),
-      // endTime: endTime.toISOString(),
+    } 
+    const newTask = {
       startDate: Timestamp.now(),
       endDate: Timestamp.fromDate(new Date()),
       groupId,
-      groupName,  
+      ownerId: userData.email,
+      ownerName: userData.nickname,
+      groupName,
       description,
     };
 
-    try { 
-      await addTask(newTask); 
-      // router.back()
+    try {
+      await addTask(newTask);
+      router.back()
       alert('Задача успешно добавлена!');
-      // setTitle('');
       setGroupId('');
       setGroupName('');
       setOwner('');
-      // setIsPending(false);
       setStartTime(new Date());
       setEndTime(new Date());
       setDescription('');
@@ -145,128 +105,44 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({ userId }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.scrollContainer}>
-
-
-        {/* Поле для Title */}
-        <Text style={styles.header}>Название задачи:</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f9f9f9' }}>
+      <View style={{ padding: 16 }}>
+        <Text style={styles.header}>Название задачи</Text>
         <TextInput
-          style={styles.input}
+          style={{ ...styles.input, height: 40, }}
           placeholder="Введите название задачи"
           value={description}
           onChangeText={setDescription}
         />
+        <View style={{ padding: 6 }}>
         <Text style={styles.header}>Выбранная группа: {groupName || 'Не выбрана'}</Text>
         <Button title="Выбрать группу" onPress={() => setGroupSelectorVisible(true)} />
 
-        <GroupSelector
-          groups={groups}
-          visible={isGroupSelectorVisible}
-          onClose={() => setGroupSelectorVisible(false)}
-          onSelectGroup={handleGroupSelect}
-        />
+        <GroupSelector groups={groups} visible={isGroupSelectorVisible} onClose={() => setGroupSelectorVisible(false)} onSelectGroup={handleGroupSelect} />
+        </View>
+        <View style={{ padding: 6 }}>
+          <Text style={styles.header}>Время начала: {date ? formatDateToDDMMYYYY(date) : 'Не выбрано'}</Text>
+          <Button title="Выбрать дату" onPress={showDatePicker} />
+          {show && Platform.OS === 'android' && (
+            <DateTimePicker value={date} mode="date" display="default" onChange={onChange}/>
+          )}
+        </View>
 
+        <View style={{ padding: 6 }}>
+          <Text style={styles.header}>Время начала: {dateEnd ? formatDateToDDMMYYYY(dateEnd) : 'Не выбрано'}</Text>
+          <Button title="Выбрать дату" onPress={showDatePickerEnd} />
+          {showEnd && Platform.OS === 'android' && (
+            <DateTimePicker value={dateEnd} mode="date" display="default" onChange={onChangeEnd}/>
+          )}
+        </View>
 
-
-        {/* DateTimePicker для StartTime */}
-        <Text style={styles.header}>Время начала:</Text>
-        <Button title="Выбрать дату" onPress={showDatePicker} />
-
-        {show && Platform.OS === 'android' && (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display="default"
-            onChange={onChange}
-          />
-        )}
-        <Text style={styles.smallThanHeader}>
-          {`Выбранная дата: ${formatDateToDDMMYYYY(date)}`}
-        </Text>
-
-
-        {/* DateTimePicker для EndTime */}
-        <Text style={styles.header}>Время окончания:</Text>
-        <Button title="Выбрать дату" onPress={showDatePickerEnd} />
-
-        {showEnd && Platform.OS === 'android' && (
-          <DateTimePicker
-            value={dateEnd}
-            mode="date"
-            display="default"
-            onChange={onChangeEnd}
-          />
-        )}
-        <Text style={styles.smallThanHeader}>
-          {`Выбранная дата: ${formatDateToDDMMYYYY(dateEnd)}`}
-        </Text>
-        {/* Поле для Category */}
-
-
-        {/* Кнопка для отправки */}
-        <View style={styles.addTask}>
+        <View style={{ marginTop: 10 }}>
           <Button title="Добавить задачу" onPress={addTaskFunc} color="#007bff" />
-          {/* console.log() */}
-          
+
         </View>
       </View>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  addTask: {
-    marginTop: 10,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#f9f9f9',
-  },
-  scrollContainer: {
-    padding: 16,
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-
-  },
-  smallThanHeader: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: "#ffe033",
-    textAlign: 'center',
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: '#333',
-  },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 16,
-    paddingHorizontal: 8,
-    backgroundColor: '#fff',
-  },
-  groupItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  groupText: {
-    fontSize: 16,
-  },
-});
 
 export default AddTaskScreen;

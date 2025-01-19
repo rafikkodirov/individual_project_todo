@@ -22,6 +22,8 @@ interface DataContextType {
   refreshData: (entityType: DataType) => Promise<void>;
   filteredTasks: (groupId: string) => any[]; 
   addTask: (newTask: any) => Promise<void>;
+  addGroups: (newTask: any) => Promise<void>;
+  
   // updateTask: (task: any) => Promise<void>;
   // deleteTask: (task: any) => Promise<void>;
   refreshRequest: () => void;
@@ -167,6 +169,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error("Ошибка при добавлении задачи:", error);
     }
   };
+  const addGroups = async (newGroup: any) => {
+    try { 
+      await addElementToTheFirebase("groups", newGroup);
+    } catch (error) {
+      console.error("Ошибка при добавлении задачи:", error);
+    }
+  };
 
   //   useEffect(() => {
   //     if (userData && userData.id) {
@@ -304,6 +313,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         userDoc, 
         addTask,
         userData,
+        addGroups,
         // updateTask,
         // deleteTask,
         refreshRequest,

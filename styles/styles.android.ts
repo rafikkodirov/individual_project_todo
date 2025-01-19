@@ -1,8 +1,8 @@
 import { ScaledStyleSheet } from '@/app/ScaledStyleSheet';
- 
+
 
 export default ScaledStyleSheet.create({
-  applyButtonDetails: {   
+  applyButtonDetails: {
     marginHorizontal: 16,
     backgroundColor: "#007AFF",
     padding: 10,
@@ -11,17 +11,17 @@ export default ScaledStyleSheet.create({
   },
   applyTextDetails: {
     fontSize: 22,
-    color: "#fff", 
+    color: "#fff",
   },
   containerDetails: {
     flex: 1,
     // flexGrow: 1,
     paddingTop: 16,
     // backgroundColor: 'red', // Фон для контента
-  }, 
+  },
   backButton: {
     padding: 16
-  },   
+  },
   PageTitle: {
     fontSize: 15,
     marginBottom: 5,
@@ -30,27 +30,27 @@ export default ScaledStyleSheet.create({
   titleDetails: {
     // padding:8,
     fontSize: 11,
-    
-    marginTop:3,
-    fontWeight: "bold", 
-  },  
+
+    marginTop: 3,
+    fontWeight: "bold",
+  },
   TextTitleDetails: {
     flexGrow: 1,
     fontSize: 24,
     fontWeight: "bold",
-    textAlign: "center", 
+    textAlign: "center",
     textAlignVertical: "center", // Vertically align the text (Android only)
     marginRight: 60,
     includeFontPadding: false, // Optional: Remove extra padding for better centering
-  },  
+  },
 
-  
+
   scrolledContainerDetails: {
     display: "flex",
     flexGrow: 1,
     overflow: "scroll",
-    maxHeight: 200,    
-  },  
+    maxHeight: 200,
+  },
 
   // applyButtonDetails: {   
   //   marginHorizontal: 16,
@@ -71,40 +71,34 @@ export default ScaledStyleSheet.create({
     paddingHorizontal: 4,
     paddingBottom: 24,
     backgroundColor: '#E0E0E0', // Оставляем нейтральный фон для Android
-  },
-  // container: {
-  //   flex: 1, // Ensures it fills the entire screen 
-  //   paddingTop: 10, // Padding for top and bottom edges 
-  // },
-
-  // Title Text Style
+  }, 
   TextTitle: {
     fontSize: 24, // Adjust for a prominent title size
     fontWeight: 'bold', // Make the title bold
     color: '#333333', // Dark text color
     marginBottom: 10, // Add spacing after the title
     textAlign: 'center', // Center the title horizontally
-  }, 
+  },
   topSection: {
     flexDirection: "row",
-    alignItems: "stretch", 
+    alignItems: "stretch",
   },
-  rowStyleContainer: { 
+  rowStyleContainer: {
     flex: 1, // Ensures the rowStyleContainer takes up remaining space
     alignItems: "stretch",
-  }, 
-  
+  },
+
   logo: {
     width: 45,
-    height: 45, 
-  }, 
+    height: 45,
+  },
   middleSection: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginVertical: 10,
   },
-  amount: { 
+  amount: {
     fontSize: 14,
     fontWeight: "bold",
     marginLeft: "auto",
@@ -132,8 +126,8 @@ export default ScaledStyleSheet.create({
     padding: 8,
     borderRadius: 5,
     width: "50%",
-    
-    marginStart:"-1%",
+
+    marginStart: "-1%",
     alignItems: "center",
   },
   detailsText: {
@@ -144,19 +138,19 @@ export default ScaledStyleSheet.create({
     backgroundColor: "#007AFF",
     padding: 8,
     borderRadius: 5,
-    marginLeft:"2%",
+    marginLeft: "2%",
     width: "50%",
     alignItems: "center",
-  }, 
+  },
   // Body Text Style
   TextBody: {
-    fontSize: 14.5, 
-    marginBottom:16 ,
-    fontWeight: 'normal', 
+    fontSize: 14.5,
+    marginBottom: 16,
+    fontWeight: 'normal',
     color: '#666666',
-    lineHeight: 16, 
-    textAlign: 'center',  
-    marginHorizontal: 16, 
+    lineHeight: 16,
+    textAlign: 'center',
+    marginHorizontal: 16,
   },
 
   // Free Height Filler
@@ -166,21 +160,15 @@ export default ScaledStyleSheet.create({
 
   listContent: {
     paddingBottom: 16, // Add padding to ensure the last item isn't cut off
-  },
-  // container: {
-  //   flex: 1,
-  //   // flexGrow: 1,
-  //   paddingTop: 16,
-  //   // backgroundColor: 'red', // Фон для контента
-  // },
-  backRowStyle: { 
+  }, 
+  backRowStyle: {
     flexDirection: "row",
-  },  
+  },
   card: {
     backgroundColor: "#fff",
     borderRadius: 16,
-    padding: 18,
-    marginHorizontal: 16,
+    padding: 10,
+    marginHorizontal: 8,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -189,12 +177,12 @@ export default ScaledStyleSheet.create({
     marginBottom: 16,
   },
 
-  
+
   scrolledContainer: {
     display: "flex",
     flexGrow: 1,
     overflow: "scroll",
-    maxHeight: 200,    
+    maxHeight: 200,
   },
   /// Footer
   footerContainer: {
@@ -206,7 +194,7 @@ export default ScaledStyleSheet.create({
     paddingBottom: 16
   },
 
-  applyButtonFirstFrame: {   
+  applyButtonFirstFrame: {
     marginHorizontal: 16,
     backgroundColor: "#007AFF",
     padding: 10,
@@ -215,9 +203,9 @@ export default ScaledStyleSheet.create({
   },
   applyText: {
     fontSize: 16,
-    color: "#fff", 
+    color: "#fff",
   },
- 
+
   rowStyle: {
     justifyContent: "space-between", // Distributes space between elements
     marginBottom: 5, // Adds some vertical spacing between rows
@@ -236,7 +224,7 @@ export default ScaledStyleSheet.create({
     // backgroundColor:"plum"
     // textAlign:"center",
   },
-  
+
   bannerCard: {
     borderRadius: 20, // Меньший радиус углов для Android
     margin: 16,
@@ -293,9 +281,13 @@ export default ScaledStyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
+  content:{
+    justifyContent: 'center',
+    alignItems: 'center',  
+  },
   container: {
     flex: 1,
-    alignItems: 'center',
+    // alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: '#E0E0E0', // Серый фон для Android
   },
@@ -335,22 +327,69 @@ export default ScaledStyleSheet.create({
     textAlign: "center",
     width: 300,
     borderRadius: 15, // Меньший радиус для Android
+  },
+
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  scrollContainer: {
+    padding: 16,
+  },
+  groupItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  groupText: {
+    fontSize: 16,
   }, 
+   switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  smallThanHeader: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: "#ffe033",
+    textAlign: 'center',
+  },
   containerSignIn: {
     flex: 1,
-    justifyContent: 'center', 
+    justifyContent: 'center',
     padding: 20,
     backgroundColor: '#fff',
   },
   buttonDown: {
     width: '100%',
-    
+
     height: 50,
     marginTop: "4%",
     backgroundColor: '#007bff',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    width: "90%",
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   error: { color: "red", marginBottom: 10 },
 });

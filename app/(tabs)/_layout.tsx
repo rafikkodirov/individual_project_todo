@@ -1,15 +1,12 @@
-import { Image, View, StyleSheet, Text, Button, TouchableOpacity } from 'react-native'
-import React, { useEffect } from 'react'
-import { Tabs, Redirect, useRouter } from 'expo-router'
+import { Image, View, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Tabs, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons';
-// import Tab1 from '../assets/icons/Tab1. 
-// import react_logo from '../../assets/react_logo.png'
+import Dialog from '@/components/DialogComponent ';
 import people from '../../assets/images/people.png'
 import edit from '../../assets/images/edit.png'
 import settings from '../../assets/images/settings.png'
-import cards_tab from '../../assets/icons/cards_tab.png'
-import Unknown from '../../assets/icons/Unknown.png'
-import { ScaledStyleSheet } from '../ScaledStyleSheet'  
+import { ScaledStyleSheet } from '../ScaledStyleSheet'
 import { AppUser, useAuth } from '@/providers/authProvider';
 import { SecureStore } from '@/stores/global.store';
 import { useLoading } from '@/providers/LoadingProvider';
@@ -20,7 +17,7 @@ interface TabIcon {
   icon: any,
   focused: boolean;
 }
-const TabIcon: React.FC<TabIcon> = ({ icon,  focused, color, name }) => {
+const TabIcon: React.FC<TabIcon> = ({ icon, focused, color, name }) => {
   return (
     <View>
       <Image
@@ -66,10 +63,15 @@ const styles = ScaledStyleSheet.create({
 const TabsLayout = () => {
   const router = useRouter(); // Используем useRouter для навигации
   const { setLoading } = useLoading();
-  const { user, loading, reLogin } = useAuth(); 
-  
+  const { user, loading, reLogin } = useAuth();
+  const [isConfirmationDialogVisible, setIsConfirmationDialogVisible] = useState<boolean>(false);
+
+
+  const handleItemDeletePress = async (element: any) => {
+    setIsConfirmationDialogVisible(true)
+  };
   useEffect((): void => {
-    if(reLogin === true)
+    if (reLogin === true)
       router.replace("/sign-in");
   }, [reLogin])
 
@@ -77,11 +79,11 @@ const TabsLayout = () => {
     if (!loading && !user) {
       console.log(user, "TabsLayout");
       const savedUser = SecureStore.get<AppUser>("USER");
-      if (savedUser === null) 
+      if (savedUser === null)
         router.replace("/sign-in");
     }
   }, [user, loading]);
-   
+
   const handleGroups = () => {
     router.push({
       pathname: '/AddGroups', // Путь для экрана с добавлением группы
@@ -97,13 +99,13 @@ const TabsLayout = () => {
   return (
     <>
       <Tabs>
-        
+
         <Tabs.Screen name="activeTask"
           options={{
-            title: 'Активные Задания', 
-            tabBarLabel:"Задания",
+            title: 'Активные Задания',
+            tabBarLabel: "Задания",
             tabBarIcon: ({ color, focused }) => {
-              return <TabIcon 
+              return <TabIcon
                 icon={edit}
                 color={color}
                 name="Задания"
@@ -111,30 +113,36 @@ const TabsLayout = () => {
               />
             }
           }} />
-          <Tabs.Screen name="groups"
+        <Tabs.Screen name="groups"
           options={{
-            title: 'Группы', 
+            title: 'Группы',
             headerRight: () => (
               <View style={styles.headerButtonsContainer}>
-              {/* Первая кнопка */}
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handleTasks}
-              > 
-              <Ionicons name="checkbox-outline" size={24}  />
-              </TouchableOpacity>
+                {/* Первая кнопка */}
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleTasks}
+                >
+                  <Ionicons name="checkbox-outline" size={24} />
+                </TouchableOpacity>
 
-              {/* Вторая кнопка */}
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handleGroups}
-              >
-              <Ionicons name="people" size={24} color="black" />
-              </TouchableOpacity>
-            </View>),
-            tabBarLabel:"Группы", 
+                {/* Вторая кнопка */}
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleGroups}
+
+                  // onPress={() => setIsConfirmationDialogVisible(true)}
+                >
+
+                  <Ionicons name="people" size={24} color="black" />
+                  <Dialog isVisible={isConfirmationDialogVisible} onClose={() => setIsConfirmationDialogVisible(false)} dialogWidth={100} scrollable={false} children={undefined}>
+                    {/* <ConfirmationDialog setIsConfirmationDialogVisible={setIsConfirmationDialogVisible} itemDeleteAction={itemDeleteAction} requestText='Вы уверены, что хотите удалить этот оффер?' /> */}
+                  </Dialog>
+                </TouchableOpacity>
+              </View>),
+            tabBarLabel: "Группы",
             tabBarIcon: ({ color, focused }) => {
-              return <TabIcon 
+              return <TabIcon
                 icon={people}
                 color={color}
                 name="Группы"
@@ -142,12 +150,12 @@ const TabsLayout = () => {
               />
             }
           }} />
-           <Tabs.Screen name="settings"
+        <Tabs.Screen name="settings"
           options={{
-            title: 'Настройки', 
-            tabBarLabel:"Настройки", 
+            title: 'Настройки',
+            tabBarLabel: "Настройки",
             tabBarIcon: ({ color, focused }) => {
-              return <TabIcon 
+              return <TabIcon
                 icon={settings}
                 color={color}
                 name="Настройки"
@@ -158,6 +166,8 @@ const TabsLayout = () => {
 
 
       </Tabs>
+
+
     </>
   )
 }

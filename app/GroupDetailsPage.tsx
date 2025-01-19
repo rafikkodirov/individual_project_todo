@@ -1,20 +1,11 @@
-import { View, Text, Button, Animated, FlatList, RefreshControl, TouchableOpacity } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import { View, Text, FlatList, RefreshControl, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import TaskCard from '@/components/TaskCard';
 import { ScaledStyleSheet } from './ScaledStyleSheet';
 import { useLocalSearchParams, useRouter } from 'expo-router'; 
 import { useDataContext, DataType } from '@/providers/DataProvider';
-
-interface GroupDetailsPageProps {
-  element: any,
-}
-
-const GroupDetailsPage: React.FC = () => {
-  const route = useRouter();
-  const params = useLocalSearchParams();
-
-  const [userData, setUserData] = useState<any>(null);
-  const [whereCondition, setWhereCondition] = useState<any[]>([]);    
+const GroupDetailsPage: React.FC = () => { 
+  const params = useLocalSearchParams(); 
   const [items, setItems] = useState<any[]>([]);
   const [GroupName, setGroupName] = useState<string>('');
   const [GroupId, setGroupId] = useState<string>('');
@@ -64,20 +55,8 @@ const GroupDetailsPage: React.FC = () => {
  
   };
   const handleComplete = async () => {
-    console.log('Задача завершена');
-
-    // const newElement = {
-    //   description:"Task1",
-    //   startDate: new Date(),
-    //   endDate: new Date(),
-    //   groupId:"123",
-    //   groupName:"School",
-    //   isCompleted: false,
-    //   isPending: false
-    // }
-    // await addElementToTheFirebase("/tasks", newElement)
-  };
-  // console.log(items, '11111111111')
+    console.log('Задача завершена'); 
+  }; 
 
   return (
     <>
@@ -193,7 +172,8 @@ const styles = ScaledStyleSheet.create({
     flexGrow: 1,
     // backgroundColor: 'green', // Фон для контента
     justifyContent: 'flex-end', // Align items to the bottom of the container 
-    marginBottom: 32,
+    // marginBottom: 16,
+    padding:16,
   },
   applyText: {
     fontSize: 26,

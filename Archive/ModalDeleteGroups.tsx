@@ -9,7 +9,7 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
-import { deleteElementFromFirebase } from './services/firestore'; // Убедитесь, что путь корректен
+import { deleteElementFromFirebase } from '../app/services/firestore'; // Убедитесь, что путь корректен
 
 interface ModalSearchUsersProps {
   isVisible: boolean;
