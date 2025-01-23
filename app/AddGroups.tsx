@@ -8,7 +8,11 @@ const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
   : require('../styles/styles.android').default;
 
-const AddGroupScreen: React.FC = () => {
+  interface AddGroupScreenProps {
+    closeModal: () => void;
+  } 
+
+const AddGroupScreen: React.FC<AddGroupScreenProps> = ({closeModal}) => {
   // Состояния для формы
   const [owner, setOwner] = useState('');
   const [groupName, setGroupName] = useState('');
@@ -59,10 +63,11 @@ const AddGroupScreen: React.FC = () => {
 
     try {
       await addGroups(newGroup);
-      router.back() 
-      setGroupName('');
-      setOwner('');
-      setColor('#ffcf48')
+      closeModal()
+      // router.back() 
+      // setGroupName('');
+      // setOwner('');
+      // setColor('#ffcf48')
     } catch (error) {
       console.error('Ошибка при добавлении группы:', error);
     }
