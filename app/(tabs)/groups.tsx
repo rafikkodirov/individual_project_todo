@@ -10,7 +10,7 @@ const styles = Platform.OS === 'android'
 const Groups: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const { isLoading, setLoading } = useLoading()
-  const { cachedGroups, refreshData } = useDataContext();
+  const { cachedGroups } = useDataContext();
   useEffect(() => {
     setLoading(false)
   }, [cachedGroups]);
@@ -31,11 +31,11 @@ const Groups: React.FC = () => {
     })
   };
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await refreshData(DataType.Groups);
-    setRefreshing(false);
-  };
+  // const onRefresh = async () => {
+  //   setRefreshing(true);
+  //   await refreshData(DataType.Groups);
+  //   setRefreshing(false);
+  // };
   return (
 
     <FlatList
@@ -52,9 +52,9 @@ const Groups: React.FC = () => {
         </View>
       )
       }
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
+      // refreshControl={
+      //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      // }
       ListEmptyComponent={<Text style={styles.header}>Нет групп</Text>}
     /> 
   )

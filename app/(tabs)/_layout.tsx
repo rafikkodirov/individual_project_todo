@@ -85,6 +85,16 @@ const TabsLayout = () => {
         <Tabs.Screen name="activeTask"
           options={{
             title: 'Активные Задания',
+            headerRight: () => (
+              <View style={styles.headerButtonsContainer}> 
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleTasks}
+                >
+                  <Ionicons name="add" size={24} />
+                </TouchableOpacity>
+ 
+              </View>),
             tabBarLabel: "Задания",
             tabBarIcon: ({ color, focused }) => {
               return <TabIcon
@@ -102,21 +112,14 @@ const TabsLayout = () => {
               <View style={styles.headerButtonsContainer}> 
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={handleTasks}
-                >
-                  <Ionicons name="checkbox-outline" size={24} />
-                </TouchableOpacity>
- 
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => setIsConfirmationDialogVisible(true)}
-                >
+                  onPress={() => setIsConfirmationDialogVisible(true)} >
 
-                  <Ionicons name="people" size={24} color="black" />
+                  <Ionicons name="add" size={24} color="black" />
 
                   <Dialog isVisible={isConfirmationDialogVisible} onClose={() => setIsConfirmationDialogVisible(false)} dialogWidth={'100%'} scrollable={false}>
                     <AddGroupScreen closeModal={() => setIsConfirmationDialogVisible(false)}/>
                   </Dialog>
+                  
                 </TouchableOpacity>
               </View>),
             tabBarLabel: "Группы",
