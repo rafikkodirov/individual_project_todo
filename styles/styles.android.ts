@@ -16,7 +16,7 @@ export default ScaledStyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 4,
     paddingBottom: 24,
-    backgroundColor: '#E0E0E0', // Оставляем нейтральный фон для Android
+    backgroundColor: '#E0E0E0',  
   }, 
   TextTitle: {
     fontSize: 24,  
@@ -28,7 +28,7 @@ export default ScaledStyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 5,
+    marginTop: 30,
   },
   detailsButton: {
     backgroundColor: "#F0F0F0",
@@ -43,6 +43,14 @@ export default ScaledStyleSheet.create({
     fontSize: 16,
     color: "#333",
   },
+  cardContainerGroup: {
+    padding: 24, 
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    margin: 8,
+    backgroundColor: '#fff',
+  },
   cardContainer: {
     padding: 16,
     borderWidth: 1,
@@ -51,12 +59,31 @@ export default ScaledStyleSheet.create({
     margin: 8,
     backgroundColor: '#fff',
   },
+  title: {
+    fontSize: 15,
+    marginVertical: -1,
+    fontWeight: "bold",
+  },
   contentTask: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   }, 
   timeContainer: {
     alignItems: 'flex-end',
+  },
+  circle: {
+    width: 25,                 
+    height: 25,                
+    borderRadius: 25,          
+    position: 'absolute',      
+    top: -20,                  
+    right: 0,                 
+  },
+  timeContainerGroup: {
+    flex: 1,               
+    justifyContent: 'flex-start',  
+    alignItems: 'flex-start',   
+    marginTop: 20,             
   },
   timeText: {
     fontSize: 12,

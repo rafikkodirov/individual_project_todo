@@ -1,9 +1,9 @@
-import { View, Text, FlatList, SafeAreaView } from 'react-native'
+import { View, Text, FlatList, SafeAreaView, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react' 
 import UserListCard from '@/components/UserListCard';
 import { useLocalSearchParams } from 'expo-router' 
 import { getItems } from './services/firestore';
-import styles from "../styles/styles.android" 
+import styles from "../styles/styles.android"  
 const UserList = () => {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,10 +18,8 @@ const UserList = () => {
   }, []);
   return (
     <>
-      <SafeAreaView style={styles.container}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.TextTitle}>Пользователи</Text>
-
+      <SafeAreaView style={styles.container}> 
+        <View style={{ flex: 1 ,padding:20 }}> 
           <FlatList
             style={{flexGrow: 1}}
             contentContainerStyle={{paddingBottom: 16, }}
@@ -34,7 +32,7 @@ const UserList = () => {
                 /> 
               </View>
             )} />
-        </View>
+        </View> 
       </SafeAreaView>
     </>
   );

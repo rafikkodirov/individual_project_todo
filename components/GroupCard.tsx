@@ -8,8 +8,8 @@ import { Platform } from 'react-native';
 
 import dayjs from "dayjs"
 const styles = Platform.OS === 'android' 
-  ? require('../styles_fin2/styles.android').default 
-  : require('../styles_fin2/styles.android').default; 
+  ? require('../styles/styles.android').default 
+  : require('../styles/styles.android').default; 
 
 interface GroupsProps {
   groups: any;  // URL or image source 
@@ -21,11 +21,13 @@ const GroupCard: React.FC<GroupsProps> = ({
   onDetailsPress, 
 }) => { 
   return (
-    <View style={styles.cardContainer}>
+    <View style={styles.cardContainerGroup}>
+      {/* cardContainerGroup */}
       {/* Заголовок и даты */}
-      <View style={styles.content}>
+      <View style={{flexDirection: 'row'}}>
+        
           <Text style={styles.title}>{groups.groupName}</Text> 
-        <View style={styles.timeContainer}>
+        <View style={styles.timeContainerGroup}>
           <View
             style={[styles.circle, { backgroundColor: groups.color }]} // Используем динамический цвет
           />

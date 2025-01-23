@@ -91,8 +91,7 @@ const AddTaskScreen: React.FC= () => {
 
     try {
       await addTask(newTask);
-      router.back()
-      alert('Задача успешно добавлена!');
+      router.back() 
       setGroupId('');
       setGroupName('');
       setOwner('');

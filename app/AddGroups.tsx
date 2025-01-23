@@ -59,8 +59,7 @@ const AddGroupScreen: React.FC = () => {
 
     try {
       await addGroups(newGroup);
-      router.back()
-      alert('Группа успешно добавлена!');
+      router.back() 
       setGroupName('');
       setOwner('');
       setColor('#ffcf48')
