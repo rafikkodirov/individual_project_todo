@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Modal, Button, Platform } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Modal, Button, Platform, TextInput } from 'react-native';
 
 interface GroupSelectorProps {
   groups: any[];
@@ -19,13 +19,23 @@ const GroupSelector: React.FC<GroupSelectorProps> = ({ groups, visible, onClose,
     const filtered = groups.filter(group => group.groupName.toLowerCase().includes(query.toLowerCase()));
     setFilteredGroups(filtered);
   };
-
+  const showSearch = groups.length > 7
+const ITEM_HEIGHT = 50
   const displayedGroups = searchQuery.trim() ? filteredGroups : groups;
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-
+        {showSearch && (
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Поиск группы..."
+              value={searchQuery}
+              onChangeText={handleSearch}
+            />
+          )}
+        <View style={{ maxHeight: ITEM_HEIGHT * 5 }}>
+          
           <FlatList
             data={displayedGroups}
             keyExtractor={item => item.key}
@@ -42,6 +52,7 @@ const GroupSelector: React.FC<GroupSelectorProps> = ({ groups, visible, onClose,
             )}
           />
           <Button title="Закрыть" onPress={onClose} />
+        </View>
         </View>
       </View>
     </Modal>

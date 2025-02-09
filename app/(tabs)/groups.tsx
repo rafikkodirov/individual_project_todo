@@ -7,8 +7,7 @@ import { useLoading } from '@/providers/LoadingProvider';
 const styles = Platform.OS === 'android'
   ? require('../../styles/styles.android').default
   : require('../../styles/styles.android').default;
-const Groups: React.FC = () => {
-  const [refreshing, setRefreshing] = useState(false);
+const Groups: React.FC = () => { 
   const { isLoading, setLoading } = useLoading()
   const { cachedGroups } = useDataContext();
   useEffect(() => {
@@ -30,12 +29,7 @@ const Groups: React.FC = () => {
       }
     })
   };
-
-  // const onRefresh = async () => {
-  //   setRefreshing(true);
-  //   await refreshData(DataType.Groups);
-  //   setRefreshing(false);
-  // };
+ 
   return (
 
     <FlatList

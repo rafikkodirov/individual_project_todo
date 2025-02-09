@@ -10,8 +10,7 @@ const GroupDetailsPage: React.FC = () => {
   const params = useLocalSearchParams(); 
   const [items, setItems] = useState<any[]>([]);
   const [GroupName, setGroupName] = useState<string>('');
-  const [GroupId, setGroupId] = useState<string>(''); 
-  const [refreshing, setRefreshing] = useState(false); 
+  const [GroupId, setGroupId] = useState<string>('');  
   const {  filteredTasks } = useDataContext(); 
 
   useEffect(() => {
@@ -36,12 +35,14 @@ const GroupDetailsPage: React.FC = () => {
   const handleTask = (items: any[]) => {
 
     router.push({
-      pathname: '/AddTask',
+      pathname: '/add-task',
       params: {
         groupName: GroupName,
         groupId: GroupId
       }
     });
+    
+    console.log('Задача завершена'); 
   };
   const handleComplete = async () => {
     console.log('Задача завершена'); 

@@ -188,32 +188,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       );
       return () => unsubscribe();
     }
-  }, [user]);
-  // const fetchGroupData = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const groups = await getFilteredItemsV2("groups", []);
-  //     setCachedGroups(groups);
-  //   } catch (error) {
-  //     console.error("Ошибка при загрузке данных:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  // const refreshData = async (entityType: DataType) => {
-  //   switch (entityType) {
-  //     case DataType.Users:
-  //       break;
-  //     case DataType.Tasks:
-  //       break;
-  //     case DataType.Groups:
-  //       await fetchGroupData();
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
+  }, [user]); 
   const filteredTasks = (groupId: string): any[] => {
     try {
       if (cachedTasks.length > 0) {

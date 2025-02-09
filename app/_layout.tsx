@@ -6,9 +6,7 @@ import { DataProvider } from '@/providers/DataProvider';
 import { LoadingProvider } from '@/providers/LoadingProvider';
 import { AuthProvider } from '@/providers/authProvider';
 import { Ionicons } from '@expo/vector-icons';
-import { View, TouchableOpacity } from 'react-native';
-import AddGroupScreen from './AddGroups';
-import { ScaledStyleSheet } from '@/Common/ScaledStyleSheet';
+import { TouchableOpacity } from 'react-native';
 SplashScreen.preventAutoHideAsync();
 type RouteParams = {
   name: string;
@@ -31,7 +29,7 @@ export default function RootLayout() {
 
   const handleTasks = () => {
     router.push({
-      pathname: '/AddTask',
+      pathname: '/add-task',
     });
   };
 
@@ -51,14 +49,14 @@ export default function RootLayout() {
                 title: (route.params as RouteParams)?.name || 'Задания группы', // Заголовок
                 headerRight: () => (
                   <TouchableOpacity
-                    style={{backgroundColor: 'red', width: 40, height: 40}}
+                    style={{  width: 30, height: 20}}
                     onPress={handleTasks}>
                     <Ionicons name="add" size={24} />
                   </TouchableOpacity>
                 ),
               })}
-            />
-            <Stack.Screen name="AddTask" options={{ headerShown: true, title: "Добавление задачи", headerBackTitle: "Назад" }} />
+            /> 
+            <Stack.Screen name="add-task" options={{ headerShown: true, title: "Добавление задачи", headerBackTitle: "Назад" }} />
             <Stack.Screen name="AddGroups" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
             <Stack.Screen name="sign-up" options={{ headerShown: true, title: "Регистрация", headerBackVisible: false, headerTitleAlign: 'center' }} />
           </Stack>
@@ -67,25 +65,3 @@ export default function RootLayout() {
     </AuthProvider>
   );
 }
-
-const styles = ScaledStyleSheet.create({
-  icon: {
-    width: 24,
-    height: 24,
-  },
-  text: {
-    fontSize: 12,
-  },
-  headerButtonsContainer: {
-    flexDirection: 'row',
-    marginRight: 10,
-  },
-  button: {
-    marginLeft: 10,
-    padding: 5,
-  },
-  buttonText: {
-    fontSize: 18,
-    color: '#007AFF',
-  },
-});

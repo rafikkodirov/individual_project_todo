@@ -190,6 +190,26 @@ export default ScaledStyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
   },
+  inputDescription: {
+    height: 100,
+    maxHeight: 200,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    backgroundColor: '#fff',
+    textAlignVertical: 'top', // Выравнивание текста сверху
+  },
+  searchInput:{
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 5,
+    backgroundColor: '#fff',
+  },
   buttonInDetails: {
     marginHorizontal: 16,
     paddingVertical: 8,

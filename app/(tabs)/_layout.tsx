@@ -75,7 +75,7 @@ const TabsLayout = () => {
 
   const handleTasks = () => {
     router.push({
-      pathname: '/AddTask',
+      pathname: '/add-task',
     });
   };
   return (
@@ -85,16 +85,7 @@ const TabsLayout = () => {
         <Tabs.Screen name="activeTask"
           options={{
             title: 'Активные Задания',
-            headerRight: () => (
-              <View style={styles.headerButtonsContainer}> 
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={handleTasks}
-                >
-                  <Ionicons name="add" size={24} />
-                </TouchableOpacity>
- 
-              </View>),
+           
             tabBarLabel: "Задания",
             tabBarIcon: ({ color, focused }) => {
               return <TabIcon

@@ -15,9 +15,7 @@ interface AddGroupScreenProps {
   closeModal: () => void;
 }
 
-const AddGroupScreen: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
-  // Состояния для формы
-  const [owner, setOwner] = useState('');
+const AddGroupScreen: React.FC<AddGroupScreenProps> = ({ closeModal }) => { 
   const [groupName, setGroupName] = useState('');
   const [groups, setGroups] = useState<any[]>([]);
   const [nickname, setNickname] = useState('');
@@ -25,33 +23,9 @@ const AddGroupScreen: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
   const { isLoading, setLoading } = useLoading()
 
   const { addGroups, userData } = useDataContext();
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        AsyncStore.get<FSUserInfo>("USER_DATA").then((savedUser) => {
-          setNickname(savedUser?.nickname || '');
-        })
+ 
 
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-    fetchUserData();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedGroups: any[] = await getItems('groups');
-        setGroups(fetchedGroups);
-
-      } catch (error) {
-        console.error('Ошибка загрузки данных:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  
   const addGroup = debounce(async () => {
     if (!groupName) {
       alert('Пожалуйста, заполните все поля!');
@@ -60,7 +34,7 @@ const AddGroupScreen: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
     const newGroup = {
       groupName,
       color,
-      owner: nickname,
+      owner: userData.nickname,
     };
 
     try {

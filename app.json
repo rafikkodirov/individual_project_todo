@@ -7,11 +7,11 @@
     "icon": "./assets/images/Group_full_edit.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    // "splash": {
-    //   "image": "./assets/images/Group_full_edit.png",
-    //   "resizeMode": "contain",
-    //   "backgroundColor": "#ffffff"
-    // },
+    "splash": {
+      "image": "./assets/images/Group_full_edit.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "ios": {
       "supportsTablet": true
     },

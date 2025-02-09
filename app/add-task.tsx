@@ -1,21 +1,24 @@
+ 
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, Platform } from 'react-native';
-import { Timestamp } from 'firebase/firestore';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { Timestamp } from 'firebase/firestore'; 
 import { getItems } from './services/firestore';
 import GroupSelector from './GroupSelector';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useDataContext } from '@/providers/DataProvider';
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
   : require('../styles/styles.android').default; 
-const AddTaskScreen: React.FC= () => { 
+const AddTaskS: React.FC= () => { 
   const [groupId, setGroupId] = useState('');
   const [owner, setOwner] = useState('');
   const [groupName, setGroupName] = useState(''); 
+  const [status, setStatus] = useState(''); 
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [description, setDescription] = useState(''); 
+  const [title, setTitle] = useState(''); 
   const [date, setDate] = useState(new Date());
   const [dateEnd, setDateEnd] = useState(new Date()); 
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,6 +26,7 @@ const AddTaskScreen: React.FC= () => {
   const [filteredGroups, setFilteredGroups] = useState<any[]>([]); 
   const [show, setShow] = useState(false);
   const [showEnd, setShowEnd] = useState(false); 
+  const [inputHeight,setInputHeight] = useState(40)
   const [isGroupSelectorVisible, setGroupSelectorVisible] = useState(false);
   const params = useLocalSearchParams()
   useEffect(() => {
@@ -73,20 +77,24 @@ const AddTaskScreen: React.FC= () => {
     const month = String(date.getMonth() + 1).padStart(2, '0');  
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
-  };
+  }; 
   const addTaskFunc = async () => { 
-    if (!description || !startTime || !endTime || !groupName) {
+    if (!title || !description || !startTime || !endTime || !groupName) {
       alert('Пожалуйста, заполните все поля!');
       return;
     } 
     const newTask = {
-      startDate: Timestamp.now(),
-      endDate: Timestamp.fromDate(new Date()),
+      startTime: date,
+      endTime: dateEnd,
+      // startDate: Timestamp.fromDate(startTime),
+      // endDate: Timestamp.fromDate(endTime),
       groupId,
+      status: "pending", 
       ownerId: userData.email,
       ownerName: userData.nickname,
       groupName,
       description,
+      title,
     };
 
     try {
@@ -94,10 +102,9 @@ const AddTaskScreen: React.FC= () => {
       router.back() 
       setGroupId('');
       setGroupName('');
-      setOwner('');
-      setStartTime(new Date());
-      setEndTime(new Date());
+      setOwner('');  
       setDescription('');
+      setTitle('');
     } catch (error) {
       console.error('Ошибка при добавлении задачи:', error);
     }
@@ -106,11 +113,20 @@ const AddTaskScreen: React.FC= () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f9f9f9' }}>
       <View style={{ padding: 16 }}>
-        <Text style={styles.header}>Название задачи</Text>
+      <Text style={styles.header}>Название задачи</Text>
         <TextInput
           style={{ ...styles.input, height: 40, }}
           placeholder="Введите название задачи"
+          value={title}
+          onChangeText={setTitle}
+        />
+        <Text style={styles.header}>Описание задачи</Text>
+        <TextInput
+          style={{ ...styles.inputDescription, }}
+          placeholder="Введите описание"
           value={description}
+          multiline={true}  // Многострочный ввод
+          numberOfLines={5} 
           onChangeText={setDescription}
         />
         <View style={{ padding: 6 }}>
@@ -123,7 +139,7 @@ const AddTaskScreen: React.FC= () => {
           <Text style={styles.header}>Время начала: {date ? formatDateToDDMMYYYY(date) : 'Не выбрано'}</Text>
           <Button title="Выбрать дату" onPress={showDatePicker} />
           {show && Platform.OS === 'android' && (
-            <DateTimePicker value={date} mode="date" display="default" onChange={onChange}/>
+            <DateTimePicker value={date} mode="date" display="default" minimumDate={new Date()} onChange={onChange}/>
           )}
         </View>
 
@@ -131,7 +147,7 @@ const AddTaskScreen: React.FC= () => {
           <Text style={styles.header}>Время начала: {dateEnd ? formatDateToDDMMYYYY(dateEnd) : 'Не выбрано'}</Text>
           <Button title="Выбрать дату" onPress={showDatePickerEnd} />
           {showEnd && Platform.OS === 'android' && (
-            <DateTimePicker value={dateEnd} mode="date" display="default" onChange={onChangeEnd}/>
+            <DateTimePicker value={dateEnd} mode="date" display="default" minimumDate={date|| new Date()} onChange={onChangeEnd}/>
           )}
         </View>
 
@@ -139,9 +155,9 @@ const AddTaskScreen: React.FC= () => {
           <Button title="Добавить задачу" onPress={addTaskFunc} color="#007bff" />
 
         </View>
-      </View>
-    </SafeAreaView>
+       </View>
+     </SafeAreaView>
   );
 };
 
-export default AddTaskScreen;
+export default AddTaskS;
