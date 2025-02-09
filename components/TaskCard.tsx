@@ -17,8 +17,7 @@ const TaskCard: React.FC<TaskProps> = ({
   const formatDateTime = (dateString: string) => {
      if (!dateString) return '***'
     return dayjs(dateString).format('DD/MM/YYYY HH:mm');
-  };
-  console.log((task.startTime).toDate(),'dateTome')
+  }; 
 
   return (
     <View style={styles.cardContainer}>
@@ -31,7 +30,7 @@ const TaskCard: React.FC<TaskProps> = ({
         </View>
       </View>
       <View style={styles.bottomSection}>
-        <TouchableOpacity style={styles.buttonTask} onPress={onComplete}>
+        <TouchableOpacity style={styles.buttonTask} onPress={()=>onComplete(task)}>
           <Text style={{
             fontSize: 14, fontWeight: 'bold',
           }}>Завершить</Text>

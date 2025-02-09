@@ -26,7 +26,7 @@ const GroupDetailsPage: React.FC = () => {
  
   useEffect(() => {
     setItems(filteredTasks(GroupId));
-  }, [GroupId]);
+  }, [GroupId,filteredTasks]);
  
 
  
