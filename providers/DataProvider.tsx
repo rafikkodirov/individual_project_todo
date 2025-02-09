@@ -19,10 +19,10 @@ interface DataContextType {
   cachedGroups: any[];
   userDoc: any;
   userData: any,
-  refreshData: (entityType: DataType) => Promise<void>;
-  filteredTasks: (groupId: string) => any[]; 
+  // refreshData: (entityType: DataType) => Promise<void>;
+  filteredTasks: (groupId: string) => any[];
   addTask: (newTask: any) => Promise<void>;
-  addGroups: (newTask: any) => Promise<void>; 
+  addGroups: (newTask: any) => Promise<void>;
   refreshRequest: () => void;
 }
 
@@ -40,12 +40,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   const [cachedTasks, setCachedTasks] = useState<any[]>([]);
 
   const [cachedUsers, setCachedUsers] = useState<any[]>([]);
-  const [cachedGroups, setCachedGroups] = useState<any[]>([]); 
+  const [cachedGroups, setCachedGroups] = useState<any[]>([]);
 
   const [userData, setUserData] = useState<any>(null);
   const [whereConditionTasks, setWhereConditionTasks] = useState<any[]>([]);
   const [whereConditionGroups, setWhereConditionGroups] = useState<any[]>([]);
-  const {setLoading} = useLoading()
+  const { isLoading, setLoading } = useLoading()
 
 
   const { user } = useAuth();
@@ -82,9 +82,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         const data: any[] = [];
         querySnapshot.forEach((doc) => {
           data.push({ key: doc.id, ...doc.data() });
-        }); 
+        });
         onUpdate(data);
-        setLoading(false); 
+        setLoading(false);
       },
       (error: any) => {
         console.error(`Ошибка при подписке на ${collectionPath}:`, error);
@@ -104,12 +104,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         whereConditionTasks,
         setCachedTasks
       );
- 
+
       return () => {
-        unsubscribeTasks(); 
+        unsubscribeTasks();
       };
     }
-  }, [userData, whereConditionTasks]); 
+  }, [userData, whereConditionTasks]);
 
   useEffect(() => {
     if (userData) {
@@ -124,8 +124,20 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
           operator: "==",
           value: userData.id,
         },
-      ]); 
+      ]);
+
+      const unsubscribeTasks = subscribeToCollection(
+        "groups",
+        [],
+        setCachedGroups
+      );
+
+      return () => {
+        unsubscribeTasks();
+      };
     }
+
+
   }, [userData]);
 
   const addElementToTheFirebase = (path: string, element: any) => {
@@ -134,27 +146,30 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   };
   const addTask = async (newTask: any) => {
     try {
+      setLoading(true);
       newTask.ownerId = userData.id;
       newTask.ownerName = userData.nickname;
       await addElementToTheFirebase("tasks", newTask);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Ошибка при добавлении задачи:", error);
     }
   };
   const addGroups = async (newGroup: any) => {
-    try { 
-      await addElementToTheFirebase("groups", newGroup);
+    try {  
+      await addElementToTheFirebase("groups", newGroup);   
     } catch (error) {
       console.error("Ошибка при добавлении задачи:", error);
     }
-  }; 
+  };
   const [userDoc, setUserDoc] = useState<any>(null);
   useEffect(() => {
-    if (user !== undefined) { 
-      fetchGroupData(); 
+    if (user !== undefined) {
+      // fetchGroupData();
 
       if (!user?.email) return;
-      const docRef = doc(db, `users/${user?.email}`); 
+      const docRef = doc(db, `users/${user?.email}`);
       const unsubscribe = onSnapshot(
         docRef,
         (snapshot) => {
@@ -170,34 +185,34 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
           console.error("Error observing document:", error);
           setLoading(false);
         }
-      ); 
+      );
       return () => unsubscribe();
     }
-  }, [user]); 
-  const fetchGroupData = async () => {
-    setLoading(true);
-    try {
-      const groups = await getFilteredItemsV2("groups", []);
-      setCachedGroups(groups);
-    } catch (error) {
-      console.error("Ошибка при загрузке данных:", error);
-    } finally {
-      setLoading(false);
-    }
-  }; 
-  const refreshData = async (entityType: DataType) => {
-    switch (entityType) {
-      case DataType.Users: 
-        break;
-      case DataType.Tasks: 
-        break;
-      case DataType.Groups:
-        await fetchGroupData();
-        break;
-      default:
-        break;
-    }
-  };
+  }, [user]);
+  // const fetchGroupData = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const groups = await getFilteredItemsV2("groups", []);
+  //     setCachedGroups(groups);
+  //   } catch (error) {
+  //     console.error("Ошибка при загрузке данных:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  // const refreshData = async (entityType: DataType) => {
+  //   switch (entityType) {
+  //     case DataType.Users:
+  //       break;
+  //     case DataType.Tasks:
+  //       break;
+  //     case DataType.Groups:
+  //       await fetchGroupData();
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
 
   const filteredTasks = (groupId: string): any[] => {
     try {
@@ -216,9 +231,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         cachedUsers,
         cachedTasks,
         cachedGroups,
-        refreshData,
+        // refreshData,
         filteredTasks,
-        userDoc, 
+        userDoc,
         addTask,
         userData,
         addGroups,
@@ -236,7 +251,7 @@ export enum DataType {
   Users,
   Tasks,
   Groups,
-} 
+}
 export const useDataContext = () => {
   const context = useContext(DataContext);
   if (!context) {

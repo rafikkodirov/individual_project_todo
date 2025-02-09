@@ -12,7 +12,7 @@ const GroupDetailsPage: React.FC = () => {
   const [GroupName, setGroupName] = useState<string>('');
   const [GroupId, setGroupId] = useState<string>(''); 
   const [refreshing, setRefreshing] = useState(false); 
-  const { refreshData, filteredTasks } = useDataContext(); 
+  const {  filteredTasks } = useDataContext(); 
 
   useEffect(() => {
     try { 
@@ -30,13 +30,7 @@ const GroupDetailsPage: React.FC = () => {
   }, [GroupId]);
  
 
-
-  const onRefresh = async () => {
-    setRefreshing(true);  
-    await refreshData(DataType.Tasks);
-    setItems(filteredTasks(GroupId));
-    setRefreshing(false);  
-  };
+ 
  
   const router = useRouter()
   const handleTask = (items: any[]) => {
@@ -62,10 +56,7 @@ const GroupDetailsPage: React.FC = () => {
           <View>
             <TaskCard task={item} onComplete={handleComplete} />
           </View>
-        )}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        )} 
         ListEmptyComponent={<Text style={styles.header}>Нет активных задач</Text>}
       />
       <View style={styles.buttonContainerInDetails}>

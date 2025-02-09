@@ -8,7 +8,8 @@ import edit from '../../assets/images/edit.png'
 import settings from '../../assets/images/settings.png'
 import { ScaledStyleSheet } from '../../Common/ScaledStyleSheet'
 import { AppUser, useAuth } from '@/providers/authProvider';
-import { SecureStore } from '@/stores/global.store'; 
+import { SecureStore } from '@/stores/global.store';
+import AddGroupScreen from '../AddGroups';
 interface TabIcon {
   color: string,
   name: string
@@ -21,11 +22,11 @@ const TabIcon: React.FC<TabIcon> = ({ icon, focused, color, name }) => {
       <Image
         source={icon}
         resizeMode="contain"
-        style={[styles.icon, { tintColor: color }]} /> 
+        style={[styles.icon, { tintColor: color }]} />
     </View>
   )
 }
- 
+
 const styles = ScaledStyleSheet.create({
   icon: {
     width: 24,
@@ -44,14 +45,14 @@ const styles = ScaledStyleSheet.create({
   },
   buttonText: {
     fontSize: 18,
-    color: '#007AFF', 
+    color: '#007AFF',
   },
 });
 const TabsLayout = () => {
-  const router = useRouter();  
+  const router = useRouter();
   const { user, loading, reLogin } = useAuth();
   const [isConfirmationDialogVisible, setIsConfirmationDialogVisible] = useState<boolean>(false);
- 
+
   useEffect((): void => {
     if (reLogin === true)
       router.replace("/sign-in");
@@ -68,13 +69,13 @@ const TabsLayout = () => {
 
   const handleGroups = () => {
     router.push({
-      pathname: '/AddGroups',  
+      pathname: '/AddGroups',
     });
   };
- 
+
   const handleTasks = () => {
     router.push({
-      pathname: '/AddTask',  
+      pathname: '/AddTask',
     });
   };
   return (
@@ -84,6 +85,16 @@ const TabsLayout = () => {
         <Tabs.Screen name="activeTask"
           options={{
             title: 'Активные Задания',
+            headerRight: () => (
+              <View style={styles.headerButtonsContainer}> 
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleTasks}
+                >
+                  <Ionicons name="add" size={24} />
+                </TouchableOpacity>
+ 
+              </View>),
             tabBarLabel: "Задания",
             tabBarIcon: ({ color, focused }) => {
               return <TabIcon
@@ -98,24 +109,17 @@ const TabsLayout = () => {
           options={{
             title: 'Группы',
             headerRight: () => (
-              <View style={styles.headerButtonsContainer}>
-                {/* Первая кнопка */}
+              <View style={styles.headerButtonsContainer}> 
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={handleTasks}
-                >
-                  <Ionicons name="checkbox-outline" size={24} />
-                </TouchableOpacity>
+                  onPress={() => setIsConfirmationDialogVisible(true)} >
 
-                {/* Вторая кнопка */}
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={handleGroups}
-                >
+                  <Ionicons name="add" size={24} color="black" />
 
-                  <Ionicons name="people" size={24} color="black" />
-                  <Dialog isVisible={isConfirmationDialogVisible} onClose={() => setIsConfirmationDialogVisible(false)} dialogWidth={100} scrollable={false} children={undefined}>
-                 </Dialog>
+                  <Dialog isVisible={isConfirmationDialogVisible} onClose={() => setIsConfirmationDialogVisible(false)} dialogWidth={'100%'} scrollable={false}>
+                    <AddGroupScreen closeModal={() => setIsConfirmationDialogVisible(false)}/>
+                  </Dialog>
+                  
                 </TouchableOpacity>
               </View>),
             tabBarLabel: "Группы",
@@ -140,8 +144,8 @@ const TabsLayout = () => {
                 focused={focused}
               />
             }
-          }} /> 
-      </Tabs> 
+          }} />
+      </Tabs>
     </>
   )
 }
