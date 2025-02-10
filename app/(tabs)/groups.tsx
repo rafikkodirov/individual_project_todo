@@ -45,10 +45,7 @@ const Groups: React.FC = () => {
           </TouchableOpacity>
         </View>
       )
-      }
-      // refreshControl={
-      //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      // }
+      } 
       ListEmptyComponent={<Text style={styles.header}>Нет групп</Text>}
     /> 
   )

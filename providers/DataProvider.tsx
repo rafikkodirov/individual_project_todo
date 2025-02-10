@@ -30,6 +30,7 @@ export interface FSUserInfo {
   id: string;
   isActive: boolean;
   nickname: string;
+ 
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -116,34 +117,40 @@ useEffect(()=>{
  const sortedTasks = cachedRowTasks.sort((a,b) => new Date(a.startTime.toDate()).getTime() - new Date(b.startTime.toDate()).getTime())
 setCachedTasks(sortedTasks)
 },[cachedRowTasks])
-    useEffect(() => {
-      if (userData) {
-        setWhereConditionTasks([
-          {
-            key: "ownerId",
-            operator: "==",
-            value: userData.id,
-          },
-          {
-            key: "performerId",
-            operator: "==",
-            value: userData.id,
-          },
-        ]);
-
-        const unsubscribeTasks = subscribeToCollection(
-          "groups",
-          [],
-          setCachedGroups
-        );
-
-        return () => {
-          unsubscribeTasks();
-        };
-      }
-
-
-    }, [userData]);
+        useEffect(() => {
+          if (userData) {
+            setWhereConditionTasks([
+              {
+                key: "status",
+                operator: "in",
+                value: ["in_review", "declined-pending", "pending"],
+              },
+            ]);
+        
+            const ownerConditions = [
+              { key: "ownerId", operator: "==", value: userData.id },
+              { key: "status", operator: "in", value: ["in_review", "declined-pending", "pending"] },
+            ];
+        
+            const performerConditions = [
+              { key: "performerId", operator: "==", value: userData.id },
+              { key: "status", operator: "in", value: ["in_review", "declined-pending", "pending"] },
+            ];
+        
+            setLoading(true);
+            const unsubscribeOwnerTasks = subscribeToCollection("tasks", ownerConditions, setCachedRowTasks);
+            const unsubscribePerformerTasks = subscribeToCollection("tasks", performerConditions, setCachedRowTasks);
+            
+            const unsubscribeGroups = subscribeToCollection("groups", [], setCachedGroups);
+        
+            return () => {
+              unsubscribeOwnerTasks();
+              unsubscribePerformerTasks();
+              unsubscribeGroups();
+            };
+          }
+        }, [userData]);
+        
 
     const addElementToTheFirebase = (path: string, element: any) => {
       const tasksCollectionRef = collection(db, path);

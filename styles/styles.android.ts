@@ -34,17 +34,24 @@ export default ScaledStyleSheet.create({
     backgroundColor: "#F0F0F0",
     padding: 8,
     borderRadius: 5,
-    width: "50%",
+    width: "60%",
 
-    marginStart: "-1%",
+    // marginStart: "-1%",
     alignItems: "center",
   },
   detailsText: {
     fontSize: 16,
     color: "#333",
   },
+  rowContainer: {
+    flexDirection: 'row', // Align elements horizontally
+    justifyContent: 'space-between', // Space between title and button
+    alignItems: 'center', // Align elements vertically in the center
+    marginTop: 10,
+  },
   cardContainerGroup: {
-    padding: 24, 
+    padding: 10,
+    marginHorizontal:10, 
     borderWidth: 1,
     borderColor: '#000',
     borderRadius: 8,
@@ -67,9 +74,13 @@ export default ScaledStyleSheet.create({
   contentTask: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  }, 
-  timeContainer: {
-    alignItems: 'flex-end',
+  },  
+  square: {
+    width: 20,
+    height: 20, 
+    borderWidth:1,
+    borderColor:'black',
+    // borderRadius: 10,  // Для округленных углов
   },
   circle: {
     width: 25,                 

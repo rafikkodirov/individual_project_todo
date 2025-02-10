@@ -7,48 +7,41 @@ import { Platform } from 'react-native';
 // import styles from '../styles_fin2/styles.android' 
 
 import dayjs from "dayjs"
-const styles = Platform.OS === 'android' 
-  ? require('../styles/styles.android').default 
-  : require('../styles/styles.android').default; 
+const styles = Platform.OS === 'android'
+  ? require('../styles/styles.android').default
+  : require('../styles/styles.android').default;
 
 interface GroupsProps {
   groups: any;  // URL or image source 
-  onDetailsPress: (groups: any) => void; 
+  onDetailsPress: (groups: any) => void;
 }
 
 const GroupCard: React.FC<GroupsProps> = ({
-  groups, 
-  onDetailsPress, 
-}) => { 
+  groups,
+  onDetailsPress,
+}) => {
   return (
     <View style={styles.cardContainerGroup}>
-      {/* cardContainerGroup */}
-      {/* Заголовок и даты */}
-      <View style={{flexDirection: 'row'}}>
-        
-          <Text style={styles.title}>{groups.groupName}</Text> 
-        <View style={styles.timeContainerGroup}>
-          <View
-            style={[styles.circle, { backgroundColor: groups.color }]} // Используем динамический цвет
-          />
+      <View style={styles.rowContainer}></View>
+      <View style={styles.rowStyle}>
+        <Text style={{ ...styles.title }}>{groups.groupName}</Text>
+        <View style={{ alignItems: 'flex-end', }}>
+          <View style={{flexDirection:"row", backgroundColor: "black" }}>
+            <TouchableOpacity style={styles.detailsButton} onPress={onDetailsPress}>
+              <Text style={styles.detailsText}>Участники</Text>
+            </TouchableOpacity>
+            <View style={styles.title}>
+            </View>
+          </View>
         </View>
-       
       </View>
 
       {/* Кнопка завершения и категория */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.detailsButton} onPress={onDetailsPress}>
-          {/* (loan) */}
-          <Text style={styles.detailsText}>Участники</Text>
-        </TouchableOpacity>
-        <View style={styles.title}>
-        <Text>{groups.owner}</Text>
-      </View>
-      </View>
-      
+
+
     </View>
   );
 };
 
- 
+
 export default GroupCard; 

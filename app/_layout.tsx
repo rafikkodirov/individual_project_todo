@@ -46,7 +46,7 @@ export default function RootLayout() {
               name="GroupDetailsPage"
               options={({ route }) => ({
                 headerShown: true,
-                title: (route.params as RouteParams)?.name || 'Задания группы', // Заголовок
+                title: (route.params as RouteParams)?.name || 'Задания группы',  
                 headerRight: () => (
                   <TouchableOpacity
                     style={{  width: 30, height: 20}}

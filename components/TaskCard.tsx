@@ -4,38 +4,47 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import styles from '../styles/styles.android'
 
 import dayjs from "dayjs"
+import { Ionicons } from "@expo/vector-icons";
 
 interface TaskProps {
   task: any;
   onComplete: (task: any) => void;
+
+  onInfo: (task: any) => void;
 }
 
 const TaskCard: React.FC<TaskProps> = ({
   task,
-  onComplete
+  onComplete,
+  onInfo
 }) => {
   const formatDateTime = (dateString: string) => {
-     if (!dateString) return '***'
+    if (!dateString) return '***'
     return dayjs(dateString).format('DD/MM/YYYY HH:mm');
-  }; 
+  };
 
   return (
     <View style={styles.cardContainer}>
       <View style={styles.contentTask}>
         <ScrollView>
           <Text style={styles.title}>{task.title}</Text></ScrollView>
-        <View style={styles.timeContainer}>
-          <Text style={styles.timeText}>{task.startTime ? formatDateTime(task.startTime.toDate()) : 'Не указано'}</Text>
-          <Text style={styles.timeText}>{task.endTime ? formatDateTime(task.endTime.toDate()) : 'Не указано'}</Text>
+        <View style={styles.rowStyle}>
+
+          <View style={styles.circle}> </View>
+          
+          <TouchableOpacity onPress={() => onComplete(task)}>
+
+            <Ionicons name="checkmark" size={24} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => onInfo(task)}>
+
+            <Ionicons name="close" size={24} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => onInfo(task)}>
+
+            <Ionicons name="help" size={24} color="black" />
+          </TouchableOpacity>
         </View>
-      </View>
-      <View style={styles.bottomSection}>
-        <TouchableOpacity style={styles.buttonTask} onPress={()=>onComplete(task)}>
-          <Text style={{
-            fontSize: 14, fontWeight: 'bold',
-          }}>Завершить</Text>
-        </TouchableOpacity> 
-        <Text style={styles.owner}>{task.groupName}</Text>
       </View>
     </View>
   );
