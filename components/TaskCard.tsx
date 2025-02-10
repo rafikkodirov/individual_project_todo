@@ -8,15 +8,11 @@ import { Ionicons } from "@expo/vector-icons";
 
 interface TaskProps {
   task: any;
-  onComplete: (task: any) => void;
 
-  onInfo: (task: any) => void;
 }
 
 const TaskCard: React.FC<TaskProps> = ({
   task,
-  onComplete,
-  onInfo
 }) => {
   const formatDateTime = (dateString: string) => {
     if (!dateString) return '***'
@@ -25,25 +21,14 @@ const TaskCard: React.FC<TaskProps> = ({
 
   return (
     <View style={styles.cardContainer}>
-      <View style={styles.contentTask}>
-        <ScrollView>
-          <Text style={styles.title}>{task.title}</Text></ScrollView>
-        <View style={styles.rowStyle}>
+      <View style={styles.rowStyle}>
+        <View style={{ flexDirection: "column" }}>
+          <Text style={styles.owner}>{task.title}</Text> 
+        </View>
+        <View style={styles.contentTask}>
+          <View style={{ alignContent: "flex-end" }}> 
+            <Text  >{task.endTime ? formatDateTime(task.endTime.toDate()) : 'Не указано'} </Text></View>
 
-          <View style={styles.circle}> </View>
-          
-          <TouchableOpacity onPress={() => onComplete(task)}>
-
-            <Ionicons name="checkmark" size={24} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => onInfo(task)}>
-
-            <Ionicons name="close" size={24} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => onInfo(task)}>
-
-            <Ionicons name="help" size={24} color="black" />
-          </TouchableOpacity>
         </View>
       </View>
     </View>

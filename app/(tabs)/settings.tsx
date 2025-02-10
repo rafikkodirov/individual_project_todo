@@ -1,8 +1,8 @@
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
-import { useRouter } from 'expo-router';
-import { logout } from '../services/authUtils';
+import { useRouter } from 'expo-router'; 
 import { useDataContext } from '@/providers/DataProvider';
 import { SecureStore } from '@/stores/global.store';
+import { logout } from '../services/authUtils';
 const styles = Platform.OS === 'android'
   ? require('../../styles/styles.android').default
   : require('../../styles/styles.android').default;
@@ -25,7 +25,7 @@ const Settings: React.FC = () => {
       }}>
         <View>
           <Text style={styles.titleInSettings}>Имя Пользователя</Text>
-          <Text style={styles.applyTextFirst}>{userData.nickname}</Text>
+          <Text style={styles.applyTextFirst}>{userData?.nickname || "Не указан"}</Text>
         </View>
         <View>
         </View>
