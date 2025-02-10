@@ -1,7 +1,8 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect, useMemo } from "react";
 import { useAuth } from "./authProvider";
 import {
   addDoc,
+  and,
   collection,
   doc,
   onSnapshot,
@@ -13,11 +14,13 @@ import { getFilteredItemsV2 } from "@/app/services/firestore";
 import { db } from "@/app/services/firebaseConfig";
 import { AsyncStore, SecureStore } from "@/stores/global.store";
 import { useLoading } from "./LoadingProvider";
+import { TaskStatuses } from "@/Common/TaskStatuses";
 interface DataContextType {
   cachedUsers: any[];
   cachedTasks: any[];
-  cachedGroups: any[];
-  isOwner:boolean,
+  cachedPerformTasks: any[];
+  concatenateTasks:  any[];
+  cachedGroups: any[]; 
   userDoc: any;
   userData: any,
   // refreshData: (entityType: DataType) => Promise<void>;
@@ -42,17 +45,30 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   const [cachedTasks, setCachedTasks] = useState<any[]>([]);
   const [cachedRowTasks, setCachedRowTasks] = useState<any[]>([]);
 
-  const [cachedUsers, setCachedUsers] = useState<any[]>([]);
-  const [isOwner, setIsOwner] = useState(false);
+  const [cachedPerformTasks, setCachedPerformTasks] = useState<any[]>([]);
+  const [cachedPerformRowTasks, setCachedPerformRowTasks] = useState<any[]>([]);
+
+  const [concatenateTasks, setConcatenateTasks] = useState<any[]>([]);
+  
+
+  const [cachedUsers, setCachedUsers] = useState<any[]>([]); 
   const [cachedGroups, setCachedGroups] = useState<any[]>([]);
 
   const [userData, setUserData] = useState<any>(null);
   const [whereConditionTasks, setWhereConditionTasks] = useState<any[]>([]);
+  const [wherePerformConditionTasks, setPerformWhereConditionTasks] = useState<any[]>([]);
   const [whereConditionGroups, setWhereConditionGroups] = useState<any[]>([]);
   const { isLoading, setLoading } = useLoading()
 
 
   const { user } = useAuth();
+
+  useEffect(() => {
+    setConcatenateTasks([...cachedRowTasks, ...cachedPerformRowTasks])
+  }, [cachedTasks, cachedPerformTasks])
+
+  
+
 
   useEffect(() => {
     if (user !== undefined && user !== null) {
@@ -73,12 +89,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     onUpdate: (data: any[]) => void
   ) => {
     const q = query(
-      collection(db, collectionPath),
-      or(
+      collection(db, collectionPath),      
         ...conditions.map((condition) =>
-          where(condition.key, condition.operator, condition.value)
-        )
-      )
+          where(condition.key, condition.operator, condition.value)        
+      ) 
     );
     return onSnapshot(
       q,
@@ -115,17 +129,49 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       };
     }
   }, [userData, whereConditionTasks]);
+
+  useEffect(() => {
+    console.log("refreshRequest ............... 4");
+    if (userData && userData.id && wherePerformConditionTasks.length > 0) {
+      console.log(wherePerformConditionTasks, "whereConditionTasks...............");
+
+      setLoading(true);
+
+      const unsubscribePerformTasks = subscribeToCollection(
+        "tasks",
+        wherePerformConditionTasks,
+        setCachedPerformRowTasks
+      );
+
+      return () => {
+        unsubscribePerformTasks();
+      };
+    }
+  }, [userData, wherePerformConditionTasks]);
+
   useEffect(() => {
     const sortedTasks = cachedRowTasks.sort((a, b) => new Date(a.startTime.toDate()).getTime() - new Date(b.startTime.toDate()).getTime())
     sortedTasks.forEach(
       (element:any)=>{
-        setIsOwner(element.ownerId===userData.id)
-       console.log(isOwner,'status')
+        element.isOwner = element.ownerId===userData.id 
        
       }
     );
     setCachedTasks(sortedTasks)
   }, [cachedRowTasks])
+
+
+  useEffect(() => {
+    const sortedTasks = cachedPerformRowTasks.sort((a, b) => new Date(a.startTime.toDate()).getTime() - new Date(b.startTime.toDate()).getTime())
+    sortedTasks.forEach(
+      (element:any)=>{
+        element.isOwner = element.ownerId===userData.id
+      }
+    );
+    setCachedPerformTasks(sortedTasks)
+  }, [cachedPerformRowTasks])
+
+
   useEffect(() => {
     if (userData) {
       //     setWhereConditionTasks([
@@ -166,9 +212,22 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
           value: userData.id,
         },
         {
+          key: "status",
+          operator: "in",
+          value: [TaskStatuses.pending, TaskStatuses.in_review, TaskStatuses.declined_pending],
+        },
+      ]);
+      
+      setPerformWhereConditionTasks([
+        {
           key: "performerId",
           operator: "==",
           value: userData.id,
+        },
+        {
+          key: "status",
+          operator: "in",
+          value: [TaskStatuses.pending, TaskStatuses.in_review, TaskStatuses.declined_pending],
         },
       ]);
 
@@ -251,9 +310,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <DataContext.Provider
       value={{
-        isOwner,
         cachedUsers,
         cachedTasks,
+        cachedPerformTasks,
+        concatenateTasks,
         cachedGroups,
         // refreshData,
         filteredTasks,

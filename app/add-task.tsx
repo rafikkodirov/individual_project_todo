@@ -7,6 +7,7 @@ import GroupSelector from './GroupSelector';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useDataContext } from '@/providers/DataProvider';
+import { TaskStatuses } from '@/Common/TaskStatuses';
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
   : require('../styles/styles.android').default; 
@@ -89,7 +90,7 @@ const AddTaskS: React.FC= () => {
       // startDate: Timestamp.fromDate(startTime),
       // endDate: Timestamp.fromDate(endTime),
       groupId,
-      status: "pending", 
+      status: TaskStatuses.pending, 
       ownerId: userData.email,
       ownerName: userData.nickname,
       groupName,

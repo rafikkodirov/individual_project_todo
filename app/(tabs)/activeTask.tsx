@@ -1,5 +1,5 @@
 import { View, Text, FlatList, Platform, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import TaskCard from '@/components/TaskCard';
 
 import Dialog from '@/components/DialogComponent ';
@@ -12,13 +12,13 @@ const styles = Platform.OS === 'android'
   ? require('../../styles/styles.android').default
   : require('../../styles/styles.android').default;
 const ActiveTask: React.FC = () => {
-  const [isConfirmationDialogVisible, setIsConfirmationDialogVisible] = useState<boolean>(false);
+  const [confirmationDialogVisible, setConfirmationDialogVisible] = useState<string>('');
 
-  const { cachedTasks, isOwner } = useDataContext();
+  const { concatenateTasks } = useDataContext();
   const { isLoading } = useLoading()
   const router = useRouter()
   const EmptyList = () => {
-    if (isLoading === true || cachedTasks.length !== 0)
+    if (isLoading === true || concatenateTasks.length !== 0)
       return <></>;
     return <Text style={styles.header}>Нет активных задач</Text>
 
@@ -27,36 +27,44 @@ const ActiveTask: React.FC = () => {
     if (!dateString) return '***'
     return dayjs(dateString).format('DD/MM/YYYY HH:mm');
   };
+
+   
+   
+
+
   const handleCompleteForPerformer = async (item: any) => {
     await updateElementToTheFirebase('tasks', { key: item.key, status: 'in_review' });
     console.log("Выполнил")
 
   };
+
   const handleCompleteForOwner = async (item: any) => {
-    await updateElementToTheFirebase('tasks', { key: item.key, status: 'completed' });
-    setIsConfirmationDialogVisible(false)
+    await updateElementToTheFirebase('tasks', { key: item.key, status: 'in_review' });
+    setConfirmationDialogVisible('')
     console.log("Выполнил")
   };
+
   const handleDeclinedForOwner = async (item: any) => {
     await updateElementToTheFirebase('tasks', { key: item.key, status: 'declined-pending' });
-    setIsConfirmationDialogVisible(false)
+    setConfirmationDialogVisible('')
     console.log("Выполнил")
   };
+
   return (
 
     <FlatList
-      data={cachedTasks}
+      data={concatenateTasks}
       keyExtractor={(item) => item.key}
       renderItem={({ item }) => (
         <View>
-          <TouchableOpacity onPress={() => setIsConfirmationDialogVisible(true)}>
+          <TouchableOpacity onPress={() => setConfirmationDialogVisible(item.key)}>
             <TaskCard
               task={item}
             />
           </TouchableOpacity>
           <Dialog
-            isVisible={isConfirmationDialogVisible}
-            onClose={() => setIsConfirmationDialogVisible(false)}
+            isVisible={confirmationDialogVisible === item.key}
+            onClose={() => setConfirmationDialogVisible('')}
             dialogWidth={'100%'}
             scrollable={false}        >
             <ScrollView contentContainerStyle={{ padding: 16 }}>
@@ -91,7 +99,7 @@ const ActiveTask: React.FC = () => {
                   marginBottom: 4,
                   textAlign: 'center'
                 }}>{item.description}</Text></ScrollView>
-              {isOwner ? (
+              {item.isOwner ? (
                 <>
                   <View style={{...styles.rowStyle,
                         marginTop:"5%",}}>
