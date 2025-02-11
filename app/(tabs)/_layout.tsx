@@ -1,43 +1,32 @@
-import { Image, View, StyleSheet, Text, Button, TouchableOpacity } from 'react-native'
-import React, { useEffect } from 'react'
-import { Tabs, Redirect, useRouter } from 'expo-router'
+import { Image, View, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Tabs, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons';
-// import Tab1 from '../assets/icons/Tab1. 
-// import react_logo from '../../assets/react_logo.png'
-import react_logo from '../../assets/images/react-logo.png'
-import cards_tab from '../../assets/icons/cards_tab.png'
-import Unknown from '../../assets/icons/Unknown.png'
-import { ScaledStyleSheet } from '../ScaledStyleSheet' 
-import { useAuth } from '../authProvider';
-// import ZaymIcon from "../assets/icons/ZaymIcon.png"
+import Dialog from '@/components/DialogComponent ';
+import people from '../../assets/images/people.png'
+import edit from '../../assets/images/edit.png'
+import settings from '../../assets/images/settings.png'
+import { ScaledStyleSheet } from '../../Common/ScaledStyleSheet'
+import { AppUser, useAuth } from '@/providers/authProvider';
+import { SecureStore } from '@/stores/global.store';
+import AddGroupScreen from '../AddGroups';
 interface TabIcon {
   color: string,
   name: string
   icon: any,
   focused: boolean;
 }
-const TabIcon: React.FC<TabIcon> = ({ icon,  focused, color, name }) => {
+const TabIcon: React.FC<TabIcon> = ({ icon, focused, color, name }) => {
   return (
     <View>
       <Image
         source={icon}
         resizeMode="contain"
         style={[styles.icon, { tintColor: color }]} />
-      {/* {focused && <Text className="text-xs">{name}</Text>} */}
     </View>
   )
 }
-//  const router = useRouter();
-//   const handleGroupes = () => {
-//     router.push({
-//       pathname: "/AddGroups"
-//     })
-//   }
-// const handleTasks =  () => { 
-//   router.push({
-//     pathname: "/AddTask"
-//   })
-// };
+
 const styles = ScaledStyleSheet.create({
   icon: {
     width: 24,
@@ -56,101 +45,97 @@ const styles = ScaledStyleSheet.create({
   },
   buttonText: {
     fontSize: 18,
-    color: '#007AFF', // Цвет текста кнопок
+    color: '#007AFF',
   },
 });
 const TabsLayout = () => {
-  const router = useRouter(); // Используем useRouter для навигации
+  const router = useRouter();
+  const { user, loading, reLogin } = useAuth();
+  const [isConfirmationDialogVisible, setIsConfirmationDialogVisible] = useState<boolean>(false);
 
-  const { user, loading } = useAuth();
+  useEffect((): void => {
+    if (reLogin === true)
+      router.replace("/sign-in");
+  }, [reLogin])
+
   useEffect(() => {
     if (!loading && !user) {
       console.log(user, "TabsLayout");
-      router.replace("/sign-in");
+      const savedUser = SecureStore.get<AppUser>("USER");
+      if (savedUser === null)
+        router.replace("/sign-in");
     }
   }, [user, loading]);
 
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
-
-
-  // Функция для перехода на экран "Добавить группу"
   const handleGroups = () => {
     router.push({
-      pathname: '/AddGroups', // Путь для экрана с добавлением группы
+      pathname: '/AddGroups',
     });
   };
 
-  // Функция для перехода на экран "Добавить задачу"
   const handleTasks = () => {
     router.push({
-      pathname: '/AddTask', // Путь для экрана с добавлением задачи
+      pathname: '/add-task',
     });
   };
   return (
     <>
       <Tabs>
-        
+
         <Tabs.Screen name="activeTask"
           options={{
-            title: 'Активные Задания', 
-            tabBarLabel:"Задания",
+            title: 'Активные Задания',
+           
+            tabBarLabel: "Задания",
             tabBarIcon: ({ color, focused }) => {
-              return <TabIcon 
-                icon={react_logo}
+              return <TabIcon
+                icon={edit}
                 color={color}
                 name="Задания"
                 focused={focused}
               />
             }
           }} />
-          <Tabs.Screen name="frame2"
+        <Tabs.Screen name="groups"
           options={{
-            title: 'Группы', 
+            title: 'Группы',
             headerRight: () => (
-              <View style={styles.headerButtonsContainer}>
-              {/* Первая кнопка */}
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handleTasks}
-              > 
-              <Ionicons name="checkbox-outline" size={24}  />
-              </TouchableOpacity>
+              <View style={styles.headerButtonsContainer}> 
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => setIsConfirmationDialogVisible(true)} >
 
-              {/* Вторая кнопка */}
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handleGroups}
-              >
-              <Ionicons name="people" size={24} color="black" />
-              </TouchableOpacity>
-            </View>),
-            tabBarLabel:"Группы", 
+                  <Ionicons name="add" size={24} color="black" />
+
+                  <Dialog isVisible={isConfirmationDialogVisible} onClose={() => setIsConfirmationDialogVisible(false)} dialogWidth={'100%'} scrollable={false}>
+                    <AddGroupScreen closeModal={() => setIsConfirmationDialogVisible(false)}/>
+                  </Dialog>
+                  
+                </TouchableOpacity>
+              </View>),
+            tabBarLabel: "Группы",
             tabBarIcon: ({ color, focused }) => {
-              return <TabIcon 
-                icon={react_logo}
+              return <TabIcon
+                icon={people}
                 color={color}
                 name="Группы"
                 focused={focused}
               />
             }
           }} />
-           <Tabs.Screen name="frame3"
+        <Tabs.Screen name="settings"
           options={{
-            title: 'Настройки', 
-            tabBarLabel:"Настройки", 
+            title: 'Настройки',
+            tabBarLabel: "Настройки",
             tabBarIcon: ({ color, focused }) => {
-              return <TabIcon 
-                icon={react_logo}
+              return <TabIcon
+                icon={settings}
                 color={color}
                 name="Настройки"
                 focused={focused}
               />
             }
           }} />
-
-
       </Tabs>
     </>
   )

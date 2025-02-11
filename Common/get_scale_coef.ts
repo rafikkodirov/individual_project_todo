@@ -10,9 +10,7 @@ const calculateScaleFactor = () => {
   const widthRatio = width / BASE_WIDTH;
   const heightRatio = height / BASE_HEIGHT;
   return (widthRatio + heightRatio) / 2;
-};
-
-// Сброс кэша при изменении размеров экрана
+}; 
 Dimensions.addEventListener('change', () => {
   cachedScaleFactor = null;
 });

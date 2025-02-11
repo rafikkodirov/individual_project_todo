@@ -1,24 +1,22 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { Button } from 'react-native';
-import { AuthProvider } from './authProvider';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+import React, { useEffect } from 'react';
+import { DataProvider } from '@/providers/DataProvider';
+import { LoadingProvider } from '@/providers/LoadingProvider';
+import { AuthProvider } from '@/providers/authProvider';
+import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
 SplashScreen.preventAutoHideAsync();
-
+type RouteParams = {
+  name: string;
+};
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
+  const router = useRouter();
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
@@ -29,17 +27,41 @@ export default function RootLayout() {
     return null;
   }
 
+  const handleTasks = () => {
+    router.push({
+      pathname: '/add-task',
+    });
+  };
+
   return (
     <AuthProvider>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="sign-in" options={{ headerShown: true, title: "Авторизация", headerBackVisible: false, headerTitleAlign: 'center' }} />
-        <Stack.Screen name="GroupDetailsPage" options={{ headerShown: true, title: "Задания группы", headerBackTitle: "Назад" }} />
-        <Stack.Screen name="AddTask" options={{ headerShown: true, title: "Добавление задачи", headerBackTitle: "Назад" }} />
-        <Stack.Screen name="AddGroups" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
-        <Stack.Screen name="sign-up" options={{ headerShown: true, title: "Регистрация", headerBackVisible: false, headerTitleAlign: 'center' }} />
-      </Stack>
+      <LoadingProvider>
+        <DataProvider>
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="UserList" options={{ headerShown: true, title: "Пользователи" }} />
+            <Stack.Screen name="sign-in" options={{ headerShown: true, title: "Авторизация", headerBackVisible: false, headerTitleAlign: 'center' }} />
+            <Stack.Screen
+              name="GroupDetailsPage"
+              options={({ route }) => ({
+                headerShown: true,
+                title: (route.params as RouteParams)?.name || 'Задания группы',  
+                headerRight: () => (
+                  <TouchableOpacity
+                    style={{  width: 30, height: 20}}
+                    onPress={handleTasks}>
+                    <Ionicons name="add" size={24} />
+                  </TouchableOpacity>
+                ),
+              })}
+            /> 
+            <Stack.Screen name="add-task" options={{ headerShown: true, title: "Добавление задачи", headerBackTitle: "Назад" }} />
+            <Stack.Screen name="AddGroups" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
+            <Stack.Screen name="sign-up" options={{ headerShown: true, title: "Регистрация", headerBackVisible: false, headerTitleAlign: 'center' }} />
+          </Stack>
+        </DataProvider>
+      </LoadingProvider>
     </AuthProvider>
   );
 }

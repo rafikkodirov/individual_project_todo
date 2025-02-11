@@ -1,91 +1,62 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, ScrollView, Platform } from 'react-native';
-import { addDoc, collection } from 'firebase/firestore';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import Slider from '@react-native-community/slider';
+import React, { useEffect, useState } from 'react';
+import { Text, TextInput, Button, SafeAreaView, ScrollView, Platform } from 'react-native'; 
+import { FSUserInfo, useDataContext } from '@/providers/DataProvider';
+import { useLoading } from '@/providers/LoadingProvider';
+import { debounce } from 'lodash';
 
-import { ColorPicker } from 'react-native-color-picker';
-import { db } from './services/firebaseConfig';
-const AddGroupScreen: React.FC = () => {
-  // Состояния для формы
+const styles = Platform.OS === 'android'
+  ? require('../styles/styles.android').default
+  : require('../styles/styles.android').default;
 
-  const [sliderValue, setSliderValue] = useState(50);
-  const [color, setColor] = useState('#ffcf48');
-  const [title, setTitle] = useState('');
+interface AddGroupScreenProps {
+  closeModal: () => void;
+}
+
+const AddGroupScreen: React.FC<AddGroupScreenProps> = ({ closeModal }) => { 
+  const [groupName, setGroupName] = useState('');
+  const [groups, setGroups] = useState<any[]>([]);
+  const [nickname, setNickname] = useState('');
+  const [color, setColor] = useState('#ffcf48'); 
+  const { isLoading, setLoading } = useLoading()
+
+  const { addGroups, userData } = useDataContext();
  
-  // Функция добавления задачи в Firebase
-  const addGroup = async () => {
-    if (!title  ) {
+
+  
+  const addGroup = debounce(async () => {
+    if (!groupName) {
       alert('Пожалуйста, заполните все поля!');
       return;
     }
-
     const newGroup = {
-      title,
+      groupName,
       color,
+      owner: userData.nickname,
     };
 
     try {
-      await addDoc(collection(db, 'groups'), newGroup);
-      alert('Группа успешно добавлена!');
-      setTitle('');
-      setColor('#ffcf48')
+      if (isLoading) return;
+      setLoading(true);
+      await addGroups(newGroup);      
+      closeModal() 
     } catch (error) {
+      setLoading(false);
       console.error('Ошибка при добавлении группы:', error);
     }
-  };
-
+  }, 500);
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-
-        {/* Поле для Title */}
+    <SafeAreaView style={styles.containerAddGroup}>
+      <ScrollView contentContainerStyle={{ padding: 16 }}>
         <Text style={styles.header}>Название группы:</Text>
         <TextInput
           style={styles.input}
           placeholder="Введите название группу"
-          value={title}
-          onChangeText={setTitle}
+          value={groupName}
+          onChangeText={setGroupName}
         />
-        
-        <Text style={{ marginBottom: 10 }}>Выбранный цвет: {color}</Text>
-       
-  
-        {/* Кнопка для отправки */}
-        <Button title="Добавить задачу" onPress={addGroup} color="#007bff" />
+        <Button title="Добавить группу" onPress={addGroup} color="#007bff" />
       </ScrollView>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f9f9f9',
-  },
-  scrollContainer: {
-    padding: 16,
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: '#333',
-  },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 16,
-    paddingHorizontal: 8,
-    backgroundColor: '#fff',
-  },
-});
-
 export default AddGroupScreen;

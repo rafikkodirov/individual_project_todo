@@ -1,79 +1,151 @@
-import { View, Text, Button, Animated, FlatList, RefreshControl } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
-import { addElementToTheFirebase, getItems } from '../services/firestore'
+import { View, Text, FlatList, Platform, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useEffect, useMemo, useState } from 'react'
 import TaskCard from '@/components/TaskCard';
-import { ScaledStyleSheet } from '../ScaledStyleSheet';
 
-
+import Dialog from '@/components/DialogComponent ';
+import { useDataContext } from '@/providers/DataProvider';
+import { useLoading } from '@/providers/LoadingProvider';
+import { updateElementToTheFirebase } from '../services/firestore';
+import dayjs from 'dayjs';
+import { useRouter } from 'expo-router';
+const styles = Platform.OS === 'android'
+  ? require('../../styles/styles.android').default
+  : require('../../styles/styles.android').default;
 const ActiveTask: React.FC = () => {
-  const [items, setItems] = useState<any[]>([]);
-  const [refreshing, setRefreshing] = useState(false); // Состояние для отслеживания загрузки
+  const [confirmationDialogVisible, setConfirmationDialogVisible] = useState<string>('');
 
-  useEffect(() => {
-    const fetchItems = async () => {
-      const fetchedItems: any[] = await getItems("tasks");
+  const { concatenateTasks } = useDataContext();
+  const { isLoading } = useLoading()
+  const router = useRouter()
+  const EmptyList = () => {
+    if (isLoading === true || concatenateTasks.length !== 0)
+      return <></>;
+    return <Text style={styles.header}>Нет активных задач</Text>
 
-
-      setItems(fetchedItems);
-    };
-
-    fetchItems();
-  }, []);
-  const onRefresh = async () => {
-    setRefreshing(true); // Включаем индикатор загрузки
-    const fetchedItems: any[] = await getItems("tasks");
-    setItems(fetchedItems); // Обновляем данные
-    setRefreshing(false); // Выключаем индикатор загрузки
+  }
+  const formatDateTime = (dateString: string) => {
+    if (!dateString) return '***'
+    return dayjs(dateString).format('DD/MM/YYYY HH:mm');
   };
-  const handleComplete = async () => {
-    console.log('Задача завершена');
 
-    // const newElement = {
-    //   description:"Task1",
-    //   startDate: new Date(),
-    //   endDate: new Date(),
-    //   groupId:"123",
-    //   groupName:"School",
-    //   isCompleted: false,
-    //   isPending: false
-    // }
-    // await addElementToTheFirebase("/tasks", newElement)
+   
+   
+
+
+  const handleCompleteForPerformer = async (item: any) => {
+    await updateElementToTheFirebase('tasks', { key: item.key, status: 'in_review' });
+    console.log("Выполнил")
+
   };
-  console.log(items, '11111111111')
+
+  const handleCompleteForOwner = async (item: any) => {
+    await updateElementToTheFirebase('tasks', { key: item.key, status: 'in_review' });
+    setConfirmationDialogVisible('')
+    console.log("Выполнил")
+  };
+
+  const handleDeclinedForOwner = async (item: any) => {
+    await updateElementToTheFirebase('tasks', { key: item.key, status: 'declined-pending' });
+    setConfirmationDialogVisible('')
+    console.log("Выполнил")
+  };
 
   return (
 
     <FlatList
-      data={items} // Передаем данные в FlatList
-      keyExtractor={(item) => item.key} // Уникальный ключ для каждого элемента
+      data={concatenateTasks}
+      keyExtractor={(item) => item.key}
       renderItem={({ item }) => (
         <View>
-          <TaskCard
-            task={item}
-            onComplete={handleComplete} />
-        </View>
+          <TouchableOpacity onPress={() => setConfirmationDialogVisible(item.key)}>
+            <TaskCard
+              task={item}
+            />
+          </TouchableOpacity>
+          <Dialog
+            isVisible={confirmationDialogVisible === item.key}
+            onClose={() => setConfirmationDialogVisible('')}
+            dialogWidth={'100%'}
+            scrollable={false}        >
+            <ScrollView contentContainerStyle={{ padding: 16 }}>
 
-        //   <View style={{ padding: 8, borderBottomWidth: 1, borderColor: '#ccc' }}>
-        //     {/* <Text style={{ fontSize: 16 }}>ID: {item.key}</Text> */}
-        //     <Text>Название: {item.title || 'Нет названия'}</Text>
-        //     <Text>Описание: {item.description || 'Нет описания'}</Text>
-        //   </View>
-        // )}
-        // ListEmptyComponent={<Text>Нет активных задач</Text>
-      )} // Если данных нет
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-      ListEmptyComponent={<Text style={styles.header}>Нет активных задач</Text>}
+
+              <Text style={{
+                ...styles.header,
+                fontSize: 24,
+              }}>{item.title}</Text>
+              <View style={styles.rowStyle}>
+                <Text style={styles.header}>Группа</Text>
+
+                <Text style={{
+                  fontSize: 16,
+                  marginTop: 5,
+                  marginBottom: "10%"
+                }}>{item.groupName}</Text></View>
+              <View style={styles.rowStyle}>
+                <Text style={styles.header}>Дедлайн</Text>
+
+                <Text style={{
+                  fontSize: 16,
+                  marginTop: 5,
+                  // textAlign: 'center'
+                }}>{item.endTime ? formatDateTime(item.endTime.toDate()) : 'Не указано'}</Text>
+              </View>
+
+              <Text style={styles.header}>Описание</Text>
+              <ScrollView style={{ maxHeight: 150 }}>
+                <Text style={{
+                  fontSize: 16,
+                  marginBottom: 4,
+                  textAlign: 'center'
+                }}>{item.description}</Text></ScrollView>
+              {item.isOwner ? (
+                <>
+                  <View style={{...styles.rowStyle,
+                        marginTop:"5%",}}>
+                    <View style={{ ...styles.buttonContainerInDetails, padding: 4, width: "50%" }}>
+                      <TouchableOpacity style={{
+                        ...styles.buttonInDetails,
+                        marginHorizontal: 0,
+                        backgroundColor: "green"
+                      }} onPress={() => handleCompleteForOwner(item)}>
+                        <Text style={styles.applyText}>Принять</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{ ...styles.buttonContainerInDetails, padding: 4, width: "50%" }}>
+                      <TouchableOpacity style={{
+                        ...styles.buttonInDetails,
+                        marginHorizontal: 0,
+
+                        backgroundColor: "orange"
+                      }} onPress={() => handleDeclinedForOwner(item)} >
+                        <Text style={styles.applyText}>Вернуть</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </>
+                ) : (
+                  <>
+                 <View style={{ ...styles.buttonContainerInDetails, padding: 0, width: "100%" }}>
+                      <TouchableOpacity style={{
+                        ...styles.buttonInDetails,
+                        marginHorizontal: 0,
+                        marginTop:"5%",
+                        backgroundColor: "orange"
+                      }} onPress={() => handleCompleteForPerformer(item)}>
+                        <Text style={{...styles.applyText}}>На проверку</Text>
+                      </TouchableOpacity>
+                    </View>
+                </>
+              )} 
+            </ScrollView>
+          </Dialog>
+        </View>
+      )}
+
+      ListEmptyComponent={<EmptyList />}
     />
   )
 }
-const styles = ScaledStyleSheet.create({
-  header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-})
+
 export default ActiveTask

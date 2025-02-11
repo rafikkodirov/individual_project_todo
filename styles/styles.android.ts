@@ -1,319 +1,234 @@
-import { ScaledStyleSheet } from '@/app/ScaledStyleSheet';
+import { ScaledStyleSheet } from '@/Common/ScaledStyleSheet';
  
-
 export default ScaledStyleSheet.create({
-  applyButtonDetails: {   
-    marginHorizontal: 16,
-    backgroundColor: "#007AFF",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
+  applyTextFirst: {
+    fontSize: 30,
+    marginTop: "4%",
+    marginBottom: "40%",
+    color: "black",
+    textAlign: "center",
   },
-  applyTextDetails: {
-    fontSize: 22,
-    color: "#fff", 
-  },
-  containerDetails: {
-    flex: 1,
-    // flexGrow: 1,
-    paddingTop: 16,
-    // backgroundColor: 'red', // Фон для контента
-  }, 
-  backButton: {
-    padding: 16,
+  titleInSettings: {
+    fontSize: 30,
+    fontWeight: 'bold', 
   },  
-  
-  PageTitle: {
-    fontSize: 15,
-    marginBottom: 5,
-    fontWeight: "bold",
-  },
-  titleDetails: {
-    // padding:8,
-    fontSize: 11,
-    
-    marginTop:3,
-    fontWeight: "bold", 
-  },  
-  TextTitleDetails: {
-    flexGrow: 1,
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center", 
-    textAlignVertical: "center", // Vertically align the text (Android only)
-    marginRight: 60,
-    includeFontPadding: false, // Optional: Remove extra padding for better centering
-  },  
-
-  
-  scrolledContainerDetails: {
-    display: "flex",
-    flexGrow: 1,
-    overflow: "scroll",
-    maxHeight: 200,    
-  },  
-
-  // applyButtonDetails: {   
-  //   marginHorizontal: 16,
-  //   backgroundColor: "#007AFF",
-  //   padding: 10,
-  //   borderRadius: 5,
-  //   alignItems: "center",
-  // },
-  // applyTextDetails: {
-  //   fontSize: 22,
-  //   color: "#fff", 
-  // },
-
-
-
   safeArea: {
     flexGrow: 1,
     paddingHorizontal: 4,
     paddingBottom: 24,
-    backgroundColor: '#E0E0E0', // Оставляем нейтральный фон для Android
-  },
-  // container: {
-  //   flex: 1, // Ensures it fills the entire screen 
-  //   paddingTop: 10, // Padding for top and bottom edges 
-  // },
-
-  // Title Text Style
+    backgroundColor: '#E0E0E0',  
+  }, 
   TextTitle: {
-    fontSize: 24, // Adjust for a prominent title size
-    fontWeight: 'bold', // Make the title bold
-    color: '#333333', // Dark text color
-    marginBottom: 10, // Add spacing after the title
-    textAlign: 'center', // Center the title horizontally
+    fontSize: 24,  
+    fontWeight: 'bold',  
+    color: '#333333',  
+    marginBottom: 10, 
+    textAlign: 'center', 
   }, 
-  topSection: {
-    flexDirection: "row",
-    alignItems: "stretch", 
-  },
-  rowStyleContainer: { 
-    flex: 1, // Ensures the rowStyleContainer takes up remaining space
-    alignItems: "stretch",
-  }, 
-  
-  logo: {
-    width: 45,
-    height: 45,
-    marginRight: 10,
-  },
-  // title: {
-  //   fontSize: 20,
-  //   fontWeight: "bold", 
-  // },
-  // subtitle: {
-  //   color: "#231F20",
-  //   fontSize: 12,
-  //   textAlign:"left",
-  //   flex: 1,
-  //   marginTop:8,
-  // },
-  middleSection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginVertical: 10,
-  },
-  amount: { 
-    fontSize: 14,
-    fontWeight: "bold",
-    marginLeft: "auto",
-  },
-  ratingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginLeft: "auto",
-  },
-  ratingText: {
-    fontSize: 13,
-    marginRight: 5,
-  },
-  reviews: {
-    color: "#888",
-    fontSize: 14,
-  },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 5,
+    marginTop: 30,
   },
   detailsButton: {
     backgroundColor: "#F0F0F0",
     padding: 8,
     borderRadius: 5,
-    width: "50%",
-    
-    marginStart:"-1%",
+    width: "60%",
+
+    // marginStart: "-1%",
     alignItems: "center",
   },
   detailsText: {
     fontSize: 16,
     color: "#333",
   },
+  rowContainer: {
+    flexDirection: 'row', // Align elements horizontally
+    justifyContent: 'space-between', // Space between title and button
+    alignItems: 'center', // Align elements vertically in the center
+    marginTop: 10,
+  },
+  cardContainerGroup: {
+    padding: 10,
+    marginHorizontal:10, 
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    margin: 8,
+    backgroundColor: '#fff',
+  },
+  cardContainer: {
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    margin: 8,
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 15,
+    marginVertical: -1,
+    fontWeight: "bold",
+  },
+  contentTask: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },  
+  square: {
+    width: 20,
+    height: 20, 
+    borderWidth:1,
+    borderColor:'black',
+    // borderRadius: 10,  // Для округленных углов
+  },
+  circle: {
+    width: 25,                 
+    height: 25,                
+    borderRadius: 25,          
+    position: 'absolute',      
+    top: -20,                  
+    right: 0,                 
+  },
+  timeContainerGroup: {
+    flex: 1,               
+    justifyContent: 'flex-start',  
+    alignItems: 'flex-start',   
+    marginTop: 20,             
+  },
+  timeText: {
+    fontSize: 12,
+    color: '#555',
+  },
+  bottomSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
+    justifyContent: 'space-between',
+  },
+  buttonTask: {
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  }, 
   applyButton: {
     backgroundColor: "#007AFF",
     padding: 8,
     borderRadius: 5,
-    marginLeft:"2%",
+    marginLeft: "2%",
     width: "50%",
     alignItems: "center",
-  }, 
-  // Body Text Style
-  TextBody: {
-    fontSize: 14.5, 
-    marginBottom:16 ,// Slightly smaller than the title
-    fontWeight: 'normal', // Regular weight
-    color: '#666666', // A lighter gray for body text
-    lineHeight: 16, // Spacing between lines for better readability
-    textAlign: 'center', // Center-align the body text
-    marginHorizontal: 16, // Add some horizontal margins for better readability
-  },
-
-  // Free Height Filler
-  freeHeight: {
-    flexGrow: 1, // This will fill the remaining vertical space 
-  },
-
-  listContent: {
-    paddingBottom: 16, // Add padding to ensure the last item isn't cut off
-  },
-  // container: {
-  //   flex: 1,
-  //   // flexGrow: 1,
-  //   paddingTop: 16,
-  //   // backgroundColor: 'red', // Фон для контента
-  // },
-  backRowStyle: { 
-    flexDirection: "row",
-  },  
+  },    
   card: {
     backgroundColor: "#fff",
     borderRadius: 16,
-    padding: 18,
-    marginHorizontal: 16,
+    padding: 10,
+    marginHorizontal: 8,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 2,
     marginBottom: 16,
-  },
-
-  
-  scrolledContainer: {
-    display: "flex",
-    flexGrow: 1,
-    overflow: "scroll",
-    maxHeight: 200,    
-  },
-  /// Footer
-  footerContainer: {
-    display: "flex",
-    flexGrow: 2,
-    minHeight: 80,
-    // backgroundColor: 'green', // Фон для контента
-    justifyContent: 'flex-end',
-    paddingBottom: 16
-  },
-
-  applyButtonFirstFrame: {   
-    marginHorizontal: 16,
-    backgroundColor: "#007AFF",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
-  },
+  },   
   applyText: {
-    fontSize: 16,
-    color: "#fff", 
-  },
- 
-  rowStyle: {
-    justifyContent: "space-between", // Distributes space between elements
-    marginBottom: 5, // Adds some vertical spacing between rows
-    flexDirection: "row",
+    fontSize: 20,
+    color: "#fff",
+    alignSelf:"center"
   },
 
-  title: {
-    fontSize: 15,
-    marginVertical: -1,
-    fontWeight: "bold",
-  },
-  subtitle: {
-    color: "#231F20",
-    fontSize: 12,
+  rowStyle: {
+    justifyContent: "space-between", 
+    marginBottom: 5,
+    flexDirection: "row",
+  },    
+  containerSignUp: {
+    height: "100%",
     flex: 1,
-    // backgroundColor:"plum"
-    // textAlign:"center",
+    justifyContent: 'center', 
+    padding: 20,
+    backgroundColor: '#fff',
   },
-  
-  bannerCard: {
-    borderRadius: 20, // Меньший радиус углов для Android
-    margin: 16,
-    alignItems: 'center',
-    width: '94%',
-    height: "73%",
-    padding: 15,
-    backgroundColor: '#FFF',
-  },
-  bannerAdS3: {
-    flex: 1,
-    zIndex: 0,
-    alignItems: 'center',
-    width: '100%',
-    padding: 6,
-  },
-  // TextTitle: {
-  //   textAlign: "center",
-  //   fontSize: 24, // Меньше размера текста для Android
-  //   fontFamily: "inter_medium",
-  //   fontWeight: 'bold',
-  //   color: '#000',
-  // },
-  TextAfterTitle: {
-    fontSize: 14, // Меньший размер текста для Android
-    textAlign: "center",
-    fontFamily: "inter_regular",
-    color: '#333', // Темнее оттенок текста
-  },
-  ROW: {
-    flexDirection: 'row',
-    gap: 8, // Меньше расстояние между элементами
+  content:{
     justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: "-15%",
-  },
-  miniButton: {
-    width: 14, // Меньший размер индикаторов
-    height: 14,
-    backgroundColor: "#A0A0A0", // Темнее серый цвет
-    borderRadius: 7,
-  },
-  miniActiveButton: {
-    width: 14,
-    height: 14,
-    backgroundColor: 'blue', // Зеленый цвет для активной кнопки
-    borderRadius: 7,
+    alignItems: 'center',  
   },
   container: {
-    flex: 1,
-    alignItems: 'center',
+    flex: 1, 
     justifyContent: 'flex-start',
     backgroundColor: '#E0E0E0', // Серый фон для Android
   },
-  banner: {
+  modalContainer: {
     flex: 1,
-    zIndex: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
+  }, 
+  buttonContainerInDetails: {
+    flexGrow: 1, 
+    justifyContent: 'flex-end',  
+    padding:16,
   },
+  Button: {
+    width: '100%',
+    marginTop:'5%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+   
+    alignItems: 'center',
+  }, 
   buttonText: {
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 18,
     color: '#FFF',
+  },
+  input: {
+    width: '100%',
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+  },
+  buttonSignIn: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#007bff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  inputDescription: {
+    height: 100,
+    maxHeight: 200,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    backgroundColor: '#fff',
+    textAlignVertical: 'top', // Выравнивание текста сверху
+  },
+  searchInput:{
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 5,
+    backgroundColor: '#fff',
+  },
+  buttonInDetails: {
+    marginHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#007BFF', // Цвет фона кнопки
+    textAlign: "center",
+    alignItems: 'center', // Центрирование по горизонтали
+    borderRadius: 10,
+    color: 'white',
   },
   button: {
     marginTop: 100,
@@ -324,4 +239,37 @@ export default ScaledStyleSheet.create({
     width: 300,
     borderRadius: 15, // Меньший радиус для Android
   },
+
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  }, 
+  groupItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  groupText: {
+    fontSize: 16,
+  },   
+  containerSignIn: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#fff',
+  }, 
+  modalContent: {
+    width: "90%",
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  error: { color: "red", marginBottom: 10 },
 });
