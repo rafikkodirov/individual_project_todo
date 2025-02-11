@@ -4,7 +4,7 @@ import {
   addDoc,
   and,
   collection,
-  doc, 
+  doc,
   onSnapshot,
   or,
   query,
@@ -23,10 +23,12 @@ interface DataContextType {
   cachedUsers: any[];
   cachedTasks: any[];
   cachedPerformTasks: any[];
-  concatenateTasks:  any[];
-  cachedGroups: any[]; 
+  concatenateTasks: any[];
+  cachedGroups: any[];
   userDoc: any;
   userData: any,
+  selectedGroupId: string | null;
+  setSelectedGroupId: (id: string | null) => void;
   // refreshData: (entityType: DataType) => Promise<void>;
   filteredTasks: (groupId: string) => any[];
   addTask: (newTask: any) => Promise<void>;
@@ -53,10 +55,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   const [cachedPerformTasks, setCachedPerformTasks] = useState<any[]>([]);
   const [cachedPerformRowTasks, setCachedPerformRowTasks] = useState<any[]>([]);
 
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [concatenateTasks, setConcatenateTasks] = useState<any[]>([]);
-  
 
-  const [cachedUsers, setCachedUsers] = useState<any[]>([]); 
+
+  const [cachedUsers, setCachedUsers] = useState<any[]>([]);
   const [cachedGroups, setCachedGroups] = useState<any[]>([]);
 
   const [userData, setUserData] = useState<any>(null);
@@ -71,7 +74,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     setConcatenateTasks([...cachedRowTasks, ...cachedPerformRowTasks])
   }, [cachedTasks, cachedPerformTasks])
- 
+
 
   useEffect(() => {
     if (user !== undefined && user !== null) {
@@ -92,10 +95,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     onUpdate: (data: any[]) => void
   ) => {
     const q = query(
-      collection(db, collectionPath),      
-        ...conditions.map((condition) =>
-          where(condition.key, condition.operator, condition.value)        
-      ) 
+      collection(db, collectionPath),
+      ...conditions.map((condition) =>
+        where(condition.key, condition.operator, condition.value)
+      )
     );
     return onSnapshot(
       q,
@@ -155,9 +158,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const sortedTasks = cachedRowTasks.sort((a, b) => new Date(a.startTime.toDate()).getTime() - new Date(b.startTime.toDate()).getTime())
     sortedTasks.forEach(
-      (element:any)=>{
-        element.isOwner = element.ownerId===userData.id 
-       
+      (element: any) => {
+        element.isOwner = element.ownerId === userData.id
+
       }
     );
     setCachedTasks(sortedTasks)
@@ -167,16 +170,19 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const sortedTasks = cachedPerformRowTasks.sort((a, b) => new Date(a.startTime.toDate()).getTime() - new Date(b.startTime.toDate()).getTime())
     sortedTasks.forEach(
-      (element:any)=>{
-        element.isOwner = element.ownerId===userData.id
+      (element: any) => {
+        element.isOwner = element.ownerId === userData.id
       }
     );
     setCachedPerformTasks(sortedTasks)
   }, [cachedPerformRowTasks])
 
-
+  const getUsersByGroupId = async (selectedGroupId: string | null) => {
+    const data = await getItems(`groups/${selectedGroupId}/users`);
+    return data;
+  }
   useEffect(() => {
-    if (userData) { 
+    if (userData) {
       setWhereConditionTasks([
         {
           key: "ownerId",
@@ -189,7 +195,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
           value: [TaskStatuses.pending, TaskStatuses.in_review, TaskStatuses.declined_pending],
         },
       ]);
-      
+
       setPerformWhereConditionTasks([
         {
           key: "performerId",
@@ -203,26 +209,34 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         },
       ]);
 
-      const unsubscribeTasks = subscribeToCollection(
+      const unsubscribeGroups = subscribeToCollection(
         `users/${userData.id}/groups`,
         [],
         setCachedGroups
       );
-
+      const fetchUsers = async () => {
+        try {
+          const users = await getUsersByGroupId(selectedGroupId);
+          setCachedUsers(users);
+        } catch (error) {
+          console.error("Ошибка при загрузке пользователей:", error);
+        }
+      };
       return () => {
-        unsubscribeTasks();
+        unsubscribeGroups(); 
+        fetchUsers();
       };
     }
 
 
-  }, [userData]);
+  }, [userData]); 
+console.log(selectedGroupId,'ddddddddddddddddddddddddddddddddddddddd')
+ 
 
-
-
-  const addElementToTheFirebase = (path: string, element: any, docId?: string, ) => {
+  const addElementToTheFirebase = (path: string, element: any, docId?: string,) => {
     const collectionRef = collection(db, path);
-    if(docId) {
-      console.log(docId, "docId ...............");      
+    if (docId) {
+      console.log(docId, "docId ...............");
       const docRef = doc(db, `${path}/${docId}`)
       return setDoc(docRef, element)
     }
@@ -276,10 +290,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [user]);
   const filteredTasks = (groupId: string): any[] => {
-    
+
     try {
       if (cachedTasks.length > 0) {
-        const lst = cachedTasks.filter((task: any) => task.groupId === groupId); 
+        const lst = cachedTasks.filter((task: any) => task.groupId === groupId);
         return lst
       }
       return [];
@@ -288,10 +302,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const getUsersByGroupId = async (id: string) => {
-    const data = await getItems(`groups/${id}/users`);
-    return data;
-  }
+
+
 
   return (
     <DataContext.Provider
@@ -301,6 +313,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         cachedPerformTasks,
         concatenateTasks,
         cachedGroups,
+        selectedGroupId,
+        setSelectedGroupId,
         // refreshData,
         filteredTasks,
         userDoc,

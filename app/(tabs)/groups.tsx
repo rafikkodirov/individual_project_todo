@@ -13,7 +13,7 @@ const Groups: React.FC = () => {
   useEffect(() => {
     setLoading(false)
   }, [cachedGroups]);
-
+  const { setSelectedGroupId } = useDataContext();
   const router = useRouter()
   const handleUser = () => {
     router.push({
@@ -21,6 +21,7 @@ const Groups: React.FC = () => {
     })
   }; 
   const handleGotoGroupDetails = (group: any) => {
+    setSelectedGroupId(group.key); 
     router.push({
       pathname: "/GroupDetailsPage",
       params: {

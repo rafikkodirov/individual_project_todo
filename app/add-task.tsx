@@ -6,6 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useDataContext } from '@/providers/DataProvider';
 import { TaskStatuses } from '@/Common/TaskStatuses';
+import UserSelector from './UserSelector';
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
   : require('../styles/styles.android').default; 
@@ -13,6 +14,7 @@ const AddTaskS: React.FC= () => {
   const [groupId, setGroupId] = useState('');
   const [owner, setOwner] = useState('');
   const [groupName, setGroupName] = useState(''); 
+  const [nickname, setnickname] = useState(''); 
   const [status, setStatus] = useState(''); 
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
@@ -27,6 +29,7 @@ const AddTaskS: React.FC= () => {
   const [showEnd, setShowEnd] = useState(false); 
   const [inputHeight,setInputHeight] = useState(40)
   const [isGroupSelectorVisible, setGroupSelectorVisible] = useState(false);
+  const [isUserSelectorVisible, setisUserSelectorVisible] = useState(false);
   const params = useLocalSearchParams()
   useEffect(() => {
     if (params.groupId && params.groupName) {
@@ -55,6 +58,10 @@ const AddTaskS: React.FC= () => {
     setShowEnd(true);
   }; 
   const handleGroupSelect = (id: string, name: string) => {
+    setGroupId(id);
+    setGroupName(name);
+  };
+  const handleUserSelect = (id: string, name: string) => {
     setGroupId(id);
     setGroupName(name);
   };
@@ -120,6 +127,10 @@ const AddTaskS: React.FC= () => {
         <Button title="Выбрать группу" onPress={() => setGroupSelectorVisible(true)} />
 
         <GroupSelector visible={isGroupSelectorVisible} onClose={() => setGroupSelectorVisible(false)} onSelectGroup={handleGroupSelect} />
+     
+        <Text style={styles.header}>Выбранный : {nickname || 'Не выбрана'}</Text>
+        <Button title="Выбрать группу" onPress={() => setisUserSelectorVisible(true)} />
+        <UserSelector visible={isUserSelectorVisible} onClose={() => setisUserSelectorVisible(false)} onSelectUser={handleUserSelect} />
         </View>
         <View style={{ padding: 6 }}>
           <Text style={styles.header}>Время начала: {date ? formatDateToDDMMYYYY(date) : 'Не выбрано'}</Text>
