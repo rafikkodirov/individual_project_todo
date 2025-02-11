@@ -3,6 +3,7 @@ import { onAuthStateChanged, signInWithCustomToken, User } from "firebase/auth";
 import { auth } from "@/app/services/firebaseConfig";
 import { SecureStore } from "@/stores/global.store";
 import { loginWithEmail } from "@/app/services/authUtils";
+import { FirebaseError } from "firebase/app";
 
 export interface AppUser {
   email: string;
@@ -41,7 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       
-    // console.log("onAuthStateChanged ................................. ", user?.email);
+    console.log("onAuthStateChanged ................................. ", user?.email);
       setUser(user);
       setLoading(false);
     });
@@ -59,13 +60,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signIn = async (email: string, password: string): Promise<User | null> => {
+    console.log(email, password, "email, password...........................");
+    
     setReLogin(false);
     try {
       const user = await loginWithEmail(email, password);
+      console.log(email, password, "email, password ........................... success!!!");
       setUser(user);
       return user;
-    } catch (error) {
-      console.error("Sign-in error:", error);
+    } catch (error: any) {
+      const err = error as FirebaseError;
+      console.error("Sign-in error:", err.stack);
       return null;
     }
   };

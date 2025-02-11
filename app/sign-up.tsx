@@ -4,6 +4,7 @@ import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firesto
 import { db } from './services/firebaseConfig';
 import { useRouter } from 'expo-router';
 import LabeledTextInput, { TextInputType } from '@/Common/LabeledTextInput';
+import { registerWithEmail } from './services/authUtils';
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
   : require('../styles/styles.android').default;
@@ -48,6 +49,13 @@ const SignUp: React.FC = () => {
     }
  
     try {
+
+      const fbUser = await registerWithEmail(email, password);
+      if (!fbUser) {
+        setError("Ошибка регистрации!");
+        return;
+      }
+
       const q = query(collection(db, 'users'), where('email', '==', email));
       const querySnapshot = await getDocs(q);
 

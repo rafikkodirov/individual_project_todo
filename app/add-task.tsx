@@ -12,6 +12,7 @@ const styles = Platform.OS === 'android'
   : require('../styles/styles.android').default;
 const AddTaskS: React.FC = () => {
   const [groupId, setGroupId] = useState('');
+  const [performer, setPerformer] = useState<{id: string, name: string} | null>(null);
   const [owner, setOwner] = useState('');
   const [groupName, setGroupName] = useState('');
   const [nickname, setnickname] = useState('');
@@ -62,8 +63,7 @@ const AddTaskS: React.FC = () => {
     setGroupName(name);
   };
   const handleUserSelect = (id: string, name: string) => {
-    setGroupId(id);
-    setGroupName(name);
+    setPerformer({id: id, name: name});
   };
   const formatDateToDDMMYYYY = (date: Date) => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -72,7 +72,7 @@ const AddTaskS: React.FC = () => {
     return `${day}/${month}/${year}`;
   };
   const addTaskFunc = async () => {
-    if (!title || !description || !startTime || !endTime || !groupName) {
+    if (!title || !description || !startTime || !endTime || !groupName || !performer) {
       alert('Пожалуйста, заполните все поля!');
       return;
     }
@@ -85,6 +85,8 @@ const AddTaskS: React.FC = () => {
       status: TaskStatuses.pending,
       ownerId: userData.email,
       ownerName: userData.nickname,
+      performerId: performer.id,
+      performerName: performer.name,
       groupName,
       description,
       title,
@@ -128,7 +130,7 @@ const AddTaskS: React.FC = () => {
 
           <GroupSelector visible={isGroupSelectorVisible} onClose={() => setGroupSelectorVisible(false)} onSelectGroup={handleGroupSelect} />
 
-          <Text style={styles.header}>Выбранный : {nickname || 'Не выбрана'}</Text>
+          <Text style={styles.header}>Выбранный : {performer?.name || 'Не выбрана'}</Text>
           <Button title="Выбрать группу" onPress={() => setisUserSelectorVisible(true)} />
           <UserSelector visible={isUserSelectorVisible} onClose={() => setisUserSelectorVisible(false)} onSelectUser={handleUserSelect} />
         </View>

@@ -16,7 +16,7 @@ const SignIn: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState("");
   const { isLoading, setLoading } = useLoading();
-  const user = useAuth()
+  const {user, signIn} = useAuth()
   const router = useRouter();
   const { refreshRequest } = useDataContext()
   useEffect(() => {
@@ -56,14 +56,20 @@ const SignIn: React.FC = () => {
     }
 
     try {
+      const fbUser = await signIn(email, password);
+      if (!fbUser) {
+        setError("Ошибка авторизации!");
+        return;
+      }
+
       SecureStore.save<AppUser>('USER', { email, password });
       const user = await getUser(email)
-      const userData2: FSUserInfo = {
+      const userData: FSUserInfo = {
         id: email,
         isActive: user.isActive,
         nickname: user.nickname,
       }
-      await AsyncStore.save<FSUserInfo>('USER_DATA', userData2);
+      await AsyncStore.save<FSUserInfo>('USER_DATA', userData);
       refreshRequest();
       if (user) {
         if (user.isActive) {
