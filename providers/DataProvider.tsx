@@ -33,7 +33,7 @@ interface DataContextType {
   filteredTasks: (groupId: string) => any[];
   addTask: (newTask: any) => Promise<void>;
   addGroups: (newTask: any) => Promise<void>;
-  getUsersByGroupId: (id: string) => Promise<any[]>;
+  getUsersByGroupId: () => Promise<any[]>;
   refreshRequest: () => void;
 }
 
@@ -136,6 +136,22 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [userData, whereConditionTasks]);
 
+  
+  useEffect(() => {
+    if (userData && userData.id) {
+      setLoading(true);
+      const unsubscribeUsers = subscribeToCollection(
+        "users",
+        [],
+        setCachedUsers
+      );
+      return () => {
+        unsubscribeUsers();
+      };
+    }
+  }, [userData, whereConditionTasks]);
+
+
   useEffect(() => {
     // console.log("refreshRequest ............... 4");
     if (userData && userData.id && wherePerformConditionTasks.length > 0) {
@@ -177,7 +193,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     setCachedPerformTasks(sortedTasks)
   }, [cachedPerformRowTasks])
 
-  const getUsersByGroupId = async (selectedGroupId: string | null) => {
+  const getUsersByGroupId = async () => {
     const data = await getItems(`groups/${selectedGroupId}/users`);
     return data;
   }
@@ -214,23 +230,15 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         [],
         setCachedGroups
       );
-      const fetchUsers = async () => {
-        try {
-          const users = await getUsersByGroupId(selectedGroupId);
-          setCachedUsers(users);
-        } catch (error) {
-          console.error("Ошибка при загрузке пользователей:", error);
-        }
-      };
+    
       return () => {
-        unsubscribeGroups(); 
-        fetchUsers();
+        unsubscribeGroups();  
       };
     }
 
 
   }, [userData]); 
-console.log(selectedGroupId,'ddddddddddddddddddddddddddddddddddddddd')
+ 
  
 
   const addElementToTheFirebase = (path: string, element: any, docId?: string,) => {
