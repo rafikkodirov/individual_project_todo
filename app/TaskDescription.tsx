@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, Button, SafeAreaView, ScrollView, Platform } from 'react-native';
-import { getItems } from './services/firestore';
+import { Text, Button, SafeAreaView, ScrollView, Platform } from 'react-native'; 
 
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default

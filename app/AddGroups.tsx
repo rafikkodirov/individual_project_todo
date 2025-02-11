@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, TextInput, Button, SafeAreaView, ScrollView, Platform } from 'react-native';
-import { getItems } from './services/firestore';
-import { useRouter } from 'expo-router';
-import { AsyncStore } from '@/stores/global.store';
+import { Text, TextInput, Button, SafeAreaView, ScrollView, Platform } from 'react-native'; 
 import { FSUserInfo, useDataContext } from '@/providers/DataProvider';
 import { useLoading } from '@/providers/LoadingProvider';
 import { debounce } from 'lodash';

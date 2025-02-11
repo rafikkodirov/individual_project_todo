@@ -11,7 +11,7 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { getFilteredItemsV2, updateElementToTheFirebase } from "@/app/services/firestore";
+import { getFilteredItemsV2, getItems, updateElementToTheFirebase } from "@/app/services/firestore";
 import { db } from "@/app/services/firebaseConfig";
 import { AsyncStore, SecureStore } from "@/stores/global.store";
 import { useLoading } from "./LoadingProvider";
@@ -31,6 +31,7 @@ interface DataContextType {
   filteredTasks: (groupId: string) => any[];
   addTask: (newTask: any) => Promise<void>;
   addGroups: (newTask: any) => Promise<void>;
+  getUsersByGroupId: (id: string) => Promise<any[]>;
   refreshRequest: () => void;
 }
 
@@ -287,6 +288,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const getUsersByGroupId = async (id: string) => {
+    const data = await getItems(`groups/${id}/users`);
+    return data;
+  }
+
   return (
     <DataContext.Provider
       value={{
@@ -304,6 +310,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         // updateTask,
         // deleteTask,
         refreshRequest,
+        getUsersByGroupId,
       }}
     >
       {children}

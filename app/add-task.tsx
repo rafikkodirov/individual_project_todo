@@ -1,8 +1,6 @@
  
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, Platform } from 'react-native';
-import { Timestamp } from 'firebase/firestore'; 
-import { getItems } from './services/firestore';
+import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, Platform } from 'react-native'; 
 import GroupSelector from './GroupSelector';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { router, useLocalSearchParams } from 'expo-router';
