@@ -1,8 +1,8 @@
+import { useDataContext } from '@/providers/DataProvider';
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Modal, Button, Platform, TextInput } from 'react-native';
 
-interface GroupSelectorProps {
-  groups: any[];
+interface GroupSelectorProps { 
   visible: boolean;
   onClose: () => void;
   onSelectGroup: (id: string, name: string) => void;
@@ -10,18 +10,20 @@ interface GroupSelectorProps {
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
   : require('../styles/styles.android').default;
-const GroupSelector: React.FC<GroupSelectorProps> = ({ groups, visible, onClose, onSelectGroup }) => {
+const GroupSelector: React.FC<GroupSelectorProps> = ({ visible, onClose, onSelectGroup }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredGroups, setFilteredGroups] = useState<any[]>([]);
+  
+    const {  cachedGroups } = useDataContext();
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    const filtered = groups.filter(group => group.groupName.toLowerCase().includes(query.toLowerCase()));
+    const filtered = cachedGroups.filter(group => group.groupName.toLowerCase().includes(query.toLowerCase()));
     setFilteredGroups(filtered);
   };
-  const showSearch = groups.length > 7
+  const showSearch = cachedGroups.length > 7
 const ITEM_HEIGHT = 50
-  const displayedGroups = searchQuery.trim() ? filteredGroups : groups;
+  const displayedGroups = searchQuery.trim() ? filteredGroups : cachedGroups;
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
       <View style={styles.modalContainer}>

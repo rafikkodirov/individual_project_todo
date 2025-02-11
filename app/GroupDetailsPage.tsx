@@ -55,7 +55,7 @@ const GroupDetailsPage: React.FC = () => {
         keyExtractor={(item) => item.key}
         renderItem={({ item }) => (
           <View>
-            <TaskCard task={item} onComplete={handleComplete} />
+            <TaskCard task={item} />
           </View>
         )} 
         ListEmptyComponent={<Text style={styles.header}>Нет активных задач</Text>}

@@ -40,20 +40,7 @@ const AddTaskS: React.FC= () => {
     }
   }, [params.groupId, groups]);
   const { addTask, userData } = useDataContext();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedGroups: any[] = await getItems('groups');
-        setGroups(fetchedGroups);
-        setFilteredGroups(fetchedGroups); 
-      } catch (error) {
-        console.error('Ошибка загрузки данных:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
+ 
   const onChange = (event: any, selectedDate?: Date) => {
     setShow(false); 
     if (selectedDate) setDate(selectedDate);
@@ -134,7 +121,7 @@ const AddTaskS: React.FC= () => {
         <Text style={styles.header}>Выбранная группа: {groupName || 'Не выбрана'}</Text>
         <Button title="Выбрать группу" onPress={() => setGroupSelectorVisible(true)} />
 
-        <GroupSelector groups={groups} visible={isGroupSelectorVisible} onClose={() => setGroupSelectorVisible(false)} onSelectGroup={handleGroupSelect} />
+        <GroupSelector visible={isGroupSelectorVisible} onClose={() => setGroupSelectorVisible(false)} onSelectGroup={handleGroupSelect} />
         </View>
         <View style={{ padding: 6 }}>
           <Text style={styles.header}>Время начала: {date ? formatDateToDDMMYYYY(date) : 'Не выбрано'}</Text>
