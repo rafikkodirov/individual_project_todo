@@ -7,7 +7,7 @@ import { useLoading } from '@/providers/LoadingProvider';
 const styles = Platform.OS === 'android'
   ? require('../../styles/styles.android').default
   : require('../../styles/styles.android').default;
-const Groups: React.FC = () => { 
+const Groups: React.FC = () => {
   const { isLoading, setLoading } = useLoading()
   const { cachedGroups } = useDataContext();
   useEffect(() => {
@@ -19,9 +19,9 @@ const Groups: React.FC = () => {
     router.push({
       pathname: "/UserList"
     })
-  }; 
+  };
   const handleGotoGroupDetails = (group: any) => {
-    setSelectedGroupId(group.key); 
+    setSelectedGroupId(group.key);
     router.push({
       pathname: "/GroupDetailsPage",
       params: {
@@ -29,8 +29,10 @@ const Groups: React.FC = () => {
         name: group.groupName,
       }
     })
+
+    console.log(group.key)
   };
- 
+
   return (
 
     <FlatList
@@ -46,9 +48,9 @@ const Groups: React.FC = () => {
           </TouchableOpacity>
         </View>
       )
-      } 
+      }
       ListEmptyComponent={<Text style={styles.header}>Нет групп</Text>}
-    /> 
+    />
   )
-} 
+}
 export default Groups

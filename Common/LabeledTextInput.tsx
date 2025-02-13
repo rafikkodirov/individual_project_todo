@@ -11,7 +11,9 @@ export enum TextInputType {
     phone = 'phone-pad',
     default = 'default',
     password = 'password',
-    confirmPassword = 'confirmPassword'
+    confirmPassword = 'confirmPassword',
+    description = 'description',
+    title = 'title',
 }
 
 interface LabeledTextInputProps {
@@ -50,18 +52,30 @@ const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
                 autoCapitalize = "none"
                 label = 'Email'
                 break;
+            case TextInputType.title:
+                keyboardType = 'default';
+                placeholder = "Введите название задачи"
+                autoCapitalize = "none"
+                label = 'Задача'
+                break;
+            case TextInputType.description:
+                keyboardType = 'default';
+                placeholder = "Введите описание"
+                autoCapitalize = "none"
+                label = 'Задача'
+                break;
             case TextInputType.numeric:
                 keyboardType = 'numeric';
                 break;
             case TextInputType.password:
                 keyboardType = 'default';
                 placeholder = "Введите пароль"
-                label = 'Password'
+                label = 'Пароль'
                 secureTextEntry = true
                 break;
             case TextInputType.confirmPassword:
                 keyboardType = 'default';
-                placeholder = "Подтвердить пароль" 
+                placeholder = "Подтвердить пароль"
                 secureTextEntry = true
                 break;
             case TextInputType.phone:

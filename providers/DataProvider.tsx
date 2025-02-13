@@ -172,7 +172,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [userData, wherePerformConditionTasks]);
 
   useEffect(() => {
-    const sortedTasks = cachedRowTasks.sort((a, b) => new Date(a.startTime.toDate()).getTime() - new Date(b.startTime.toDate()).getTime())
+    const sortedTasks = cachedRowTasks.sort((a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime .toDate()).getTime())
     sortedTasks.forEach(
       (element: any) => {
         element.isOwner = element.ownerId === userData.id
@@ -184,7 +184,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
 
   useEffect(() => {
-    const sortedTasks = cachedPerformRowTasks.sort((a, b) => new Date(a.startTime.toDate()).getTime() - new Date(b.startTime.toDate()).getTime())
+    const sortedTasks = cachedPerformRowTasks.sort((a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime())
     sortedTasks.forEach(
       (element: any) => {
         element.isOwner = element.ownerId === userData.id

@@ -1,18 +1,20 @@
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, Platform } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, Platform, TouchableOpacity } from 'react-native';
 import GroupSelector from './GroupSelector';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useDataContext } from '@/providers/DataProvider';
 import { TaskStatuses } from '@/Common/TaskStatuses';
 import UserSelector from './UserSelector';
+import LabeledTextInput, { TextInputType } from '@/Common/LabeledTextInput';
+import { Ionicons } from '@expo/vector-icons';
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
   : require('../styles/styles.android').default;
 const AddTaskS: React.FC = () => {
   const [groupId, setGroupId] = useState('');
-  const [performer, setPerformer] = useState<{id: string, name: string} | null>(null);
+  const [performer, setPerformer] = useState<{ id: string, name: string } | null>(null);
   const [owner, setOwner] = useState('');
   const [groupName, setGroupName] = useState('');
   const [nickname, setnickname] = useState('');
@@ -32,6 +34,9 @@ const AddTaskS: React.FC = () => {
   const [isGroupSelectorVisible, setGroupSelectorVisible] = useState(false);
   const [isUserSelectorVisible, setisUserSelectorVisible] = useState(false);
   const params = useLocalSearchParams()
+  const [time, setTime] = useState(new Date())
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
   useEffect(() => {
     if (params.groupId && params.groupName) {
       const _groupName = Array.isArray(params.groupName) ? params.groupName[0] : params.groupName;
@@ -55,7 +60,8 @@ const AddTaskS: React.FC = () => {
     setShowEnd(false);
     if (selectedDate) setDateEnd(selectedDate);
   };
-  const showDatePickerEnd = () => {
+  const showDatePickerEnd = () => { 
+
     setShowEnd(true);
   };
   const handleGroupSelect = (id: string, name: string) => {
@@ -63,8 +69,22 @@ const AddTaskS: React.FC = () => {
     setGroupName(name);
   };
   const handleUserSelect = (id: string, name: string) => {
-    setPerformer({id: id, name: name});
+    setPerformer({ id: id, name: name });
   };
+  const openTimePicker = () => { 
+    setShowTimePicker(true); 
+  }
+
+  const onTimeChange = (event: any,selectedTime?: Date) => {
+    if (selectedTime) {
+      setTime(selectedTime);
+    }
+    setShowTimePicker(false);
+  };
+  const formatDateTime = () => {
+    return `${date.toLocaleDateString()} ${time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+  };
+
   const formatDateToDDMMYYYY = (date: Date) => {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -72,15 +92,13 @@ const AddTaskS: React.FC = () => {
     return `${day}/${month}/${year}`;
   };
   const addTaskFunc = async () => {
-    if (!title || !description || !startTime || !endTime || !groupName || !performer) {
+    if (!title || !description   || !endTime || !groupName || !performer) {
       alert('Пожалуйста, заполните все поля!');
       return;
     }
     const newTask = {
       startTime: date,
       endTime: dateEnd,
-      // startDate: Timestamp.fromDate(startTime),
-      // endDate: Timestamp.fromDate(endTime),
       groupId,
       status: TaskStatuses.pending,
       ownerId: userData.email,
@@ -93,7 +111,7 @@ const AddTaskS: React.FC = () => {
     };
 
     try {
-      await addTask(newTask);
+      await addTask(newTask); 
       router.back()
       setGroupId('');
       setGroupName('');
@@ -108,48 +126,44 @@ const AddTaskS: React.FC = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f9f9f9' }}>
       <View style={{ padding: 16 }}>
-        <Text style={styles.header}>Название задачи</Text>
-        <TextInput
-          style={{ ...styles.input, height: 40, }}
-          placeholder="Введите название задачи"
-          value={title}
-          onChangeText={setTitle}
-        />
-        <Text style={styles.header}>Описание задачи</Text>
-        <TextInput
-          style={{ ...styles.inputDescription, }}
-          placeholder="Введите описание"
-          value={description}
-          multiline={true}  // Многострочный ввод
-          numberOfLines={5}
-          onChangeText={setDescription}
-        />
+        <LabeledTextInput value={title} onChangeText={setTitle} inputType={TextInputType.title} />
+        <LabeledTextInput value={description} onChangeText={setDescription} inputType={TextInputType.description} />
+
         <View style={{ padding: 6 }}>
-          <Text style={styles.header}>Выбранная группа: {groupName || 'Не выбрана'}</Text>
-          <Button title="Выбрать группу" onPress={() => setGroupSelectorVisible(true)} />
-
+          <View style={styles.rowStyle}>
+            <Text style={styles.header}>
+              Выбранная группа: {groupName || "Не выбрана"}
+            </Text>
+            <TouchableOpacity onPress={() => setGroupSelectorVisible(true)}>
+              <Ionicons name="people" size={26} color="#007AFF" />
+            </TouchableOpacity>
+          </View>
           <GroupSelector visible={isGroupSelectorVisible} onClose={() => setGroupSelectorVisible(false)} onSelectGroup={handleGroupSelect} />
+          <View style={styles.rowStyle}>
 
-          <Text style={styles.header}>Выбранный : {performer?.name || 'Не выбрана'}</Text>
-          <Button title="Выбрать группу" onPress={() => setisUserSelectorVisible(true)} />
+            <Text style={styles.header}>Пользователь : {performer?.name || 'Не выбрана'}</Text>
+            <TouchableOpacity onPress={() => setisUserSelectorVisible(true)}>
+              <Ionicons name="person" size={22} color="#007AFF" />
+            </TouchableOpacity>
+          </View>
           <UserSelector visible={isUserSelectorVisible} onClose={() => setisUserSelectorVisible(false)} onSelectUser={handleUserSelect} />
         </View>
-        <View style={{ padding: 6 }}>
-          <Text style={styles.header}>Время начала: {date ? formatDateToDDMMYYYY(date) : 'Не выбрано'}</Text>
-          <Button title="Выбрать дату" onPress={showDatePicker} />
-          {show && Platform.OS === 'android' && (
-            <DateTimePicker value={date} mode="date" display="default" minimumDate={new Date()} onChange={onChange} />
-          )}
-        </View>
-
-        <View style={{ padding: 6 }}>
-          <Text style={styles.header}>Время начала: {dateEnd ? formatDateToDDMMYYYY(dateEnd) : 'Не выбрано'}</Text>
-          <Button title="Выбрать дату" onPress={showDatePickerEnd} />
-          {showEnd && Platform.OS === 'android' && (
-            <DateTimePicker value={dateEnd} mode="date" display="default" minimumDate={date || new Date()} onChange={onChangeEnd} />
-          )}
-        </View>
-
+        <View style={{ ...styles.rowStyle, padding: 6 }}>
+          <Text style={styles.header}>
+            Дедлайн дата: {dateEnd ? formatDateToDDMMYYYY(dateEnd) : "Не выбрано"}
+          </Text>
+          <TouchableOpacity onPress={showDatePickerEnd}>
+            <Ionicons name="calendar" size={26} color="#007AFF" />
+          </TouchableOpacity>
+          {showEnd && Platform.OS === "android" && (
+            <DateTimePicker
+              value={dateEnd}
+              mode="date"
+              display="default"
+              minimumDate={new Date()}
+              onChange={onChangeEnd}
+            />
+          )}</View> 
         <View style={{ marginTop: 10 }}>
           <Button title="Добавить задачу" onPress={addTaskFunc} color="#007bff" />
 

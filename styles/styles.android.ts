@@ -137,8 +137,7 @@ export default ScaledStyleSheet.create({
     fontSize: 20,
     color: "#fff",
     alignSelf:"center"
-  },
-
+  }, 
   rowStyle: {
     justifyContent: "space-between", 
     marginBottom: 5,
