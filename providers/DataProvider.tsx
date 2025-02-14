@@ -282,11 +282,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   };
   const addUser = async (newUser: any) => {
     try {
-      if (selectedGroupId  ) {
-        if(selectedUserId){
-        await addElementToTheFirebase(`users/${selectedUserId}/groups/`, { [selectedGroupId]: newUser });
-        await addElementToTheFirebase(`groups/${selectedGroupId}/users/`, { [selectedUserId]: newUser });
-      }
+      if (selectedGroupId) {
+        if (selectedUserId) {
+          await addElementToTheFirebase(`groups/${selectedGroupId}/users`, newUser, selectedUserId);
+          await addElementToTheFirebase(`users/${selectedUserId}/groups`, { id: selectedGroupId }, selectedGroupId);
+        }
       } else {
         console.error("Ошибка: selectedGroupId is null");
       }
