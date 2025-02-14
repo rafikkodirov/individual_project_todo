@@ -5,7 +5,7 @@ import { View, Text, FlatList, TouchableOpacity, Modal, Button, Platform, TextIn
 interface UserSelectorProps {
   visible: boolean;
   onClose: () => void;
-  onSelectUser: (id: string, name: string) => void;
+  onSelectUser: (selectedUsers:  {id: string, name: string}[]) => void;
 }
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
@@ -18,7 +18,7 @@ const UserSelector: React.FC<UserSelectorProps> = ({ visible, onClose, onSelectU
   const { getUsersByGroupId } = useDataContext();
 
   useEffect(()=> {
-    getUsersByGroupId().then((data) => {
+    getUsersByGroupId().then((data) => { 
       setUsers(data) 
     })
   }, [])
@@ -53,7 +53,7 @@ const UserSelector: React.FC<UserSelectorProps> = ({ visible, onClose, onSelectU
                 <TouchableOpacity
                   style={styles.groupItem}
                   onPress={() => {
-                    onSelectUser(item.key, item.nickname);
+                    onSelectUser([{id: item.key, name: item.nickname}]);
                     onClose();
                   }}
                 >

@@ -15,7 +15,8 @@ const Groups: React.FC = () => {
   }, [cachedGroups]);
   const { setSelectedGroupId } = useDataContext();
   const router = useRouter()
-  const handleUser = () => {
+  const handleUser = (group: any) => {
+    setSelectedGroupId(group.key);
     router.push({
       pathname: "/UserList"
     })
@@ -43,7 +44,7 @@ const Groups: React.FC = () => {
           <TouchableOpacity onPress={() => handleGotoGroupDetails(item)}>
             <GroupCard
               groups={item}
-              onDetailsPress={handleUser}
+              onDetailsPress={() => handleUser(item)}
             />
           </TouchableOpacity>
         </View>

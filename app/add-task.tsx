@@ -68,9 +68,11 @@ const AddTaskS: React.FC = () => {
     setGroupId(id);
     setGroupName(name);
   };
-  const handleUserSelect = (id: string, name: string) => {
-    setPerformer({ id: id, name: name });
+  
+  const handleUserSelect = (selectedUser: {id: string, name: string}[]) => {
+    setPerformer({ id:selectedUser[0].id, name: selectedUser[0].name });
   };
+
   const openTimePicker = () => { 
     setShowTimePicker(true); 
   }
