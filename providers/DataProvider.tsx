@@ -29,11 +29,15 @@ interface DataContextType {
   userData: any,
   selectedGroupId: string | null;
   setSelectedGroupId: (id: string | null) => void;
+  selectedUserId: string | null;
+  setSelectedUserId: (id: any | null) => void;
   // refreshData: (entityType: DataType) => Promise<void>;
   filteredTasks: (groupId: string) => any[];
   addTask: (newTask: any) => Promise<void>;
+  addUser: (newUser: any) => Promise<void>;
   addGroups: (newTask: any) => Promise<void>;
   getUsersByGroupId: () => Promise<any[]>;
+  getUsers: () => Promise<any[]>;
   refreshRequest: () => void;
 }
 
@@ -56,6 +60,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   const [cachedPerformRowTasks, setCachedPerformRowTasks] = useState<any[]>([]);
 
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [concatenateTasks, setConcatenateTasks] = useState<any[]>([]);
 
 
@@ -136,7 +141,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [userData, whereConditionTasks]);
 
-  
+
   useEffect(() => {
     if (userData && userData.id) {
       setLoading(true);
@@ -172,7 +177,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [userData, wherePerformConditionTasks]);
 
   useEffect(() => {
-    const sortedTasks = cachedRowTasks.sort((a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime .toDate()).getTime())
+    const sortedTasks = cachedRowTasks.sort((a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime())
     sortedTasks.forEach(
       (element: any) => {
         element.isOwner = element.ownerId === userData.id
@@ -195,6 +200,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const getUsersByGroupId = async () => {
     const data = await getItems(`groups/${selectedGroupId}/users`);
+    return data;
+  }
+  const getUsers = async () => {
+    const data = await getItems(`users`);
     return data;
   }
   useEffect(() => {
@@ -230,16 +239,16 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         [],
         setCachedGroups
       );
-    
+
       return () => {
-        unsubscribeGroups();  
+        unsubscribeGroups();
       };
     }
 
 
-  }, [userData]); 
- 
- 
+  }, [userData]);
+
+
 
   const addElementToTheFirebase = (path: string, element: any, docId?: string,) => {
     const collectionRef = collection(db, path);
@@ -267,6 +276,21 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       const docId = uuidv4();
       await addElementToTheFirebase("groups", newGroup, docId);
       await addElementToTheFirebase(`users/${userData.id}/groups`, newGroup, docId);
+    } catch (error) {
+      console.error("Ошибка при добавлении задачи:", error);
+    }
+  };
+  const addUser = async (newUser: any) => {
+    try {
+      if (selectedGroupId  ) {
+        if(selectedUserId){
+        await addElementToTheFirebase(`users/${selectedUserId}/groups/`, { [selectedGroupId]: newUser });
+        await addElementToTheFirebase(`groups/${selectedGroupId}/users/`, { [selectedUserId]: newUser });
+      }
+      } else {
+        console.error("Ошибка: selectedGroupId is null");
+      }
+
     } catch (error) {
       console.error("Ошибка при добавлении задачи:", error);
     }
@@ -318,6 +342,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         cachedUsers,
         cachedTasks,
+        getUsers,
+        addUser,
+        selectedUserId,
+        setSelectedUserId,
         cachedPerformTasks,
         concatenateTasks,
         cachedGroups,

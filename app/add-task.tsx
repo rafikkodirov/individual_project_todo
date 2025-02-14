@@ -69,8 +69,8 @@ const AddTaskS: React.FC = () => {
     setGroupName(name);
   };
   
-  const handleUserSelect = (selectedUser: {id: string, name: string}[]) => {
-    setPerformer({ id:selectedUser[0].id, name: selectedUser[0].name });
+  const handleUserSelect = (id: string, name: string) => {
+    setPerformer({ id: id, name: name });
   };
 
   const openTimePicker = () => { 
