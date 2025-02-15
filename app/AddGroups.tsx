@@ -32,6 +32,7 @@ const AddGroupScreen: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
       groupName,
       color,
       owner: userData.nickname,
+      ownerId: userData.id,
     };
 
     try {

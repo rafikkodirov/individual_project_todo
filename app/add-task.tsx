@@ -165,7 +165,7 @@ const AddTaskS: React.FC = () => {
             />
           )}</View> 
         <View style={{ marginTop: 10 }}>
-          <Button title="Добавить задачу" onPress={addTaskFunc} color="#007bff" />
+          <Button title="Добавить" onPress={addTaskFunc} color="#007bff" />
 
         </View>
       </View>

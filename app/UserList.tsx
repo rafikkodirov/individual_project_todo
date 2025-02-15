@@ -1,4 +1,4 @@
-import { View, Text, FlatList, SafeAreaView, ScrollView, TouchableOpacity, Button } from 'react-native'
+import { View, Text, FlatList, SafeAreaView, ScrollView, TouchableOpacity, Button, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import UserListCard from '@/components/UserListCard';
 
@@ -9,18 +9,26 @@ import UserSelector from './UserSelector';
 import { useLoading } from '@/providers/LoadingProvider';
 import { Ionicons } from '@expo/vector-icons';
 import UserSelectorAll from './UserSelectorAll';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRoute } from '@react-navigation/native';
 const UserList = () => {
   const [users, setUsers] = useState<any[]>([]);
+  const [usersSearch, setUsersSearch] = useState<any[]>([]);
   const [performer, setPerformer] = useState<{ id: string, name: string } | null>(null);
   const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
   const [isUserSelectorVisible, setisUserSelectorVisible] = useState(false);
   const { getUsersByGroupId, selectedUserId, selectedGroupId, setSelectedUserId, addUser } = useDataContext();
   const [searchQuery, setSearchQuery] = useState('');
   const { isLoading } = useLoading()
-  const [filteredGroups, setFilteredGroups] = useState<any[]>([]);
+  const [filteredU, setFiltered] = useState<any[]>([]);
 
+  const { getUsers,} = useDataContext();
 
+  useEffect(() => {
+    getUsers().then((data) => {
+      setUsersSearch(data)
+    })
+  }, []) 
   useEffect(() => {
     getUsersByGroupId().then((data) => {
       setUsers(data)
@@ -31,11 +39,14 @@ const UserList = () => {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     const filtered = users.filter(users => users.nickname.toLowerCase().includes(query.toLowerCase()));
-    setFilteredGroups(filtered);
+    setFiltered(filtered);
   };
-  const showSearch = users.length > 7
-  const ITEM_HEIGHT = 50 
 
+  const displayedUsers = searchQuery.trim() ? filteredU : usersSearch;
+
+  const showSearch = usersSearch.length > 5
+  const ITEM_HEIGHT = 50
+ 
   // const handleUserSelect = (selectedUser: { id: string, name: string }[]) => {
   //   setPerformer({ id: selectedUser[0].id, name: selectedUser[0].name });
   const router = useRouter()
@@ -44,21 +55,22 @@ const UserList = () => {
     setSelectedUserId(performer)
   }, [])
 
-  const handleUserSelect = async (id: string, name: string,) => {
+  const handleUserSelect = async (id: string, name?: string) => {
+    const newPerformer = { id, name: name || "Без имени" }; // Если name нет, то "Без имени"
 
-    const newPerformer = { id, name };
-
-    setSelectedUserId(id)
+    setSelectedUserId(id);
     setPerformer(newPerformer);
-
   };
+  // const { owner } = useLocalSearchParams();
+  // // Преобразуем строку обратно в boolean
+  // const isOwner = owner === 'true';
   const addUserFunc = async () => {
 
     if (!performer) {
       alert('Пожалуйста, выберите пользователя!');
       return;
     }
-    const newUser = { 
+    const newUser = {
       nickname: performer.name,
     };
 
@@ -96,24 +108,53 @@ const UserList = () => {
 
               </View>
 
-            )} />
+            )} /> 
           <View style={styles.buttonContainerInDetails}>
             <TouchableOpacity style={styles.buttonInDetails} onPress={() => setConfirmationDialogVisible(true)}>
-              <Text style={styles.applyText}>Добавить Задачу</Text>
+              <Text style={styles.applyText}>Добавить пользователя</Text>
             </TouchableOpacity>
-          </View>
+          </View> 
           <Dialog
             isVisible={confirmationDialogVisible} onClose={() => setConfirmationDialogVisible(false)}
             dialogWidth={'100%'}
             scrollable={false}        >
-            <View style={{ ...styles.rowStyle, padding: -6 }}>
-
-              <Text style={{ ...styles.header, fontSize: 16 }}>Пользователь : {performer?.name || 'Не выбрана'}</Text>
-              <TouchableOpacity onPress={() => setisUserSelectorVisible(true)}>
-                <Ionicons name="person" size={22} color="#007AFF" />
-              </TouchableOpacity>
+            <View style={{ padding: 16 }}>
+              {/* Поле поиска */}
+              {showSearch &&
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder="Поиск пользователя..."
+                  value={searchQuery}
+                  onChangeText={handleSearch}
+                />
+              }
+              <View style={{ maxHeight: ITEM_HEIGHT * 5 }}>
+                {/* Список пользователей */}
+                <FlatList
+                  data={displayedUsers}
+                  keyExtractor={item => item.key}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: 10,
+                        borderBottomWidth: 1,
+                      }}
+                      onPress={() => handleUserSelect(item.key, item.nickname)}
+                    >
+                      <Text>{item.nickname}</Text>
+                      <Ionicons
+                        name={selectedUserId === item.key ? 'radio-button-on' : 'radio-button-off'}
+                        size={24}
+                        color="black"
+                      />
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
             </View>
-            <UserSelectorAll visible={isUserSelectorVisible} onClose={() => setisUserSelectorVisible(false)} onSelectUser={handleUserSelect} />
             <View style={{ marginTop: 10 }}>
               <Button title="Добавить" onPress={addUserFunc} color="#007bff" />
 

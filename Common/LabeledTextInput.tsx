@@ -62,7 +62,7 @@ const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
                 keyboardType = 'default';
                 placeholder = "Введите описание"
                 autoCapitalize = "none"
-                label = 'Задача'
+                label = 'Описание'
                 break;
             case TextInputType.numeric:
                 keyboardType = 'numeric';

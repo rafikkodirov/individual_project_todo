@@ -15,20 +15,22 @@ const Groups: React.FC = () => {
   }, [cachedGroups]);
   const { setSelectedGroupId , setSelectedGroupName } = useDataContext();
   const router = useRouter()
-  const handleUser = (group: any) => {
+  const handleUser = (group: any,isOwner: boolean) => {
     setSelectedGroupId(group.key);
     setSelectedGroupName(group.groupName)
     router.push({
-      pathname: "/UserList"
+      pathname: "/UserList", 
+      // params: { owner: isOwner.toString() }
     })
   };
-  const handleGotoGroupDetails = (group: any) => {
+  const handleGotoGroupDetails = (group: any,isOwner: boolean) => {
     setSelectedGroupId(group.key);
     router.push({
       pathname: "/GroupDetailsPage",
       params: {
         groupId: group.key,
         name: group.groupName,
+        // owner: isOwner.toString() 
       }
     })
 
@@ -42,10 +44,10 @@ const Groups: React.FC = () => {
       keyExtractor={(item) => item.key}
       renderItem={({ item }) => (
         <View>
-          <TouchableOpacity onPress={() => handleGotoGroupDetails(item)}>
+          <TouchableOpacity onPress={() => handleGotoGroupDetails(item,item.isOwner)}>
             <GroupCard
               groups={item}
-              onDetailsPress={() => handleUser(item)}
+              onDetailsPress={() => handleUser(item,item.isOwner)}
             />
           </TouchableOpacity>
         </View>
