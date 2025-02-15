@@ -46,15 +46,7 @@ const AddTaskS: React.FC = () => {
     }
   }, [params.groupId, groups]);
   const { addTask, userData } = useDataContext();
-
-  const onChange = (event: any, selectedDate?: Date) => {
-    setShow(false);
-    if (selectedDate) setDate(selectedDate);
-  };
-
-  const showDatePicker = () => {
-    setShow(true);
-  };
+  
   const onChangeEnd = (event: any, selectedDate?: Date) => {
     setShowEnd(false);
     if (selectedDate) setDateEnd(selectedDate);
@@ -70,21 +62,7 @@ const AddTaskS: React.FC = () => {
   
   const handleUserSelect = (id: string, name: string) => {
     setPerformer({ id: id, name: name });
-  };
-
-  const openTimePicker = () => { 
-    setShowTimePicker(true); 
-  }
-
-  const onTimeChange = (event: any,selectedTime?: Date) => {
-    if (selectedTime) {
-      setTime(selectedTime);
-    }
-    setShowTimePicker(false);
-  };
-  const formatDateTime = () => {
-    return `${date.toLocaleDateString()} ${time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
-  };
+  }; 
 
   const formatDateToDDMMYYYY = (date: Date) => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -132,7 +110,7 @@ const AddTaskS: React.FC = () => {
         <View style={{ padding: 6 }}>
           <View style={styles.rowStyle}>
             <Text style={styles.header}>
-              Выбранная группа: {groupName || "Не выбрана"}
+              Группа: {groupName || "Не выбрана"}
             </Text>
             <TouchableOpacity onPress={() => setGroupSelectorVisible(true)}>
               <Ionicons name="people" size={26} color="#007AFF" />

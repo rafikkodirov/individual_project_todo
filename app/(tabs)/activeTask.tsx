@@ -8,6 +8,7 @@ import { useLoading } from '@/providers/LoadingProvider';
 import { updateElementToTheFirebase } from '../services/firestore';
 import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 const styles = Platform.OS === 'android'
   ? require('../../styles/styles.android').default
   : require('../../styles/styles.android').default;
@@ -17,8 +18,13 @@ const ActiveTask: React.FC = () => {
   const { concatenateTasks } = useDataContext();
   const { isLoading } = useLoading()
   const router = useRouter()
+  const uniqueTasks = useMemo(() => {
+    return concatenateTasks.filter((task, index, self) =>
+      index === self.findIndex((t) => t.id === task.id)
+    );
+  }, [concatenateTasks]);
   const EmptyList = () => {
-    if (isLoading === true || concatenateTasks.length !== 0)
+    if (isLoading === true || uniqueTasks.length !== 0)
       return <></>;
     return <Text style={styles.header}>Нет активных задач</Text>
 
@@ -28,62 +34,64 @@ const ActiveTask: React.FC = () => {
     return dayjs(dateString).format('DD/MM/YYYY HH:mm');
   };
 
-   
-   
+
+
 
 
   const handleCompleteForPerformer = async (item: any) => {
-    await updateElementToTheFirebase('tasks', { key: item.key, status: 'in_review' });
+    await updateElementToTheFirebase('tasks', { id: item.id, status: 'in_review' });
     console.log("Выполнил")
 
   };
+ 
 
   const handleCompleteForOwner = async (item: any) => {
-    await updateElementToTheFirebase('tasks', { key: item.key, status: 'completed' });
+    await updateElementToTheFirebase('tasks', { id: item.id, status: 'completed' });
     setConfirmationDialogVisible('')
     console.log("Выполнил")
   };
-
-  const handleDeclinedForOwner = async (item: any) => {
-    await updateElementToTheFirebase('tasks', { key: item.key, status: 'declined-pending' });
+  const handleRefactorForOwner = async (item: any) => {
+    await updateElementToTheFirebase('tasks', { id: item.id, status: 'pending' });
+    setConfirmationDialogVisible('')
+    console.log("Выполнил")
+  }; 
+  const handleDeclined =  async (item:any) => {
+    await updateElementToTheFirebase('tasks', { id: item.id, status: 'declined' });
     setConfirmationDialogVisible('')
     console.log("Выполнил")
   };
-
+ 
+  
+ 
   return (
 
     <FlatList
-      data={concatenateTasks}
-      keyExtractor={(item) => item.key}
+      data={uniqueTasks}
+      keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
         <View>
-          <TouchableOpacity onPress={() => setConfirmationDialogVisible(item.key)}>
+          <TouchableOpacity onPress={() => setConfirmationDialogVisible(item.id)}>
             <TaskCard
               task={item}
             />
           </TouchableOpacity>
           <Dialog
-            isVisible={confirmationDialogVisible === item.key}
+            isVisible={confirmationDialogVisible === item.id}
             onClose={() => setConfirmationDialogVisible('')}
             dialogWidth={'100%'}
             scrollable={false}        >
-            <ScrollView contentContainerStyle={{ padding: 16 }}>
-
-
-              <Text style={{
-                ...styles.header,
-                fontSize: 24,
-              }}>{item.title}</Text>
+            <ScrollView contentContainerStyle={{ padding: 14,paddingBottom:-2 }}>
+ 
               <View style={styles.rowStyle}>
-                <Text style={styles.header}>Группа</Text>
+                <Text style={styles.header}>Из группы</Text>
 
                 <Text style={{
                   fontSize: 16,
                   marginTop: 5,
-                  marginBottom: "10%"
+                  // marginBottom: "10%"
                 }}>{item.groupName}</Text></View>
               <View style={styles.rowStyle}>
-                <Text style={styles.header}>Дедлайн</Text>
+                <Text style={styles.header}>Дедлайн в</Text>
 
                 <Text style={{
                   fontSize: 16,
@@ -101,43 +109,41 @@ const ActiveTask: React.FC = () => {
                 }}>{item.description}</Text></ScrollView>
               {item.isOwner ? (
                 <>
-                  <View style={{...styles.rowStyle,
-                        marginTop:"5%",}}>
-                    <View style={{ ...styles.buttonContainerInDetails, padding: 4, width: "50%" }}>
-                      <TouchableOpacity style={{
-                        ...styles.buttonInDetails,
-                        marginHorizontal: 0,
-                        backgroundColor: "green"
-                      }} onPress={() => handleCompleteForOwner(item)}>
-                        <Text style={styles.applyText}>Принять</Text>
+                  <View style={{
+                    ...styles.rowStyle,
+                    marginTop: "5%",
+                  }}>
+                    <View style={{ ...styles.buttonContainerInDetails, flexDirection: "row" , width: "100%" }}>
+                      <TouchableOpacity style={{ ...styles.buttonInDetails, width: 40, height: 40, backgroundColor: "blue", justifyContent: "center", alignItems: "center" }} onPress={() => handleCompleteForOwner(item)}>
+                      <Ionicons name="checkmark" size={24} color="white" />
                       </TouchableOpacity>
-                    </View>
-                    <View style={{ ...styles.buttonContainerInDetails, padding: 4, width: "50%" }}>
-                      <TouchableOpacity style={{
-                        ...styles.buttonInDetails,
-                        marginHorizontal: 0,
 
-                        backgroundColor: "orange"
-                      }} onPress={() => handleDeclinedForOwner(item)} >
-                        <Text style={styles.applyText}>Вернуть</Text>
+                      <TouchableOpacity style={{ ...styles.buttonInDetails, width: 40, height: 40, backgroundColor: "orange", justifyContent: "center", alignItems: "center" }} onPress={() => handleRefactorForOwner(item)}>
+                      <Ionicons name="refresh" size={24} color="white" />
+                      </TouchableOpacity>
+
+
+
+                      <TouchableOpacity style={{ ...styles.buttonInDetails, width: 40, height: 40, backgroundColor: "red", justifyContent: "center", alignItems: "center" }} onPress={()=>handleDeclined(item)}>
+                        <Ionicons name="close" size={24} color="white" />
                       </TouchableOpacity>
                     </View>
                   </View>
                 </>
-                ) : (
-                  <>
-                 <View style={{ ...styles.buttonContainerInDetails, padding: 0, width: "100%" }}>
-                      <TouchableOpacity style={{
-                        ...styles.buttonInDetails,
-                        marginHorizontal: 0,
-                        marginTop:"5%",
-                        backgroundColor: "orange"
-                      }} onPress={() => handleCompleteForPerformer(item)}>
-                        <Text style={{...styles.applyText}}>На проверку</Text>
-                      </TouchableOpacity>
-                    </View>
+              ) : (
+                <>
+                  <View style={{ ...styles.buttonContainerInDetails, padding: 0, width: "100%" }}>
+                    <TouchableOpacity style={{
+                      ...styles.buttonInDetails,
+                      marginHorizontal: 0,
+                      marginTop: "5%",
+                      backgroundColor: "orange"
+                    }} onPress={() => handleCompleteForPerformer(item)}>
+                      <Text style={{ ...styles.applyText }}>На проверку</Text>
+                    </TouchableOpacity>
+                  </View>
                 </>
-              )} 
+              )}
             </ScrollView>
           </Dialog>
         </View>

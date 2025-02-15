@@ -185,12 +185,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       (a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime()
     );
 
-    const now = new Date().getTime(); // Текущее время
+
 
     const updatedTasks = cachedRowTasks.map((task: any) => {
-      const taskEndTime = new Date(task.endTime.toDate()).getTime(); 
-      const oneDayInMs = 24 * 60 * 60 * 1000; // миллисекунд в одном дне
-      const isExpired  = taskEndTime < (now - oneDayInMs); //Eсли не выбрать день то срок будет ровно 1 день
+
+      const now = new Date().getTime(); // Текущее время
+      const taskEndTime = new Date(task.endTime.toDate()).getTime();
+      const oneDayInMs = 24 * 60 * 60 * 1000; // миллисекунд в одном дне 
+      const isExpired = taskEndTime < (now - oneDayInMs); //Eсли не выбрать день то срок будет ровно 1 день
 
       // Если статус уже "expired", не обновляем
       if (isExpired && task.status !== "expired") {
@@ -303,6 +305,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const docId = uuidv4();
       await addElementToTheFirebase("groups", newGroup, docId);
+      await addElementToTheFirebase(`groups/${docId}/users`,{ nickname: userData.nickname}, userData.id);
+      console.log(userData.id)
+      console.log(userData.nickname,'moreinfo')
+      
+      
       await addElementToTheFirebase(`users/${userData.id}/groups`, newGroup, docId);
     } catch (error) {
       console.error("Ошибка при добавлении задачи:", error);
