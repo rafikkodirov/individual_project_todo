@@ -18,8 +18,7 @@ const AddTaskS: React.FC = () => {
   const [owner, setOwner] = useState('');
   const [groupName, setGroupName] = useState('');
   const [nickname, setnickname] = useState('');
-  const [status, setStatus] = useState('');
-  const [startTime, setStartTime] = useState(new Date());
+  const [status, setStatus] = useState(''); 
   const [endTime, setEndTime] = useState(new Date());
   const [description, setDescription] = useState('');
   const [title, setTitle] = useState('');
@@ -98,8 +97,7 @@ const AddTaskS: React.FC = () => {
       alert('Пожалуйста, заполните все поля!');
       return;
     }
-    const newTask = {
-      startTime: date,
+    const newTask = { 
       endTime: dateEnd,
       groupId,
       status: TaskStatuses.pending,

@@ -18,11 +18,23 @@ export const addElementToTheFirebase = (path: string, element: any) => {
   addDoc(tasksCollectionRef, element);
 };
 
-export const updateElementToTheFirebase = (docPath: string, element: any) => {
-  const tasksCollectionRef = doc(db, docPath, element.key);
-  delete element.key;
-  updateDoc(tasksCollectionRef, element);
+// export const updateElementToTheFirebase = (docPath: string, element: any) => {
+//   const tasksCollectionRef = doc(db, docPath, element.key);
+//   delete element.key;
+//   updateDoc(tasksCollectionRef, element);
+// }; 
+export const updateElementToTheFirebase = async (docPath: string, element: any) => {
+  try {
+    const { key, ...updateData } = element; // Деструктурируем key, чтобы не мутировать объект
+    const tasksCollectionRef = doc(db, docPath, key);
+
+    await updateDoc(tasksCollectionRef, updateData); // Ждём завершения обновления
+    console.log("Документ успешно обновлён:", key);
+  } catch (error) {
+    console.error("Ошибка при обновлении документа:", error);
+  }
 };
+
   export const deleteElementFromFirebase = async (docPath: string, element: any) => {
 
     const elementRef = doc(db, docPath, element.key);

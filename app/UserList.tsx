@@ -25,7 +25,7 @@ const UserList = () => {
     getUsersByGroupId().then((data) => {
       setUsers(data)
     })
-  }, [])
+  }, [users])
 
 
   const handleSearch = (query: string) => {
@@ -34,8 +34,7 @@ const UserList = () => {
     setFilteredGroups(filtered);
   };
   const showSearch = users.length > 7
-  const ITEM_HEIGHT = 50
-  const displayedUsers = searchQuery.trim() ? filteredGroups : users;
+  const ITEM_HEIGHT = 50 
 
   // const handleUserSelect = (selectedUser: { id: string, name: string }[]) => {
   //   setPerformer({ id: selectedUser[0].id, name: selectedUser[0].name });
@@ -84,7 +83,7 @@ const UserList = () => {
         <View style={{ flex: 1, padding: 20 }}>
           <FlatList
 
-            data={displayedUsers}
+            data={users}
             style={{ flexGrow: 1 }}
             contentContainerStyle={{ paddingBottom: 16, }}
             keyExtractor={(item) => item.key}

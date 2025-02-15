@@ -9,6 +9,7 @@ import {
   or,
   query,
   setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { getFilteredItemsV2, getItems, updateElementToTheFirebase } from "@/app/services/firestore";
@@ -29,6 +30,8 @@ interface DataContextType {
   userData: any,
   selectedGroupId: string | null;
   setSelectedGroupId: (id: string | null) => void;
+  selectedGroupName: string | null;
+  setSelectedGroupName: (name: string | null) => void;
   selectedUserId: string | null;
   setSelectedUserId: (id: any | null) => void;
   // refreshData: (entityType: DataType) => Promise<void>;
@@ -60,6 +63,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   const [cachedPerformRowTasks, setCachedPerformRowTasks] = useState<any[]>([]);
 
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+  const [selectedGroupName, setSelectedGroupName] = useState<string | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [concatenateTasks, setConcatenateTasks] = useState<any[]>([]);
 
@@ -177,15 +181,38 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [userData, wherePerformConditionTasks]);
 
   useEffect(() => {
-    const sortedTasks = cachedRowTasks.sort((a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime())
-    sortedTasks.forEach(
-      (element: any) => {
-        element.isOwner = element.ownerId === userData.id
-
-      }
+    const sortedTasks = cachedRowTasks.sort(
+      (a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime()
     );
-    setCachedTasks(sortedTasks)
-  }, [cachedRowTasks])
+   
+    const now = new Date().getTime(); // Текущее время
+
+    const updatedTasks = cachedRowTasks.map((task: any) => {
+      const taskEndTime = new Date(task.endTime.toDate()).getTime();
+      const isExpired = taskEndTime < now;
+  
+      // Если статус уже "expired", не обновляем
+      if (isExpired && task.status !== "expired") {
+        // Обновляем Firestore
+        const taskRef = doc(db, "tasks", task.key);
+        updateDoc(taskRef, { status: "expired" }).catch((error) =>
+          console.error("Ошибка обновления статуса:", error)
+        );
+  
+        return { ...task, status: "expired" }; // Обновляем локально
+      }
+  
+      return task;
+    });
+    sortedTasks.forEach(async (element: any) => {
+      element.isOwner = element.ownerId === userData.id;
+   
+    }
+  );
+  
+    setCachedTasks([...sortedTasks]); // Создаём новый массив, чтобы React отследил изменения
+  }, [cachedRowTasks]);
+    
 
 
   useEffect(() => {
@@ -285,7 +312,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       if (selectedGroupId) {
         if (selectedUserId) {
           await addElementToTheFirebase(`groups/${selectedGroupId}/users`, newUser, selectedUserId);
-          await addElementToTheFirebase(`users/${selectedUserId}/groups`, { id: selectedGroupId }, selectedGroupId);
+          await addElementToTheFirebase(`users/${selectedUserId}/groups`, { groupName: selectedGroupName }, selectedGroupId);
         }
       } else {
         console.error("Ошибка: selectedGroupId is null");
@@ -351,6 +378,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         cachedGroups,
         selectedGroupId,
         setSelectedGroupId,
+        setSelectedGroupName,
+        selectedGroupName,
         // refreshData,
         filteredTasks,
         userDoc,
