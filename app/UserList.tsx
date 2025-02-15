@@ -14,6 +14,7 @@ import { useRoute } from '@react-navigation/native';
 const UserList = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [usersSearch, setUsersSearch] = useState<any[]>([]);
+  const [isOwner, setIsOwner] = useState(false);
   const [performer, setPerformer] = useState<{ id: string, name: string } | null>(null);
   const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
   const [isUserSelectorVisible, setisUserSelectorVisible] = useState(false);
@@ -22,13 +23,16 @@ const UserList = () => {
   const { isLoading } = useLoading()
   const [filteredU, setFiltered] = useState<any[]>([]);
 
-  const { getUsers,} = useDataContext();
-
+  const { getUsers, userData } = useDataContext();
+  const { owner } = useLocalSearchParams()
   useEffect(() => {
     getUsers().then((data) => {
       setUsersSearch(data)
     })
   }, []) 
+  useEffect(() => {
+    setIsOwner(userData.id === owner);
+  }, [userData.id, owner]);
   useEffect(() => {
     getUsersByGroupId().then((data) => {
       setUsers(data)
@@ -43,10 +47,11 @@ const UserList = () => {
   };
 
   const displayedUsers = searchQuery.trim() ? filteredU : usersSearch;
+// console.log(displayedUsers/)
 
   const showSearch = usersSearch.length > 5
   const ITEM_HEIGHT = 50
- 
+
   // const handleUserSelect = (selectedUser: { id: string, name: string }[]) => {
   //   setPerformer({ id: selectedUser[0].id, name: selectedUser[0].name });
   const router = useRouter()
@@ -108,12 +113,13 @@ const UserList = () => {
 
               </View>
 
-            )} /> 
-          <View style={styles.buttonContainerInDetails}>
-            <TouchableOpacity style={styles.buttonInDetails} onPress={() => setConfirmationDialogVisible(true)}>
-              <Text style={styles.applyText}>Добавить пользователя</Text>
-            </TouchableOpacity>
-          </View> 
+            )} />
+          {isOwner ? (
+            <View style={styles.buttonContainerInDetails}>
+              <TouchableOpacity style={styles.buttonInDetails} onPress={() => setConfirmationDialogVisible(true)}>
+                <Text style={styles.applyText}>Добавить пользователя</Text>
+              </TouchableOpacity>
+            </View>) : ('')}
           <Dialog
             isVisible={confirmationDialogVisible} onClose={() => setConfirmationDialogVisible(false)}
             dialogWidth={'100%'}

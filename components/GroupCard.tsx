@@ -22,23 +22,19 @@ const GroupCard: React.FC<GroupsProps> = ({
 }) => {
   return (
     <View style={styles.cardContainerGroup}>
-      <View style={styles.rowContainer}></View>
       <View style={styles.rowStyle}>
-        <Text style={{ ...styles.title }}>{groups.groupName}</Text>
+        <View style={{ flex: 1, flexDirection: "column" }}>
+          <Text style={styles.title}>{groups.groupName}</Text>
+          <Text style={styles.subtitle}>{groups.owner}</Text>
+        </View>
         <View style={{ alignItems: 'flex-end', }}>
-          <View style={{flexDirection:"row", backgroundColor: "black" }}>
+          <View style={{ flexDirection: "row", backgroundColor: "black" }}>
             <TouchableOpacity style={styles.detailsButton} onPress={onDetailsPress}>
               <Text style={styles.detailsText}>Участники</Text>
             </TouchableOpacity>
-            <View style={styles.title}>
-            </View>
           </View>
         </View>
       </View>
-
-      {/* Кнопка завершения и категория */}
-
-
     </View>
   );
 };

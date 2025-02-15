@@ -16,8 +16,8 @@ const UserListCard: React.FC<UsersProps> = ({
     <View style={styles.card}> 
       <View style={styles.content}>
           <Text style={styles.title}>{users.nickname}</Text> 
+          
         <View style={styles.timeContainer}>
-        <Text>{users.owner}</Text>
         </View>
       </View> 
     </View>

@@ -1,36 +1,43 @@
 import { View, Text, FlatList, RefreshControl, TouchableOpacity, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import TaskCard from '@/components/TaskCard';
-import { useLocalSearchParams, useRouter } from 'expo-router'; 
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useDataContext, DataType } from '@/providers/DataProvider';
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
   : require('../styles/styles.android').default;
-const GroupDetailsPage: React.FC = () => { 
-  const params = useLocalSearchParams(); 
+const GroupDetailsPage: React.FC = () => {
+  const params = useLocalSearchParams();
+
+  const [isOwner, setIsOwner] = useState(false);
   const [items, setItems] = useState<any[]>([]);
   const [GroupName, setGroupName] = useState<string>('');
-  const [GroupId, setGroupId] = useState<string>('');  
-  const {  filteredTasks } = useDataContext(); 
+  const [GroupId, setGroupId] = useState<string>('');
+  const { filteredTasks } = useDataContext();
 
+  const { getUsersByGroupId, userData } = useDataContext();
+  const { owner } = useLocalSearchParams()
   useEffect(() => {
-    try { 
+    setIsOwner(userData.id === owner);
+  }, [userData.id, owner]);
+  useEffect(() => {
+    try {
       const _groupName = Array.isArray(params.name) ? params.name[0] : params.name;
-      const _groupId = Array.isArray(params.groupId) ? params.groupId[0] : params.groupId; 
+      const _groupId = Array.isArray(params.groupId) ? params.groupId[0] : params.groupId;
       if (_groupName) setGroupName(_groupName);
       if (_groupId) setGroupId(_groupId);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   }, [params]);
- 
+
   useEffect(() => {
     setItems(filteredTasks(GroupId));
-  }, [GroupId,filteredTasks]);
- 
+  }, [GroupId, filteredTasks]);
 
- 
- 
+
+
+
   const router = useRouter()
   const handleTask = (items: any[]) => {
 
@@ -41,12 +48,12 @@ const GroupDetailsPage: React.FC = () => {
         groupId: GroupId
       }
     });
-    
-    console.log('Задача завершена'); 
+
+    console.log('Задача завершена');
   };
   const handleComplete = async () => {
-    console.log('Задача завершена'); 
-  }; 
+    console.log('Задача завершена');
+  };
 
   return (
     <>
@@ -57,15 +64,16 @@ const GroupDetailsPage: React.FC = () => {
           <View>
             <TaskCard task={item} />
           </View>
-        )} 
+        )}
         ListEmptyComponent={<Text style={styles.header}>Нет активных задач</Text>}
       />
-      <View style={styles.buttonContainerInDetails}>
-        <TouchableOpacity style={styles.buttonInDetails} onPress={() => handleTask(items)}>
-          <Text style={styles.applyText}>Добавить Задачу</Text>
-        </TouchableOpacity>
-      </View>
+      {isOwner ? (
+        <View style={styles.buttonContainerInDetails}>
+          <TouchableOpacity style={styles.buttonInDetails} onPress={() => handleTask(items)}>
+            <Text style={styles.applyText}>Добавить Задачу</Text>
+          </TouchableOpacity>
+        </View>) : ('')}
     </>
   );
-}  
+}
 export default GroupDetailsPage

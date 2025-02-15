@@ -47,13 +47,6 @@ export default function RootLayout() {
               options={({ route }) => ({
                 headerShown: true,
                 title: (route.params as RouteParams)?.name || 'Задания группы',  
-                headerRight: () => (
-                  <TouchableOpacity
-                    style={{  width: 30, height: 20}}
-                    onPress={handleTasks}>
-                    <Ionicons name="add" size={24} />
-                  </TouchableOpacity>
-                ),
               })}
             /> 
             <Stack.Screen name="add-task" options={{ headerShown: true, title: "Добавление задачи", headerBackTitle: "Назад" }} />

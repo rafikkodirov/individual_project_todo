@@ -39,7 +39,7 @@ const ActiveTask: React.FC = () => {
   };
 
   const handleCompleteForOwner = async (item: any) => {
-    await updateElementToTheFirebase('tasks', { key: item.key, status: 'in_review' });
+    await updateElementToTheFirebase('tasks', { key: item.key, status: 'completed' });
     setConfirmationDialogVisible('')
     console.log("Выполнил")
   };

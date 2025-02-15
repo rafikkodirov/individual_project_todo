@@ -40,6 +40,8 @@ const AddGroupScreen: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
       setLoading(true);
       await addGroups(newGroup);      
       closeModal() 
+      
+      setLoading(false);
     } catch (error) {
       setLoading(false);
       console.error('Ошибка при добавлении группы:', error);

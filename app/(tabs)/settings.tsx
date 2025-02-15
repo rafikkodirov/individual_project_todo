@@ -12,6 +12,7 @@ const Settings: React.FC = () => {
   const handleLog = async () => {
     SecureStore.delete(["USER"])
     await logout()
+    userData(null)
     router.push({
       pathname: "/sign-in"
     })
