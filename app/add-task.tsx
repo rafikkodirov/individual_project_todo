@@ -11,22 +11,26 @@ import LabeledTextInput, { TextInputType } from '@/Common/LabeledTextInput';
 import { Ionicons } from '@expo/vector-icons';
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
-  : require('../styles/styles.android').default;interface AddGroupScreenProps {
-    closeModal: () => void;
-  }
+  : require('../styles/styles.android').default; interface AddGroupScreenProps {
+  closeModal: () => void;
+}
+
+const AddTaskS: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
   
-  const AddTaskS: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
+  const now = new Date().getTime(); // Текущее время 
+  const oneDayInMs = 24 * 60 * 60 * 1000; // миллисекунд в од
+  const nextDay = new Date(now + oneDayInMs)
   const [groupId, setGroupId] = useState('');
   const [performer, setPerformer] = useState<{ id: string, name: string } | null>(null);
   const [owner, setOwner] = useState('');
   const [groupName, setGroupName] = useState('');
   const [nickname, setnickname] = useState('');
-  const [status, setStatus] = useState(''); 
+  const [status, setStatus] = useState('');
   const [endTime, setEndTime] = useState(new Date());
   const [description, setDescription] = useState('');
   const [title, setTitle] = useState('');
   const [date, setDate] = useState(new Date());
-  const [dateEnd, setDateEnd] = useState(new Date());
+  const [dateEnd, setDateEnd] = useState(nextDay);
   const [searchQuery, setSearchQuery] = useState('');
   const [groups, setGroups] = useState<any[]>([]);
   const [filteredGroups, setFilteredGroups] = useState<any[]>([]);
@@ -49,12 +53,14 @@ const styles = Platform.OS === 'android'
     }
   }, [params.groupId, groups]);
   const { addTask, userData } = useDataContext();
-  
+
   const onChangeEnd = (event: any, selectedDate?: Date) => {
     setShowEnd(false);
     if (selectedDate) setDateEnd(selectedDate);
   };
-  const showDatePickerEnd = () => { 
+  // const showSearch = displayedUsers.length > 4
+  const ITEM_HEIGHT = 50
+  const showDatePickerEnd = () => {
 
     setShowEnd(true);
   };
@@ -62,10 +68,10 @@ const styles = Platform.OS === 'android'
     setGroupId(id);
     setGroupName(name);
   };
-  
+
   const handleUserSelect = (id: string, name: string) => {
     setPerformer({ id: id, name: name });
-  }; 
+  };
 
   const formatDateToDDMMYYYY = (date: Date) => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -74,11 +80,11 @@ const styles = Platform.OS === 'android'
     return `${day}/${month}/${year}`;
   };
   const addTaskFunc = async () => {
-    if (!title || !description   || !endTime || !groupName || !performer) {
+    if (!title || !description || !endTime || !groupName || !performer) {
       alert('Пожалуйста, заполните все поля!');
       return;
     }
-    const newTask = { 
+    const newTask = {
       endTime: dateEnd,
       groupId,
       status: TaskStatuses.in_progress,
@@ -92,7 +98,7 @@ const styles = Platform.OS === 'android'
     };
 
     try {
-      await addTask(newTask); 
+      await addTask(newTask);
       router.back()
       setGroupId('');
       setGroupName('');
@@ -111,7 +117,7 @@ const styles = Platform.OS === 'android'
         <LabeledTextInput value={description} onChangeText={setDescription} inputType={TextInputType.description} />
 
         <View style={{ padding: 6 }}>
-       
+
           <GroupSelector visible={isGroupSelectorVisible} onClose={() => setGroupSelectorVisible(false)} onSelectGroup={handleGroupSelect} />
           <View style={styles.rowStyle}>
 
@@ -134,10 +140,10 @@ const styles = Platform.OS === 'android'
               value={dateEnd}
               mode="date"
               display="default"
-              minimumDate={new Date()}
+              minimumDate={nextDay}
               onChange={onChangeEnd}
             />
-          )}</View> 
+          )}</View>
         <View style={{ marginTop: 10 }}>
           <Button title="Добавить" onPress={addTaskFunc} color="#007bff" />
 

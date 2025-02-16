@@ -2,14 +2,13 @@ import { ScaledStyleSheet } from '@/Common/ScaledStyleSheet';
  
 export default ScaledStyleSheet.create({
   applyTextFirst: {
-    fontSize: 30,
-    marginTop: "4%",
-    marginBottom: "40%",
+    fontSize: 24,
+    marginLeft: "4%", 
     color: "black",
     textAlign: "center",
   },
   titleInSettings: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: 'bold', 
   },  
   safeArea: {
@@ -132,14 +131,14 @@ export default ScaledStyleSheet.create({
   card: {
     backgroundColor: "#fff",
     borderRadius: 16,
-    padding: 10,
-    marginHorizontal: 8,
+    padding: 11,
+    // marginHorizontal: 19,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 2,
-    marginBottom: 16,
+    marginBottom: 8,
   },   
   applyText: {
     fontSize: 20,
@@ -148,7 +147,7 @@ export default ScaledStyleSheet.create({
   }, 
   rowStyle: {
     justifyContent: "space-between", 
-    marginBottom: 5,
+    // marginBottom: 5,
     flexDirection: "row",
   },    
   containerSignUp: {
@@ -229,7 +228,7 @@ export default ScaledStyleSheet.create({
     backgroundColor: '#fff',
   },
   buttonInDetails: {
-    marginHorizontal: 16,
+    // marginHorizontal: 16,
     paddingVertical: 8,
     backgroundColor: '#007BFF', // Цвет фона кнопки
     textAlign: "center",
@@ -248,7 +247,7 @@ export default ScaledStyleSheet.create({
   },
 
   header: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',

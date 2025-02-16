@@ -29,7 +29,7 @@ const UserSelector: React.FC<UserSelectorProps> = ({ visible, onClose, onSelectU
     const filtered = users.filter(users => users.nickname.toLowerCase().includes(query.toLowerCase()));
     setFilteredGroups(filtered);
   };
-  const showSearch = users.length > 7
+  const showSearch = users.length > 4
   const ITEM_HEIGHT = 50
   const displayedUsers = searchQuery.trim() ? filteredGroups : users;
   return (
@@ -51,7 +51,7 @@ const UserSelector: React.FC<UserSelectorProps> = ({ visible, onClose, onSelectU
               keyExtractor={item => item.key}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                  style={styles.groupItem}
+                  style={{...styles.groupItem,marginBottom:10}}
                   onPress={() => {
                     onSelectUser(item.key,item.nickname);
                     onClose();

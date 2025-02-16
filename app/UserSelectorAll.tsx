@@ -51,7 +51,7 @@ const UserSelector: React.FC<UserSelectorProps> = ({ visible, onClose, onSelectU
               keyExtractor={item => item.key}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                  style={styles.groupItem}
+                style={{...styles.groupItem,marginBottom:10}}
                   onPress={() => {
                     onSelectUser(item.key,item.nickname);
                     onClose();

@@ -59,7 +59,7 @@ const UserList = () => {
   const displayedUsers = searchQuery.trim()
     ? filteredU
     : usersSearch.filter(user => !users.some(groupUser => groupUser.key === user.key));
-  
+
 
   const showSearch = displayedUsers.length > 4
   const ITEM_HEIGHT = 50
@@ -101,7 +101,7 @@ const UserList = () => {
   const EmptyList = () => {
     if (isLoading === true || users.length !== 0)
       return <></>;
-    return <Text style={styles.header}>Нет активных задач</Text>
+    return <Text style={styles.header}>Нет пользователей</Text>
 
   }
 
@@ -111,20 +111,23 @@ const UserList = () => {
       <SafeAreaView style={styles.container}>
         <View style={{ flex: 1, padding: 20 }}>
           <FlatList
-
             data={users}
+            numColumns={2} // Указываем количество колонок
             style={{ flexGrow: 1 }}
-            contentContainerStyle={{ paddingBottom: 16, }}
+            contentContainerStyle={{ paddingBottom: 16 }}
             keyExtractor={(item) => item.key}
             renderItem={({ item }) => (
-              <View  >
-                <UserListCard
-                  users={item}
-                />
-
-
+              <View style={{ flex: 1, margin: 1 }}>
+                <UserListCard users={item} />
               </View>
 
+            )}
+            ListEmptyComponent={() => (
+              (
+                <View style={{ alignItems: "center", marginTop: 20 }}>
+                  <Text style={styles.header}>Нет пользователей</Text>
+                </View>
+              )
             )} />
           {isOwner ? (
             <View style={styles.buttonContainerInDetails}>
@@ -161,6 +164,7 @@ const UserList = () => {
                         borderBottomWidth: 1,
                       }}
                       onPress={() => handleUserSelect(item.key, item.nickname)}
+
                     >
                       <Text>{item.nickname}</Text>
                       <Ionicons
@@ -170,13 +174,21 @@ const UserList = () => {
                       />
                     </TouchableOpacity>
                   )}
+                  ListEmptyComponent={() => (
+                    (
+                      <View style={{ alignItems: "center", }}>
+                        <Text style={{...styles.header,fontSize:24}}>Нет пользователей</Text>
+                      </View>
+                    )
+                  )}
                 />
               </View>
             </View>
+            {displayedUsers.length > 0  ?(
             <View style={{ marginTop: 10 }}>
               <Button title="Добавить" onPress={addUserFunc} color="#007bff" />
 
-            </View>
+            </View>):('')}
           </Dialog>
         </View>
       </SafeAreaView>

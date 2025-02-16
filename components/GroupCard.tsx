@@ -26,16 +26,28 @@ const GroupCard: React.FC<GroupsProps> = ({
     setColor(groups.color)
   }, [groups.color])
   return (
-    <View style={{ ...styles.cardContainerGroup, borderColor: color }}>
+    <View
+      style={[
+        styles.cardContainer,
+        {
+          padding: 14,
+          borderLeftWidth: 7, // Толщина линии
+          borderLeftColor: color, // Цвет линии
+          borderColor: color,
+          borderWidth: 1
+        },
+      ]}
+    >
       <View style={styles.rowStyle}>
         <View style={{ flex: 1, flexDirection: "column" }}>
-          <Text style={styles.title}>{groups.groupName}</Text>
-          <Text style={styles.subtitle}>{groups.owner}</Text>
+          <Text style={{ fontSize: 14, fontWeight: '500', }}>{groups.groupName}</Text>
+          <Text style={{ fontSize: 12, fontWeight: '400', paddingTop: 3 }}>{groups.owner}</Text>
         </View>
         <View style={{ alignItems: 'flex-end', }}>
           <View style={{ flexDirection: "row", borderWidth: 0.5, borderColor: color || 'black', backgroundColor: color || 'black' }}>
             <TouchableOpacity style={{
-              ...styles.detailsButton           }} onPress={onDetailsPress}>
+              ...styles.detailsButton
+            }} onPress={onDetailsPress}>
               <Text style={styles.detailsText}>Участники</Text>
             </TouchableOpacity>
           </View>

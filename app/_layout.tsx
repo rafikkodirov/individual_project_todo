@@ -4,9 +4,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect } from 'react';
 import { DataProvider } from '@/providers/DataProvider';
 import { LoadingProvider } from '@/providers/LoadingProvider';
-import { AuthProvider } from '@/providers/authProvider';
-import { Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native';
+import { AuthProvider } from '@/providers/authProvider'; 
+import {Appearance} from 'react-native';
 SplashScreen.preventAutoHideAsync();
 type RouteParams = {
   name: string;
@@ -32,7 +31,11 @@ export default function RootLayout() {
       pathname: '/add-task',
     });
   };
-
+  
+  // const colorScheme = Appearance.getColorScheme();
+  // if (colorScheme === 'dark') {
+  //   // Use dark color scheme
+  // }
   return (
     <AuthProvider>
       <LoadingProvider>

@@ -33,8 +33,8 @@ const Settings: React.FC = () => {
       <View style={{
         flex: 1, justifyContent: 'center', alignItems: 'center',
       }}>
-        <View>
-          <Text style={styles.titleInSettings}>Имя Пользователя</Text>
+        <View style={styles.rowStyle}>
+          <Text style={styles.titleInSettings}>Пользователь:</Text>
           <Text style={styles.applyTextFirst}>{userData?.nickname || "Не указан"}</Text>
         </View>
         <View>

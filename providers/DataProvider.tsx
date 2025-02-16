@@ -210,7 +210,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       const now = new Date().getTime(); // Текущее время
       const taskEndTime = new Date(task.endTime.toDate()).getTime();
       const oneDayInMs = 24 * 60 * 60 * 1000; // миллисекунд в одном дне 
-      const isExpired = taskEndTime < (now - oneDayInMs); //Eсли не выбрать день то срок будет ровно 1 день
+      const isExpired = taskEndTime < now  //Eсли не выбрать день то срок будет ровно 1 день
 
       // Если статус уже "expired", не обновляем
       if (isExpired && task.status !== "expired") {

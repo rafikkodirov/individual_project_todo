@@ -71,7 +71,6 @@ const ActiveTask: React.FC = () => {
                 <TaskCard task={item} />
               </TouchableOpacity>
             </View>) : (
-            // По умолчанию, если ни одно из предыдущих условий не выполнено
             <View>
               <TouchableOpacity onPress={() => setConfirmationDialogVisible(item.key)}>
                 <TaskCard task={item} />
@@ -86,19 +85,19 @@ const ActiveTask: React.FC = () => {
             scrollable={false}        >
             <ScrollView contentContainerStyle={{ padding: 14, paddingBottom: -2 }}>
               <View style={styles.rowStyle}>
-                <Text style={styles.header}>Из группы</Text>
-
                 <Text style={{
                   fontSize: 16,
                   marginTop: 5,
+                }}>Из группы</Text>
+
+                <Text style={{
+                  ...styles.header,marginVertical:3
                 }}>{item.groupName}</Text></View>
               <View style={styles.rowStyle}>
-                <Text style={styles.header}>Дедлайн в</Text>
+                <Text style={{ fontSize: 16, marginTop: 5, }}>Дедлайн в</Text>
 
                 <Text style={{
-                  fontSize: 16,
-                  marginTop: 5,
-                  // textAlign: 'center'
+                  ...styles.header ,marginVertical:3
                 }}>{item.endTime ? formatDateTime(item.endTime.toDate()) : 'Не указано'}</Text>
               </View>
 
@@ -116,17 +115,17 @@ const ActiveTask: React.FC = () => {
                     marginTop: "5%",
                   }}>
                     <View style={{ ...styles.buttonContainerInDetails, flexDirection: "row", width: "100%" }}>
-                      <TouchableOpacity style={{ ...styles.buttonInDetails, width: 40, height: 40, backgroundColor: "green", justifyContent: "center", alignItems: "center" }} onPress={() => handleCompleteForOwner(item)}>
+                      <TouchableOpacity style={{ ...styles.buttonInDetails, width: 85, height: 40, backgroundColor: "green", justifyContent: "center", alignItems: "center" }} onPress={() => handleCompleteForOwner(item)}>
                         <Ionicons name="checkmark" size={24} color="white" />
                       </TouchableOpacity>
 
-                      <TouchableOpacity style={{ ...styles.buttonInDetails, width: 40, height: 40, backgroundColor: "orange", justifyContent: "center", alignItems: "center" }} onPress={() => handleRefactorForOwner(item)}>
+                      <TouchableOpacity style={{ ...styles.buttonInDetails,marginHorizontal:5, width: 85, height: 40, backgroundColor: "orange", justifyContent: "center", alignItems: "center" }} onPress={() => handleRefactorForOwner(item)}>
                         <Ionicons name="refresh" size={24} color="white" />
                       </TouchableOpacity>
 
 
 
-                      <TouchableOpacity style={{ ...styles.buttonInDetails, width: 40, height: 40, backgroundColor: "red", justifyContent: "center", alignItems: "center" }} onPress={() => handleDeclined(item)}>
+                      <TouchableOpacity style={{ ...styles.buttonInDetails,marginRight:"-5%", width: 85, height: 40, backgroundColor: "red", justifyContent: "center", alignItems: "center" }} onPress={() => handleDeclined(item)}>
                         <Ionicons name="close" size={24} color="white" />
                       </TouchableOpacity>
                     </View>

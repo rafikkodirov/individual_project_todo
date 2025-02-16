@@ -42,6 +42,7 @@ const TaskCard: React.FC<TaskProps> = ({
       style={[
         styles.cardContainer,
         {
+          padding:14,
           borderLeftWidth: 7, // Толщина линии
           borderLeftColor: borderStatusColor, // Цвет линии
           borderColor:borderStatusColor,
