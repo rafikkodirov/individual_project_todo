@@ -13,11 +13,11 @@ const Groups: React.FC = () => {
   useEffect(() => {
     setLoading(false)
   }, [cachedGroups]);
-  const { setSelectedGroupId, setSelectedGroupName } = useDataContext();
+  const { setSelectedGroupId, setSelectedGroup } = useDataContext();
   const router = useRouter()
   const handleUser = (group: any, ownerId: any) => {
     setSelectedGroupId(group.key);
-    setSelectedGroupName(group.groupName)
+    setSelectedGroup(group)
     
     router.push({
       pathname: "/UserList",

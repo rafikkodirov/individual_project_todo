@@ -31,8 +31,8 @@ interface DataContextType {
   userData: any,
   selectedGroupId: string | null;
   setSelectedGroupId: (id: string | null) => void;
-  selectedGroupName: string | null;
-  setSelectedGroupName: (name: string | null) => void;
+  selectedGroup: string | null;
+  setSelectedGroup: (name: string | null) => void;
   selectedUserId: string | null;
   setSelectedUserId: (id: any | null) => void;
   // refreshData: (entityType: DataType) => Promise<void>;
@@ -65,7 +65,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   const [cachedArchiveRowTasks, setCachedArchiveRowTasks] = useState<any[]>([]);
 
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
-  const [selectedGroupName, setSelectedGroupName] = useState<string | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [concatenateTasks, setConcatenateTasks] = useState<any[]>([]);
 
@@ -348,7 +348,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       if (selectedGroupId) {
         if (selectedUserId) {
           await addElementToTheFirebase(`groups/${selectedGroupId}/users`, newUser, selectedUserId);
-          await addElementToTheFirebase(`users/${selectedUserId}/groups`, { groupName: selectedGroupName }, selectedGroupId);
+          await addElementToTheFirebase(`users/${selectedUserId}/groups`, selectedGroup, selectedGroupId);
         }
       } else {
         console.error("Ошибка: selectedGroupId is null");
@@ -415,8 +415,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         cachedGroups,
         selectedGroupId,
         setSelectedGroupId,
-        setSelectedGroupName,
-        selectedGroupName,
+        setSelectedGroup,
+        selectedGroup,
         // refreshData,
         filteredTasks,
         userDoc,
