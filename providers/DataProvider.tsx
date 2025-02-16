@@ -4,13 +4,17 @@ import {
   addDoc,
   and,
   collection,
+  collectionGroup,
+  deleteDoc,
   doc,
+  getDocs,
   onSnapshot,
   or,
   query,
   setDoc,
   updateDoc,
   where,
+  writeBatch,
 } from "firebase/firestore";
 import { getFilteredItemsV2, getItems, updateElementToTheFirebase } from "@/app/services/firestore";
 import { db } from "@/app/services/firebaseConfig";
@@ -40,6 +44,8 @@ interface DataContextType {
   addTask: (newTask: any) => Promise<void>;
   addUser: (newUser: any) => Promise<void>;
   addGroups: (newTask: any) => Promise<void>;
+  deleteGroup: (groupId: any) => Promise<void>;
+  
   getUsersByGroupId: () => Promise<any[]>;
   getUsers: () => Promise<any[]>;
   refreshRequest: () => void;
@@ -58,6 +64,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [cachedTasks, setCachedTasks] = useState<any[]>([]);
+  const [groupId, setGroupId] = useState<string>('');
   const [cachedRowTasks, setCachedRowTasks] = useState<any[]>([]);
 
   const [cachedPerformTasks, setCachedPerformTasks] = useState<any[]>([]);
@@ -310,7 +317,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [userData]);
 
 
-
+  const deleteGroup = async (groupId: any) => {
+    try {  
+      
+      console.log(`Группа ${groupId} успешно удалена вместе со связанными данными!`);
+    } catch (error) {
+      console.error("Ошибка при удалении группы:", error);
+    }
+  }
   const addElementToTheFirebase = (path: string, element: any, docId?: string,) => {
     const collectionRef = collection(db, path);
     if (docId) {
@@ -334,6 +348,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   const addGroups = async (newGroup: any) => {
     try {
       const docId = uuidv4();
+      
       await addElementToTheFirebase("groups", newGroup, docId);
       await addElementToTheFirebase(`groups/${docId}/users`,{ nickname: userData.nickname}, userData.id);
       
@@ -404,6 +419,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     <DataContext.Provider
       value={{
         cachedUsers,
+        deleteGroup,
         cachedArchiveRowTasks,
         cachedTasks,
         getUsers,

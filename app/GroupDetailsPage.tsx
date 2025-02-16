@@ -23,7 +23,11 @@ const GroupDetailsPage: React.FC = () => {
   useEffect(() => {
     try {
       const _groupName = Array.isArray(params.name) ? params.name[0] : params.name;
+    
+      
       const _groupId = Array.isArray(params.groupId) ? params.groupId[0] : params.groupId;
+      
+    console.log(params.groupId,'dwedwed')
       if (_groupName) setGroupName(_groupName);
       if (_groupId) setGroupId(_groupId);
     } catch (error) {
@@ -39,7 +43,7 @@ const GroupDetailsPage: React.FC = () => {
 
 
   const router = useRouter()
-  const handleTask = (items: any[]) => {
+  const handleTask = ( ) => {
 
     router.push({
       pathname: '/add-task',
@@ -48,8 +52,13 @@ const GroupDetailsPage: React.FC = () => {
         groupId: GroupId
       }
     });
- 
-  }; 
+
+    console.log(GroupId);
+    console.log(GroupName);
+  };
+  const handleComplete = async () => {
+    console.log('Задача завершена');
+  };
 
   return (
     <>
@@ -65,7 +74,7 @@ const GroupDetailsPage: React.FC = () => {
       />
       {isOwner ? (
         <View style={styles.buttonContainerInDetails}>
-          <TouchableOpacity style={styles.buttonInDetails} onPress={() => handleTask(items)}>
+          <TouchableOpacity style={styles.buttonInDetails} onPress={() => handleTask()}>
             <Text style={styles.applyText}>Добавить Задачу</Text>
           </TouchableOpacity>
         </View>) : ('')}

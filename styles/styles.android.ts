@@ -277,5 +277,23 @@ export default ScaledStyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  rightAction: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    // marginVertical: 1,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  deleteButton: { 
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    height: '100%',
+  },
+  actionText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+  },
   error: { color: "red", marginBottom: 10 },
 });

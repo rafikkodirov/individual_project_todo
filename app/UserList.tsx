@@ -37,16 +37,7 @@ const UserList = () => {
     getUsersByGroupId().then((data) => {
       setUsers(data)
     })
-  }, [users])
-
-
-  // const handleSearch = (query: string) => {
-  //   setSearchQuery(query);
-  //   const filtered = users.filter(users => users.nickname.toLowerCase().includes(query.toLowerCase()));
-  //   setFiltered(filtered);
-  // };
-
-  // const displayedUsers = searchQuery.trim() ? filteredU : usersSearch;
+  }, [users]) 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     const filtered = usersSearch.filter(user =>
