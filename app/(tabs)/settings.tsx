@@ -14,6 +14,11 @@ const Settings: React.FC = () => {
       pathname: "/archive"
     })
   }
+  const handleInfo = () => {
+    router.push({
+      pathname: "/Information"
+    })
+  }
   const handleLog = async () => {
     SecureStore.delete(["USER"])
     await logout()
@@ -40,9 +45,13 @@ const Settings: React.FC = () => {
             <Text style={styles.applyText}>Выйти из аккаунта</Text>
           </TouchableOpacity>
         </View> 
-        <TouchableOpacity onPress={handleArchive} >
+        <TouchableOpacity style={{marginTop:"-5%"}} onPress={handleInfo} >
+          <Text style={{ ...styles.applyText, color: "#2061b7" }}>Посмотреть информацию</Text>
+        </TouchableOpacity>
+        <TouchableOpacity  style={{padding:10}} onPress={handleArchive} >
           <Text style={{ ...styles.applyText, color: "gray" }}>Посмотреть архив</Text>
         </TouchableOpacity>
+        
       </View>
     </>
   );

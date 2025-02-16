@@ -69,10 +69,10 @@ export default ScaledStyleSheet.create({
     margin: 8,
     backgroundColor: '#fff',
     shadowColor: '#000', // Цвет тени
-    shadowOffset: { width: 1, height: 3 }, // Смещение тени
-    shadowOpacity: 0.01, // Прозрачность тени
+    shadowOffset: { width: 1, height: 5 }, // Смещение тени
+    shadowOpacity: 0.5, // Прозрачность тени
     shadowRadius: 8, // Радиус тени
-    elevation: 6, // Для Android
+    elevation: 8, // Для Android
   },  
   title: {
     fontSize: 15,

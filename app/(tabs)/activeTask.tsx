@@ -17,7 +17,6 @@ const ActiveTask: React.FC = () => {
 
   const { concatenateTasks, userData } = useDataContext();
   const { isLoading } = useLoading()
-  const router = useRouter()
   const uniqueTasks = useMemo(() => {
     return concatenateTasks.filter((task, index, self) =>
       index === self.findIndex((t) => t.key === task.key)
@@ -35,7 +34,7 @@ const ActiveTask: React.FC = () => {
   };
   const handleCompleteForPerformer = async (item: any) => {
     await updateElementToTheFirebase('tasks', { key: item.key, status: 'in_review' });
-     setConfirmationDialogVisible('') 
+    setConfirmationDialogVisible('')
 
   };
 
@@ -63,23 +62,23 @@ const ActiveTask: React.FC = () => {
       renderItem={({ item }) => (
         <View>
           {item.performerId === userData.id && item.status === "in_review" ? (
-              <TaskCard task={item} /> 
+            // Если пользователь является исполнителем и статус "in_review"
+            <TaskCard task={item} />
           ) : item.ownerId === userData.id ? (
+            // Если пользователь является владельцем
             <View>
-            <TouchableOpacity onPress={() => setConfirmationDialogVisible(item.key)}>
-              <TaskCard
-                task={item}
-              />
-            </TouchableOpacity>
-            </View>) : (
-              <View>
               <TouchableOpacity onPress={() => setConfirmationDialogVisible(item.key)}>
-              <TaskCard
-                task={item}
-              />
-            </TouchableOpacity>
+                <TaskCard task={item} />
+              </TouchableOpacity>
+            </View>) : (
+            // По умолчанию, если ни одно из предыдущих условий не выполнено
+            <View>
+              <TouchableOpacity onPress={() => setConfirmationDialogVisible(item.key)}>
+                <TaskCard task={item} />
+              </TouchableOpacity>
             </View>
           )}
+
           <Dialog
             isVisible={confirmationDialogVisible === item.key}
             onClose={() => setConfirmationDialogVisible('')}
@@ -91,7 +90,7 @@ const ActiveTask: React.FC = () => {
 
                 <Text style={{
                   fontSize: 16,
-                  marginTop: 5, 
+                  marginTop: 5,
                 }}>{item.groupName}</Text></View>
               <View style={styles.rowStyle}>
                 <Text style={styles.header}>Дедлайн в</Text>

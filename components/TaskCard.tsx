@@ -49,14 +49,14 @@ const TaskCard: React.FC<TaskProps> = ({
     >
       <View style={styles.rowStyle}>
         <View style={{ flex: 1, flexDirection: "column" }}>
-          <Text style={styles.owner}>{task.title}</Text>
-          <Text style={styles.owner}>{task.ownerName}</Text>
+          <Text style={{fontSize:14,fontWeight: '500',}}>{task.title}</Text>
+          <Text style={{paddingTop:5,fontSize:12,fontWeight: '400',}}>{task.ownerName}</Text>
         </View>
         <View style={styles.contentTask}>
           <View style={{ alignItems: "flex-end" }}>
-            <Text  >{task.endTime ? formatDateTime(task.endTime.toDate()) : 'Не указано'} </Text>
+            <Text style={{fontSize:14,fontWeight: '500',}}  >{task.endTime ? formatDateTime(task.endTime.toDate()) : 'Не указано'} </Text>
 
-            <Text >{task.performerName}</Text>
+            <Text  style={{paddingTop:5,fontSize:12,fontWeight: '300',}} >{task.performerName}</Text>
           </View>
         </View>
       </View>
