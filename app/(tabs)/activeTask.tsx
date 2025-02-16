@@ -15,12 +15,12 @@ const styles = Platform.OS === 'android'
 const ActiveTask: React.FC = () => {
   const [confirmationDialogVisible, setConfirmationDialogVisible] = useState<string>('');
 
-  const { concatenateTasks } = useDataContext();
+  const { concatenateTasks, userData } = useDataContext();
   const { isLoading } = useLoading()
   const router = useRouter()
   const uniqueTasks = useMemo(() => {
     return concatenateTasks.filter((task, index, self) =>
-      index === self.findIndex((t) => t.id === task.id)
+      index === self.findIndex((t) => t.key === task.key)
     );
   }, [concatenateTasks]);
   const EmptyList = () => {
@@ -39,56 +39,70 @@ const ActiveTask: React.FC = () => {
 
 
   const handleCompleteForPerformer = async (item: any) => {
-    await updateElementToTheFirebase('tasks', { id: item.id, status: 'in_review' });
+    await updateElementToTheFirebase('tasks', { key: item.key, status: 'in_review' });
+     setConfirmationDialogVisible('')
     console.log("Выполнил")
 
   };
- 
+
 
   const handleCompleteForOwner = async (item: any) => {
-    await updateElementToTheFirebase('tasks', { id: item.id, status: 'completed' });
+    await updateElementToTheFirebase('tasks', { key: item.key, status: 'completed' });
     setConfirmationDialogVisible('')
     console.log("Выполнил")
   };
   const handleRefactorForOwner = async (item: any) => {
-    await updateElementToTheFirebase('tasks', { id: item.id, status: 'pending' });
-    setConfirmationDialogVisible('')
-    console.log("Выполнил")
-  }; 
-  const handleDeclined =  async (item:any) => {
-    await updateElementToTheFirebase('tasks', { id: item.id, status: 'declined' });
+    await updateElementToTheFirebase('tasks', { key: item.key, status: 'pending' });
     setConfirmationDialogVisible('')
     console.log("Выполнил")
   };
- 
-  
- 
+  const handleDeclined = async (item: any) => {
+    await updateElementToTheFirebase('tasks', { key: item.key, status: 'declined' });
+    setConfirmationDialogVisible('')
+    console.log("Выполнил")
+  };
+
+
+
   return (
 
     <FlatList
       data={uniqueTasks}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.key}
       renderItem={({ item }) => (
         <View>
-          <TouchableOpacity onPress={() => setConfirmationDialogVisible(item.id)}>
-            <TaskCard
-              task={item}
-            />
-          </TouchableOpacity>
+          {item.performerId === userData.id && item.status === "in_review" ? (
+              <TaskCard task={item} /> 
+          ) : item.ownerId === userData.id ? (
+            <TouchableOpacity onPress={() => setConfirmationDialogVisible(item.key)}>
+              <TaskCard
+                task={item}
+              />
+            </TouchableOpacity>) : (
+              <TouchableOpacity onPress={() => setConfirmationDialogVisible(item.key)}>
+              <TaskCard
+                task={item}
+              />
+            </TouchableOpacity>
+          )}
           <Dialog
-            isVisible={confirmationDialogVisible === item.id}
+            isVisible={confirmationDialogVisible === item.key}
             onClose={() => setConfirmationDialogVisible('')}
             dialogWidth={'100%'}
             scrollable={false}        >
-            <ScrollView contentContainerStyle={{ padding: 14,paddingBottom:-2 }}>
- 
+            <ScrollView contentContainerStyle={{ padding: 14, paddingBottom: -2 }}>
+              <View>
+                <Text style={{
+                  fontSize: 16,
+                  marginTop: 5, 
+                }}>{item.title}</Text>
+              </View>
               <View style={styles.rowStyle}>
                 <Text style={styles.header}>Из группы</Text>
 
                 <Text style={{
                   fontSize: 16,
-                  marginTop: 5,
-                  // marginBottom: "10%"
+                  marginTop: 5, 
                 }}>{item.groupName}</Text></View>
               <View style={styles.rowStyle}>
                 <Text style={styles.header}>Дедлайн в</Text>
@@ -113,18 +127,18 @@ const ActiveTask: React.FC = () => {
                     ...styles.rowStyle,
                     marginTop: "5%",
                   }}>
-                    <View style={{ ...styles.buttonContainerInDetails, flexDirection: "row" , width: "100%" }}>
-                      <TouchableOpacity style={{ ...styles.buttonInDetails, width: 40, height: 40, backgroundColor: "blue", justifyContent: "center", alignItems: "center" }} onPress={() => handleCompleteForOwner(item)}>
-                      <Ionicons name="checkmark" size={24} color="white" />
+                    <View style={{ ...styles.buttonContainerInDetails, flexDirection: "row", width: "100%" }}>
+                      <TouchableOpacity style={{ ...styles.buttonInDetails, width: 40, height: 40, backgroundColor: "green", justifyContent: "center", alignItems: "center" }} onPress={() => handleCompleteForOwner(item)}>
+                        <Ionicons name="checkmark" size={24} color="white" />
                       </TouchableOpacity>
 
                       <TouchableOpacity style={{ ...styles.buttonInDetails, width: 40, height: 40, backgroundColor: "orange", justifyContent: "center", alignItems: "center" }} onPress={() => handleRefactorForOwner(item)}>
-                      <Ionicons name="refresh" size={24} color="white" />
+                        <Ionicons name="refresh" size={24} color="white" />
                       </TouchableOpacity>
 
 
 
-                      <TouchableOpacity style={{ ...styles.buttonInDetails, width: 40, height: 40, backgroundColor: "red", justifyContent: "center", alignItems: "center" }} onPress={()=>handleDeclined(item)}>
+                      <TouchableOpacity style={{ ...styles.buttonInDetails, width: 40, height: 40, backgroundColor: "red", justifyContent: "center", alignItems: "center" }} onPress={() => handleDeclined(item)}>
                         <Ionicons name="close" size={24} color="white" />
                       </TouchableOpacity>
                     </View>

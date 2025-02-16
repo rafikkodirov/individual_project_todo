@@ -8,6 +8,7 @@ interface DialogProps {
   dialogWidth: any;
   scrollable?: boolean;
   children: ReactNode;
+  style?: any
 }
 
 const Dialog: React.FC<DialogProps> = ({ isVisible, onClose, children, dialogWidth, scrollable = false }) => {

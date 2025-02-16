@@ -29,7 +29,7 @@ const UserList = () => {
     getUsers().then((data) => {
       setUsersSearch(data)
     })
-  }, []) 
+  }, [])
   useEffect(() => {
     setIsOwner(userData.id === owner);
   }, [userData.id, owner]);
@@ -40,16 +40,28 @@ const UserList = () => {
   }, [users])
 
 
+  // const handleSearch = (query: string) => {
+  //   setSearchQuery(query);
+  //   const filtered = users.filter(users => users.nickname.toLowerCase().includes(query.toLowerCase()));
+  //   setFiltered(filtered);
+  // };
+
+  // const displayedUsers = searchQuery.trim() ? filteredU : usersSearch;
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    const filtered = users.filter(users => users.nickname.toLowerCase().includes(query.toLowerCase()));
+    const filtered = usersSearch.filter(user =>
+      user.nickname.toLowerCase().includes(query.toLowerCase()) &&
+      !users.some(groupUser => groupUser.key === user.key) // Фильтруем уже добавленных пользователей
+    );
     setFiltered(filtered);
   };
 
-  const displayedUsers = searchQuery.trim() ? filteredU : usersSearch;
-// console.log(displayedUsers/)
+  const displayedUsers = searchQuery.trim()
+    ? filteredU
+    : usersSearch.filter(user => !users.some(groupUser => groupUser.key === user.key));
+  // console.log(displayedUsers/)
 
-  const showSearch = usersSearch.length > 5
+  const showSearch = displayedUsers.length > 4
   const ITEM_HEIGHT = 50
 
   // const handleUserSelect = (selectedUser: { id: string, name: string }[]) => {

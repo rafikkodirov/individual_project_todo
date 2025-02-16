@@ -33,7 +33,7 @@ export default ScaledStyleSheet.create({
   detailsButton: {
     backgroundColor: "#F0F0F0",
     padding: 8,
-    borderRadius: 5,
+    borderRadius: 10,
     width: "60%",
 
     // marginStart: "-1%",
@@ -52,20 +52,28 @@ export default ScaledStyleSheet.create({
   cardContainerGroup: {
     padding: 10,
     marginHorizontal:10, 
-    borderWidth: 1,
-    borderColor: '#000',
+    borderWidth: 1, 
     borderRadius: 8,
     margin: 8,
     backgroundColor: '#fff',
+  }, 
+  colorOption: { 
+    width: 40,
+    height: 40,
+    margin: 8,
+    borderRadius: 5,
   },
   cardContainer: {
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#000',
+    padding: 16, 
     borderRadius: 8,
     margin: 8,
     backgroundColor: '#fff',
-  },
+    shadowColor: '#000', // Цвет тени
+    shadowOffset: { width: 1, height: 3 }, // Смещение тени
+    shadowOpacity: 0.01, // Прозрачность тени
+    shadowRadius: 8, // Радиус тени
+    elevation: 6, // Для Android
+  },  
   title: {
     fontSize: 15,
     marginVertical: -1,

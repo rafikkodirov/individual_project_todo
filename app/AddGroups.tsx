@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Text, TextInput, Button, SafeAreaView, ScrollView, Platform } from 'react-native'; 
+import { Text, TextInput, Button, SafeAreaView, ScrollView, Platform, View } from 'react-native';
 import { FSUserInfo, useDataContext } from '@/providers/DataProvider';
 import { useLoading } from '@/providers/LoadingProvider';
 import { debounce } from 'lodash';
+import ColorPicker from '@/components/ColorPicker';
 
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
@@ -12,17 +13,20 @@ interface AddGroupScreenProps {
   closeModal: () => void;
 }
 
-const AddGroupScreen: React.FC<AddGroupScreenProps> = ({ closeModal }) => { 
+const AddGroupScreen: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
   const [groupName, setGroupName] = useState('');
   const [groups, setGroups] = useState<any[]>([]);
   const [nickname, setNickname] = useState('');
-  const [color, setColor] = useState('#ffcf48'); 
   const { isLoading, setLoading } = useLoading()
 
   const { addGroups, userData } = useDataContext();
- 
+  const [color, setColor] = useState(''); // Состояние для выбранного цвета
 
-  
+  const handleColorSelect = (selectedColor: string) => {
+    setColor(selectedColor); // Обновляем выбранный цвет
+  };
+
+
   const addGroup = debounce(async () => {
     if (!groupName) {
       alert('Пожалуйста, заполните все поля!');
@@ -32,15 +36,15 @@ const AddGroupScreen: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
       groupName,
       color,
       owner: userData.nickname,
-      ownerId: userData.id, 
+      ownerId: userData.id,
     };
 
     try {
       if (isLoading) return;
       setLoading(true);
-      await addGroups(newGroup);      
-      closeModal() 
-      
+      await addGroups(newGroup);
+      closeModal()
+
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -48,16 +52,24 @@ const AddGroupScreen: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
     }
   }, 500);
   return (
-    <SafeAreaView style={styles.containerAddGroup}>
-      <ScrollView contentContainerStyle={{ padding: 16 }}>
+    <SafeAreaView >
+      <ScrollView  >
         <Text style={styles.header}>Название группы:</Text>
         <TextInput
-          style={styles.input}
+          style={{ ...styles.input }}
           placeholder="Введите название группу"
           value={groupName}
           onChangeText={setGroupName}
         />
-        <Button title="Добавить группу" onPress={addGroup} color="#007bff" />
+        <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+          <Text style={{ ...styles.title, color: color }}>
+            Выбранный цвет 
+          </Text>
+        </View>
+        {/* <View style={{maxHeight:400}}> */}
+        <ColorPicker onColorSelect={handleColorSelect} initialColor={color} />
+        {/* </View> */}
+        <Button title="Добавить" onPress={addGroup} color="#007bff" />
       </ScrollView>
     </SafeAreaView>
   );

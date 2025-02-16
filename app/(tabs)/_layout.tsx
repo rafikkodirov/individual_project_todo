@@ -107,7 +107,7 @@ const TabsLayout = () => {
 
                   <Ionicons name="add" size={24} color="black" />
 
-                  <Dialog isVisible={isConfirmationDialogVisible} onClose={() => setIsConfirmationDialogVisible(false)} dialogWidth={'100%'} scrollable={false}>
+                  <Dialog isVisible={isConfirmationDialogVisible} onClose={() => setIsConfirmationDialogVisible(false)} dialogWidth={'100%'} scrollable={false}  >
                     <AddGroupScreen closeModal={() => setIsConfirmationDialogVisible(false)}/>
                   </Dialog>
                   
