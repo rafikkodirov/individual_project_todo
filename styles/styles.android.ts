@@ -69,7 +69,7 @@ export default ScaledStyleSheet.create({
     margin: 8,
     backgroundColor: '#fff',
     shadowColor: '#000', // Цвет тени
-    shadowOffset: { width: 1, height: 5 }, // Смещение тени
+    shadowOffset: { width: 3, height: 5 }, // Смещение тени
     shadowOpacity: 0.5, // Прозрачность тени
     shadowRadius: 8, // Радиус тени
     elevation: 8, // Для Android

@@ -44,6 +44,8 @@ const TaskCard: React.FC<TaskProps> = ({
         {
           borderLeftWidth: 7, // Толщина линии
           borderLeftColor: borderStatusColor, // Цвет линии
+          borderColor:borderStatusColor,
+          borderWidth:1
         },
       ]}
     >

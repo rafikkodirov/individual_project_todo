@@ -11,12 +11,12 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ onColorSelect, initialColor =
   const [numColumns, setNumColumns] = useState(7);
   const colors = [
     '#FF5733', '#33FF57', '#3357FF', '#000000',
-    '#FF00FF', '#FFFF00', '#00FFFF', '#800080', '#808080', '#C0C0C0',
+    '#FF00FF', '#FFFF00', '#00FFFF', '#800080', 
     '#FFC0CB', '#FFD700', '#8B4513', '#D2691E', '#2E8B57', '#B22222',
     '#9932CC', '#A52A2A', '#008080', '#4682B4', '#4B0082', '#FF6347',
-    '#FF1493', '#F08080', '#32CD32', '#8A2BE2', '#B0C4DE', '#FA8072',
-    '#ADFF2F', '#98FB98', '#D3D3D3', '#8B0000', '#2F4F4F',  
-    '#7FFF00', '#A9A9A9'
+    '#FF1493', '#F08080', '#32CD32', '#8A2BE2' , 'red',
+    '#ADFF2F', '#98FB98', '#8B0000', '#2F4F4F',  
+    '#7FFF00'
   ];
 
   const handleColorSelect = (color: string) => {
