@@ -15,21 +15,17 @@ const styles = Platform.OS === 'android'
 const Groups: React.FC = () => {
   const { isLoading, setLoading } = useLoading()
   const { cachedGroups, getUsersByGroupId } = useDataContext();
-  
-    const { getUsers, userData } = useDataContext();
-    const [users, setUsers] = useState<any[]>([]); 
+  const { selectedGroupId, setSelectedGroupId, setSelectedGroup } = useDataContext();
+  const router = useRouter()
+
+    const { getUsers, userData } = useDataContext(); 
   useEffect(() => {
     setLoading(false)
   }, [cachedGroups]);  
-  useEffect(() => {
-    getUsersByGroupId().then((data) => {
-      setUsers(data)
-    })
-  }, [users])
+ 
   // console.log(usersAll,'dddddddddddd')
   
-  const { selectedGroupId, setSelectedGroupId, setSelectedGroup } = useDataContext();
-  const router = useRouter()
+  
   const handleUser = (group: any, ownerId: any) => {
     setSelectedGroupId(group.key);
     setSelectedGroup(group)
@@ -43,6 +39,9 @@ const Groups: React.FC = () => {
     })
   };
   const handleDeleteGroup = async (group: any) => {
+    
+    
+              //setSelectedGroupId(group.key);
     Alert.alert(
       "Подтвердите удаление",
       "Вы уверены, что хотите удалить эту группу?",
@@ -54,22 +53,26 @@ const Groups: React.FC = () => {
           onPress: async () => {
             setTimeout(async () => {
             try {
-              setSelectedGroupId(group.key);
+              const users = await getUsersByGroupId(group)
  
+              console.log("Pressed", users);
               for (const user of users) {
-                const userEmail = user.key;
-                console.log(userEmail,'dddddde23ddd')
+                
+              console.log(user.key, "user.key...");
+                const userEmail = user.key; 
                 
                 if (userEmail) {
                   try {
-                    await deleteDoc(doc(db, `users/${userEmail}/groups`, group.key));
-                    console.log(`Документ группы ${group.key} успешно удалён для пользователя ${userEmail}`);
+                    await deleteDoc(doc(db, `users/${userEmail}/groups`, group));
+                    console.log(`Документ группы ${group} успешно удалён для пользователя ${userEmail}`);
                   } catch (error) {
                     console.error(`Ошибка при удалении документа группы для пользователя ${userEmail}:`, error);
                   }
                 }
               }
 
+                await deleteDoc(doc(db, `groups/${group}`));
+                // console.log(`Документ группы ${group} успешно удалён для пользователя ${userEmail}`);
             } catch (error) {
               console.error(`Ошибка при удалении группы ${group.key}:`, error);
             }

@@ -15,7 +15,7 @@ const GroupDetailsPage: React.FC = () => {
   const [GroupId, setGroupId] = useState<string>('');
   const { filteredTasks } = useDataContext();
 
-  const { getUsersByGroupId, userData } = useDataContext();
+  const { userData } = useDataContext();
   const { owner } = useLocalSearchParams()
   useEffect(() => {
     setIsOwner(userData.id === owner);

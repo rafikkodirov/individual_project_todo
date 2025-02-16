@@ -24,7 +24,7 @@ const UserList = () => {
   const [filteredU, setFiltered] = useState<any[]>([]);
 
   const { getUsers, userData } = useDataContext();
-  const { owner } = useLocalSearchParams()
+  const { owner , groupId} = useLocalSearchParams()
   useEffect(() => {
     getUsers().then((data) => {
       setUsersSearch(data)
@@ -34,7 +34,7 @@ const UserList = () => {
     setIsOwner(userData.id === owner);
   }, [userData.id, owner]);
   useEffect(() => {
-    getUsersByGroupId().then((data) => {
+    getUsersByGroupId(groupId.toString()).then((data) => {
       setUsers(data)
     })
   }, [users]) 

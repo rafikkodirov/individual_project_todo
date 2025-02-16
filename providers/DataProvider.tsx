@@ -46,7 +46,7 @@ interface DataContextType {
   addGroups: (newTask: any) => Promise<void>;
   deleteGroup: (groupId: any) => Promise<void>;
   
-  getUsersByGroupId: () => Promise<any[]>;
+  getUsersByGroupId: (groupId: string) => Promise<any[]>;
   getUsers: () => Promise<any[]>;
   refreshRequest: () => void;
 }
@@ -253,8 +253,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     setCachedPerformTasks(sortedTasks)
   }, [cachedPerformRowTasks])
 
-  const getUsersByGroupId = async () => {
-    const data = await getItems(`groups/${selectedGroupId}/users`);
+  const getUsersByGroupId = async (groupId: string) => {
+    const data = await getItems(`groups/${groupId}/users`);
     return data;
   }
   const getUsers = async () => {
