@@ -176,7 +176,7 @@ export default ScaledStyleSheet.create({
   buttonContainerInDetails: {
     flexGrow: 1, 
     justifyContent: 'flex-end',  
-    padding:16,
+    padding:8,
   },
   Button: {
     width: '100%',

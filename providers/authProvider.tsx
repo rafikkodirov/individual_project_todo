@@ -28,7 +28,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const refreshFirebaseUser = () => {
     try {
       const savedUser = SecureStore.get<AppUser>("USER");  
-      console.log(savedUser,'savedUser///d/'); 
       if (savedUser) {
         signIn(savedUser.email, savedUser.password);
       }
@@ -42,7 +41,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       
-    console.log("onAuthStateChanged ................................. ", user?.email);
       setUser(user);
       setLoading(false);
     });
@@ -60,12 +58,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signIn = async (email: string, password: string): Promise<User | null> => {
-    console.log(email, password, "email, password...........................");
     
     setReLogin(false);
     try {
       const user = await loginWithEmail(email, password);
-      console.log(email, password, "email, password ........................... success!!!");
       setUser(user);
       return user;
     } catch (error: any) {

@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
-import { useRouter } from 'expo-router'; 
+import { useRouter } from 'expo-router';
 import { useDataContext } from '@/providers/DataProvider';
 import { SecureStore } from '@/stores/global.store';
 import { logout } from '../services/authUtils';
@@ -9,6 +9,11 @@ const styles = Platform.OS === 'android'
 const Settings: React.FC = () => {
   const router = useRouter();
   const { userData } = useDataContext();
+  const handleArchive = () => {
+    router.push({
+      pathname: "/archive"
+    })
+  }
   const handleLog = async () => {
     SecureStore.delete(["USER"])
     await logout()
@@ -16,13 +21,12 @@ const Settings: React.FC = () => {
     router.push({
       pathname: "/sign-in"
     })
-    console.log("logout");
 
   }
   return (
     <>
       <View style={{
-        flex: 1,justifyContent: 'center',alignItems: 'center',
+        flex: 1, justifyContent: 'center', alignItems: 'center',
       }}>
         <View>
           <Text style={styles.titleInSettings}>Имя Пользователя</Text>
@@ -30,11 +34,15 @@ const Settings: React.FC = () => {
         </View>
         <View>
         </View>
+        
         <View style={styles.buttonContainerInDetails}>
           <TouchableOpacity style={styles.button} onPress={handleLog} >
             <Text style={styles.applyText}>Выйти из аккаунта</Text>
           </TouchableOpacity>
-        </View>
+        </View> 
+        <TouchableOpacity onPress={handleArchive} >
+          <Text style={{ ...styles.applyText, color: "gray" }}>Посмотреть архив</Text>
+        </TouchableOpacity>
       </View>
     </>
   );

@@ -1,7 +1,8 @@
 export enum TaskStatuses {
-    pending = 'pending',
-    in_review = 'in_review',
-    completed = 'completed',
-    expired = 'expired',
-    declined_pending = 'declined_pending',
-  }
+  in_progress = 'in_progress',
+  in_review = 'in_review',
+  completed = 'completed',
+  declined = 'declined',
+  expired = 'expired',
+  returned = 'returned',
+}

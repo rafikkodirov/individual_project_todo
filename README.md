@@ -1,50 +1,26 @@
-# Welcome to your Expo app 👋
+# Tasks/Groups
+1. Авторизация  
+- Вы можете войти в аккаунт если уже пользовались приложением 
+2. Регистрация 
+- Если у вас нету данных для входа вы можете зарегистрироваться заполнив поля, которые показаны на фотографии ![alt text](image.png)
+3. Задания
+- Вы можете быть владельцем задания и исполняющим
+- Это вы увидите на карточке задания слева владелец справа исполнитель
+- Владелец задания проверяет задания и может принять,вернуть и отклонить.
+- Если задание истекло срок то оно становится просроченным
+- Цвета и их значения 
+ *     голубой - в процессе 
+ *     желтоватый - отправлен на проверку
+ *     темно-синий - возвращен на доработку
+ *     красный - отклонен
+ *     темно-серый - просрочен
+ *     зеленый - выполнен
+4. Группы 
+- Вы можете создать группу справа сверху
+- После создания группы  вы можете добавить пользователей, нажав на кнопку участники
+- Также владелец группы может давать задание себе или конкретному пользователю который есть в группе. Для этого надо нажать на группу
+5. Настройки 
+- Вы можете посмотреть архив заданий
+- Вы можете посмотреть информацию о приложении
+- Вы можете выйти из аккаунта
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.

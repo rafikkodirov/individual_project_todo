@@ -29,7 +29,6 @@ export const updateElementToTheFirebase = async (docPath: string, element: any) 
     const tasksCollectionRef = doc(db, docPath, key);
 
     await updateDoc(tasksCollectionRef, updateData); // Ждём завершения обновления
-    console.log("Документ успешно обновлён:", key);
   } catch (error) {
     console.error("Ошибка при обновлении документа:", error);
   }

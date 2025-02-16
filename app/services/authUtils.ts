@@ -14,8 +14,6 @@ export const registerWithEmail = async (email: string, password: string): Promis
 
 export const loginWithGoogle = async (): Promise<void> => {
   const provider = new GoogleAuthProvider();
-  console.log(auth, "Auth");
-  console.log(provider, "provider");
   await signInWithPopup(auth, provider);
 };
 

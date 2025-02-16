@@ -48,12 +48,8 @@ const GroupDetailsPage: React.FC = () => {
         groupId: GroupId
       }
     });
-
-    console.log('Задача завершена');
-  };
-  const handleComplete = async () => {
-    console.log('Задача завершена');
-  };
+ 
+  }; 
 
   return (
     <>

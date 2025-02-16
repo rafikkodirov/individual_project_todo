@@ -59,25 +59,12 @@ const TabsLayout = () => {
   }, [reLogin])
 
   useEffect(() => {
-    if (!loading && !user) {
-      console.log(user, "TabsLayout");
+    if (!loading && !user) { 
       const savedUser = SecureStore.get<AppUser>("USER");
       if (savedUser === null)
         router.replace("/sign-in");
     }
-  }, [user, loading]);
-
-  const handleGroups = () => {
-    router.push({
-      pathname: '/AddGroups',
-    });
-  };
-
-  const handleTasks = () => {
-    router.push({
-      pathname: '/add-task',
-    });
-  };
+  }, [user, loading]); 
   return (
     <>
       <Tabs>

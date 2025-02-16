@@ -23,6 +23,7 @@ import { v4 as uuidv4 } from 'uuid';
 interface DataContextType {
   cachedUsers: any[];
   cachedTasks: any[];
+  cachedArchiveRowTasks: any[]
   cachedPerformTasks: any[];
   concatenateTasks: any[];
   cachedGroups: any[];
@@ -61,6 +62,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const [cachedPerformTasks, setCachedPerformTasks] = useState<any[]>([]);
   const [cachedPerformRowTasks, setCachedPerformRowTasks] = useState<any[]>([]);
+  const [cachedArchiveRowTasks, setCachedArchiveRowTasks] = useState<any[]>([]);
 
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [selectedGroupName, setSelectedGroupName] = useState<string | null>(null);
@@ -74,7 +76,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   const [userData, setUserData] = useState<any>(null);
   const [whereConditionTasks, setWhereConditionTasks] = useState<any[]>([]);
   const [wherePerformConditionTasks, setPerformWhereConditionTasks] = useState<any[]>([]);
-  const [whereConditionGroups, setWhereConditionGroups] = useState<any[]>([]);
+  const [whereArchiveConditionTasks, setArchiveWhereConditionTasks] = useState<any[]>([]); 
   const { isLoading, setLoading } = useLoading()
 
 
@@ -163,8 +165,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     // console.log("refreshRequest ............... 4");
-    if (userData && userData.id && wherePerformConditionTasks.length > 0) {
-      // console.log(wherePerformConditionTasks, "whereConditionTasks...............");
+    if (userData && userData.id && wherePerformConditionTasks.length > 0) { 
 
       setLoading(true);
 
@@ -179,6 +180,23 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       };
     }
   }, [userData, wherePerformConditionTasks]);
+  useEffect(() => {
+    // console.log("refreshRequest ............... 4");
+    if (userData && userData.id && whereArchiveConditionTasks.length > 0) { 
+
+      setLoading(true);
+
+      const unsubscribeArchiveTasks = subscribeToCollection(
+        "tasks",
+        whereArchiveConditionTasks,
+        setCachedArchiveRowTasks
+      );
+
+      return () => {
+        unsubscribeArchiveTasks();
+      };
+    }
+  }, [userData, whereArchiveConditionTasks]);
 
   useEffect(() => {
     const sortedTasks = cachedRowTasks.sort(
@@ -247,7 +265,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         {
           key: "status",
           operator: "in",
-          value: [TaskStatuses.pending, TaskStatuses.in_review, TaskStatuses.declined_pending],
+          value: [TaskStatuses.in_progress, TaskStatuses.in_review, TaskStatuses.returned],
         },
       ]);
 
@@ -260,8 +278,21 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         {
           key: "status",
           operator: "in",
-          value: [TaskStatuses.pending, TaskStatuses.in_review, TaskStatuses.declined_pending],
+          value: [TaskStatuses.in_progress, TaskStatuses.in_review, TaskStatuses.returned],
         },
+        
+      ]);
+      setArchiveWhereConditionTasks([
+        {
+          key: "ownerId",
+          operator: "==",
+          value: userData.id,
+        },
+        {
+          key: "status",
+          operator: "in",
+          value: [TaskStatuses.expired, TaskStatuses.declined, TaskStatuses.completed],
+        },   
       ]);
 
       const unsubscribeGroups = subscribeToCollection(
@@ -283,7 +314,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   const addElementToTheFirebase = (path: string, element: any, docId?: string,) => {
     const collectionRef = collection(db, path);
     if (docId) {
-      console.log(docId, "docId ...............");
       const docRef = doc(db, `${path}/${docId}`)
       return setDoc(docRef, element)
     }
@@ -306,8 +336,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       const docId = uuidv4();
       await addElementToTheFirebase("groups", newGroup, docId);
       await addElementToTheFirebase(`groups/${docId}/users`,{ nickname: userData.nickname}, userData.id);
-      console.log(userData.id)
-      console.log(userData.nickname,'moreinfo')
       
       
       await addElementToTheFirebase(`users/${userData.id}/groups`, newGroup, docId);
@@ -376,6 +404,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     <DataContext.Provider
       value={{
         cachedUsers,
+        cachedArchiveRowTasks,
         cachedTasks,
         getUsers,
         addUser,

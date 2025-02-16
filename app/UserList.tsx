@@ -59,7 +59,7 @@ const UserList = () => {
   const displayedUsers = searchQuery.trim()
     ? filteredU
     : usersSearch.filter(user => !users.some(groupUser => groupUser.key === user.key));
-  // console.log(displayedUsers/)
+  
 
   const showSearch = displayedUsers.length > 4
   const ITEM_HEIGHT = 50

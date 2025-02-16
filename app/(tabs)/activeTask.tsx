@@ -33,15 +33,9 @@ const ActiveTask: React.FC = () => {
     if (!dateString) return '***'
     return dayjs(dateString).format('DD/MM/YYYY HH:mm');
   };
-
-
-
-
-
   const handleCompleteForPerformer = async (item: any) => {
     await updateElementToTheFirebase('tasks', { key: item.key, status: 'in_review' });
-     setConfirmationDialogVisible('')
-    console.log("Выполнил")
+     setConfirmationDialogVisible('') 
 
   };
 
@@ -49,17 +43,14 @@ const ActiveTask: React.FC = () => {
   const handleCompleteForOwner = async (item: any) => {
     await updateElementToTheFirebase('tasks', { key: item.key, status: 'completed' });
     setConfirmationDialogVisible('')
-    console.log("Выполнил")
   };
   const handleRefactorForOwner = async (item: any) => {
-    await updateElementToTheFirebase('tasks', { key: item.key, status: 'pending' });
+    await updateElementToTheFirebase('tasks', { key: item.key, status: 'returned' });
     setConfirmationDialogVisible('')
-    console.log("Выполнил")
   };
   const handleDeclined = async (item: any) => {
     await updateElementToTheFirebase('tasks', { key: item.key, status: 'declined' });
     setConfirmationDialogVisible('')
-    console.log("Выполнил")
   };
 
 
@@ -74,16 +65,20 @@ const ActiveTask: React.FC = () => {
           {item.performerId === userData.id && item.status === "in_review" ? (
               <TaskCard task={item} /> 
           ) : item.ownerId === userData.id ? (
+            <View>
             <TouchableOpacity onPress={() => setConfirmationDialogVisible(item.key)}>
               <TaskCard
                 task={item}
               />
-            </TouchableOpacity>) : (
+            </TouchableOpacity>
+            </View>) : (
+              <View>
               <TouchableOpacity onPress={() => setConfirmationDialogVisible(item.key)}>
               <TaskCard
                 task={item}
               />
             </TouchableOpacity>
+            </View>
           )}
           <Dialog
             isVisible={confirmationDialogVisible === item.key}
@@ -91,12 +86,6 @@ const ActiveTask: React.FC = () => {
             dialogWidth={'100%'}
             scrollable={false}        >
             <ScrollView contentContainerStyle={{ padding: 14, paddingBottom: -2 }}>
-              <View>
-                <Text style={{
-                  fontSize: 16,
-                  marginTop: 5, 
-                }}>{item.title}</Text>
-              </View>
               <View style={styles.rowStyle}>
                 <Text style={styles.header}>Из группы</Text>
 

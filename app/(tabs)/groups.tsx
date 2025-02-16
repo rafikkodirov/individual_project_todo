@@ -19,7 +19,6 @@ const Groups: React.FC = () => {
     setSelectedGroupId(group.key);
     setSelectedGroupName(group.groupName)
     
-    console.log(ownerId,'ddddddd')
     router.push({
       pathname: "/UserList",
       params: {
@@ -39,7 +38,6 @@ const Groups: React.FC = () => {
       }
     })
 
-    console.log(group.key)
   };
 
   return (

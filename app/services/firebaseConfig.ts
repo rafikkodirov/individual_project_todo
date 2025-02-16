@@ -11,13 +11,11 @@ const firebaseConfig = {
   messagingSenderId: Constants.expoConfig?.extra?.messagingSenderId || process.env.FIREBASE_MESSAGING_SENDER_ID,
   appId: Constants.expoConfig?.extra?.appId || process.env.FIREBASE_APP_ID
 }; 
-// console.log(firebaseConfig, "Firebase config......................");
 
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app); 
-console.log(auth.currentUser, "auth.currentUser..........................................................");
 
 
 export { db, auth };

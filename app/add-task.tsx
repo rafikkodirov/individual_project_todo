@@ -11,8 +11,11 @@ import LabeledTextInput, { TextInputType } from '@/Common/LabeledTextInput';
 import { Ionicons } from '@expo/vector-icons';
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
-  : require('../styles/styles.android').default;
-const AddTaskS: React.FC = () => {
+  : require('../styles/styles.android').default;interface AddGroupScreenProps {
+    closeModal: () => void;
+  }
+  
+  const AddTaskS: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
   const [groupId, setGroupId] = useState('');
   const [performer, setPerformer] = useState<{ id: string, name: string } | null>(null);
   const [owner, setOwner] = useState('');
@@ -78,7 +81,7 @@ const AddTaskS: React.FC = () => {
     const newTask = { 
       endTime: dateEnd,
       groupId,
-      status: TaskStatuses.pending,
+      status: TaskStatuses.in_progress,
       ownerId: userData.email,
       ownerName: userData.nickname,
       performerId: performer.id,
@@ -108,14 +111,7 @@ const AddTaskS: React.FC = () => {
         <LabeledTextInput value={description} onChangeText={setDescription} inputType={TextInputType.description} />
 
         <View style={{ padding: 6 }}>
-          <View style={styles.rowStyle}>
-            <Text style={styles.header}>
-              Группа: {groupName || "Не выбрана"}
-            </Text>
-            <TouchableOpacity onPress={() => setGroupSelectorVisible(true)}>
-              <Ionicons name="people" size={26} color="#007AFF" />
-            </TouchableOpacity>
-          </View>
+       
           <GroupSelector visible={isGroupSelectorVisible} onClose={() => setGroupSelectorVisible(false)} onSelectGroup={handleGroupSelect} />
           <View style={styles.rowStyle}>
 

@@ -15,21 +15,22 @@ const TaskCard: React.FC<TaskProps> = ({
 }) => {
   const borderStatusColor = useMemo(() => {
     switch (task.status) {
-      case "pending":
-        return "gray";
+      case "returned":
+        return "#08158a";
       case "in_progress":
-        return "blue";
+        return "#3db6db";
       case "in_review":
         return "orange";
       case "completed":
-        return "green";
+        return "#1ddb3f";
+      case "declined":
+        return "#d11111";
       case "expired":
-        return "red";
+        return "#434b4e";
       default:
         return "black";
     }
   }, [task.status]);
-  console.log(task.status)
 
   const formatDateTime = (dateString: string) => {
     if (!dateString) return '***'
