@@ -43,8 +43,11 @@
       "messagingSenderId": "1032971371295",
       "appId": "1:1032971371295:web:f916c9b58883f92923a62a",
       "measurementId": "G-KPX5XJ9EX2",
+      "router": {
+        "origin": false
+      },
       "eas": {
-        "projectId": "7effde9f-8695-492f-8363-c29ca27431a6"
+        "projectId": "e3d7647a-d430-4f90-9feb-a903a27d5a3d"
       }
     }
   }
