@@ -52,10 +52,7 @@ const UserList = () => {
 
 
   const showSearch = displayedUsers.length > 4
-  const ITEM_HEIGHT = 50
-
-  // const handleUserSelect = (selectedUser: { id: string, name: string }[]) => {
-  //   setPerformer({ id: selectedUser[0].id, name: selectedUser[0].name });
+  const ITEM_HEIGHT = 50 
   const router = useRouter()
   useEffect(() => {
 
@@ -67,10 +64,7 @@ const UserList = () => {
 
     setSelectedUserId(id);
     setPerformer(newPerformer);
-  };
-  // const { owner } = useLocalSearchParams();
-  // // Преобразуем строку обратно в boolean
-  // const isOwner = owner === 'true';
+  }; 
   const addUserFunc = async () => {
 
     if (!performer) {

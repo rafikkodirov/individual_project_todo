@@ -54,7 +54,7 @@ const UserSelector: React.FC<UserSelectorProps> = ({ visible, onClose, onSelectU
                 style={{...styles.groupItem,marginBottom:10}}
                   onPress={() => {
                     onSelectUser(item.key,item.nickname);
-                    // onClose();
+                    onClose();
                   }}
                 >
                   <Text style={styles.groupText}>{item.nickname}</Text>

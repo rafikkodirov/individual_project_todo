@@ -27,7 +27,7 @@ const Groups: React.FC = () => {
   
   
   const handleUser = (group: any, ownerId: any) => {
-    setSelectedGroupId(group);
+    setSelectedGroupId(group.key);
     setSelectedGroup(group)
 
     router.push({
@@ -38,8 +38,9 @@ const Groups: React.FC = () => {
       }
     })
   };
-  const handleDeleteGroup = async (group: any) => {
+  const handleDeleteGroup = async (groupId: any) => {
     
+    console.log(groupId,'groupsIDs')
     
               //setSelectedGroupId(group.key);
     Alert.alert(
@@ -53,7 +54,7 @@ const Groups: React.FC = () => {
           onPress: async () => {
             setTimeout(async () => {
             try {
-              const users = await getUsersByGroupId(group)
+              const users = await getUsersByGroupId(groupId)
  
               console.log("Pressed", users);
               for (const user of users) {
@@ -63,49 +64,27 @@ const Groups: React.FC = () => {
                 
                 if (userEmail) {
                   try {
-                    await deleteDoc(doc(db, `users/${userEmail}/groups`, group));
-                    console.log(`Документ группы ${group} успешно удалён для пользователя ${userEmail}`);
+                    
+                    await deleteDoc(doc(db, `groups/${groupId}/users`, userEmail));
+                    await deleteDoc(doc(db, `users/${userEmail}/groups`, groupId));
+                    console.log(`Документ группы ${groupId} успешно удалён для пользователя ${userEmail}`);
                   } catch (error) {
                     console.error(`Ошибка при удалении документа группы для пользователя ${userEmail}:`, error);
                   }
                 }
               }
 
-                await deleteDoc(doc(db, `groups/${group}`));
+                await deleteDoc(doc(db, `groups/${groupId}`));
                 // console.log(`Документ группы ${group} успешно удалён для пользователя ${userEmail}`);
             } catch (error) {
-              console.error(`Ошибка при удалении группы ${group.key}:`, error);
+              console.error(`Ошибка при удалении группы ${groupId}:`, error);
             }
           },100)
         }
         }
       ]
     );
-  };
-  // const handleDeleteGroup = async (groups: any) => {
-  //   console.log("Выполняю")
-    
-  //   setSelectedGroupId(groups.key)
-  //   getUsersByGroupId().then((data) => {
-  //     // data — массив документов пользователей с ключами и данными
-  //     data.forEach(async (usersAll) => {
-  //       // Предположим, что в документе пользователя есть поле email, которое используется для построения пути
-  //       const userEmail = usersAll.key;
-        
-  //       if (userEmail) {
-  //         try {
-  //           // Формируем путь: users/{userEmail}/groups/{groupId}
-  //           await deleteDoc(doc(db, `users/${userEmail}/groups`, groups.key));
-            
-  //           await deleteDoc(doc(db, `groups/${groups.key}`, groups.key));
-  //           console.log(`Документ группы ${groups.key} успешно удалён для пользователя ${userEmail}`);
-  //         } catch (error) {
-  //           console.error(`Ошибка при удалении документа группы для пользователя ${userEmail}:`, error);
-  //         }
-  //       }
-  //     })}); 
-  // };
-
+  }; 
 
   const handleGotoGroupDetails = (group: any, ownerId: any) => {
     setSelectedGroupId(group.key);

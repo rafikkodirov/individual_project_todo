@@ -348,6 +348,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   const addGroups = async (newGroup: any) => {
     try {
       const docId = uuidv4();
+      console.log(docId,'dddddddddddddddddd')
       
       await addElementToTheFirebase("groups", newGroup, docId);
       await addElementToTheFirebase(`groups/${docId}/users`,{ nickname: userData.nickname}, userData.id);
@@ -362,6 +363,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       if (selectedGroupId) {
         if (selectedUserId) {
+          console.log(selectedGroup,'inform')
+          
+          console.log(selectedGroupId,'inform')
           await addElementToTheFirebase(`groups/${selectedGroupId}/users`, newUser, selectedUserId);
           await addElementToTheFirebase(`users/${selectedUserId}/groups`, selectedGroup, selectedGroupId);
         }

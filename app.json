@@ -3,24 +3,21 @@
     "name": "Задания и Группы",
     "slug": "Tasks",
     "version": "1.0.0",
-    "platforms": ["android"],
+    "platforms": [
+      "android"
+    ],
     "orientation": "portrait",
     "icon": "./assets/images/Group_full_edit.png",
     "scheme": "tasks",
-    "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/Group_full_edit.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    
+    "userInterfaceStyle": "automatic", 
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "icon": "./assets/images/Group_full_edit_resize.png",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/Group_full_edit_resize.png",
+        "backgroundColor": "#FFFAFA"
       },
       "package": "com.forceenginee.tasksgroups"
     },
@@ -28,7 +25,7 @@
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
-    }, 
+    },
     "experiments": {
       "typedRoutes": true
     },
