@@ -27,7 +27,7 @@ const Groups: React.FC = () => {
   
   
   const handleUser = (group: any, ownerId: any) => {
-    setSelectedGroupId(group.key);
+    setSelectedGroupId(group);
     setSelectedGroup(group)
 
     router.push({
@@ -108,7 +108,7 @@ const Groups: React.FC = () => {
 
 
   const handleGotoGroupDetails = (group: any, ownerId: any) => {
-    setSelectedGroupId(group.id);
+    setSelectedGroupId(group.key);
 
     router.push({
       pathname: "/GroupDetailsPage",

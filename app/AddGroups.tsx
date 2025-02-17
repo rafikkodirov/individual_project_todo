@@ -4,6 +4,7 @@ import { FSUserInfo, useDataContext } from '@/providers/DataProvider';
 import { useLoading } from '@/providers/LoadingProvider';
 import { debounce } from 'lodash';
 import ColorPicker from '@/components/ColorPicker';
+import LabeledTextInput, { TextInputType } from '@/Common/LabeledTextInput';
 
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
@@ -54,21 +55,17 @@ const AddGroupScreen: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
   return (
     <SafeAreaView >
       <ScrollView  >
-        <Text style={styles.header}>Название группы:</Text>
-        <TextInput
-          style={{ ...styles.input }}
-          placeholder="Введите название группу"
-          value={groupName}
-          onChangeText={setGroupName}
-        />
+
+        <LabeledTextInput value={groupName} onChangeText={setGroupName} inputType={TextInputType.group} />
+
         <View style={{ justifyContent: 'center', alignItems: 'center', }}>
           <Text style={{ ...styles.title, color: color }}>
-            Выбранный цвет 
+            Выбранный цвет
           </Text>
         </View>
-        {/* <View style={{maxHeight:400}}> */}
-        <ColorPicker onColorSelect={handleColorSelect} initialColor={color} />
-        {/* </View> */}
+        <View style={{marginBottom:20}}>
+        <ColorPicker  onColorSelect={handleColorSelect} initialColor={color} />
+        </View>
         <Button title="Добавить" onPress={addGroup} color="#007bff" />
       </ScrollView>
     </SafeAreaView>

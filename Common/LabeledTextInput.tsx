@@ -14,6 +14,7 @@ export enum TextInputType {
     confirmPassword = 'confirmPassword',
     description = 'description',
     title = 'title',
+    group = 'group'
 }
 
 interface LabeledTextInputProps {
@@ -63,6 +64,12 @@ const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
                 placeholder = "Введите описание"
                 autoCapitalize = "none"
                 label = 'Описание'
+                break;
+            case TextInputType.group:
+                keyboardType = 'default';
+                placeholder = "Введите название группы"
+                autoCapitalize = "none"
+                label = 'Группа'
                 break;
             case TextInputType.numeric:
                 keyboardType = 'numeric';

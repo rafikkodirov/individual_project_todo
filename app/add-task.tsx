@@ -80,19 +80,19 @@ const AddTaskS: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
     return `${day}/${month}/${year}`;
   };
   const addTaskFunc = async () => {
-    if (!title || !description || !endTime || !groupName  ) {
+    if (!title || !description || !endTime || !groupName  || !performer ) {
       alert('Пожалуйста, заполните все поля!');
       return;
     }
     const newTask = {
       endTime: dateEnd,
-      groupId,
+      groupId: groupId,
       status: TaskStatuses.in_progress,
       ownerId: userData.email,
       ownerName: userData.nickname,
-      // performerId: performer.id,
-      // performerName: performer.name,
-      groupName,
+      performerId: performer.id,
+      performerName: performer.name,
+      groupName: groupName,
       description,
       title,
     };
