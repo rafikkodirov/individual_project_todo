@@ -9,8 +9,7 @@ import UserSelector from './UserSelector';
 import { useLoading } from '@/providers/LoadingProvider';
 import { Ionicons } from '@expo/vector-icons';
 import UserSelectorAll from './UserSelectorAll';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useRoute } from '@react-navigation/native';
+import { useLocalSearchParams, useRouter } from 'expo-router'; 
 const UserList = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [usersSearch, setUsersSearch] = useState<any[]>([]);

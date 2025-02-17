@@ -1,17 +1,19 @@
 {
   "expo": {
-    "name": "Tasks/Groups",
-    "slug": "Tasks",
+    "name": "tasks",
+    "slug": "tasks",
     "version": "1.0.0",
+    "platforms": ["android"],
     "orientation": "portrait",
     "icon": "./assets/images/Group_full_edit.png",
-    "scheme": "myapp",
+    "scheme": "tasks",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/Group_full_edit.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    
     "ios": {
       "supportsTablet": true
     },
@@ -20,7 +22,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.example.myapplication"
+      "package": "com.forceenginee.tasksgroups"
     },
     "web": {
       "bundler": "metro",
