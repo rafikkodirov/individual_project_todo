@@ -43,6 +43,7 @@ interface DataContextType {
   filteredTasks: (groupId: string) => any[];
   addTask: (newTask: any) => Promise<void>;
   addUser: (newUser: any) => Promise<void>;
+  addUsersToGroup: (selectedUsers: any[]) => Promise<void>;
   addGroups: (newTask: any) => Promise<void>;
   deleteGroup: (groupId: any) => Promise<void>;
   
@@ -377,6 +378,26 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error("Ошибка при добавлении задачи:", error);
     }
   };
+
+  const addUsersToGroup = async (selectedUsers: any[]) => {
+    try {
+      if (selectedGroupId) {
+        for (const user of selectedUsers) {
+          await addElementToTheFirebase(`groups/${selectedGroupId}/users`, user);
+          await addElementToTheFirebase(`users/${user.id}/groups`, selectedGroup, selectedGroupId);
+        }
+      } else {
+        console.error("Ошибка: selectedGroupId is null");
+      }
+
+    } catch (error) {
+      console.error("Ошибка при добавлении задачи:", error);
+    }
+  };
+
+
+
+
   const [userDoc, setUserDoc] = useState<any>(null);
   useEffect(() => {
     if (user !== undefined) {
@@ -447,6 +468,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         // deleteTask,
         refreshRequest,
         getUsersByGroupId,
+        addUsersToGroup
       }}
     >
       {children}

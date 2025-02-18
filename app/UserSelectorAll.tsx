@@ -19,7 +19,13 @@ const UserSelector: React.FC<UserSelectorProps> = ({ visible, onClose, onSelectU
 
   useEffect(()=> {
     getUsers().then((data) => { 
-      setUsers(data) 
+      setUsers(data.map((element) => {
+        return {
+          key: element.id,
+          nickname: element.nickname,
+          isSelected: false
+        }
+      })) 
     })
   }, [])
 
@@ -51,10 +57,17 @@ const UserSelector: React.FC<UserSelectorProps> = ({ visible, onClose, onSelectU
               keyExtractor={item => item.key}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                style={{...styles.groupItem,marginBottom:10}}
+                style={{...styles.groupItem,marginBottom:10,
+                  backgroundColor: item.isSelected ? '#e0e0e0' : 'white',
+                }}
                   onPress={() => {
-                    onSelectUser(item.key,item.nickname);
-                    onClose();
+                    //onSelectUser(item.key, item.nickname);
+                    setUsers((prevUsers) =>
+                      prevUsers.map((user) =>
+                        user.key === item.key ? { ...user, isSelected: !user.isSelected } : user
+                      )
+                    );
+                    // onClose();
                   }}
                 >
                   <Text style={styles.groupText}>{item.nickname}</Text>
