@@ -1,4 +1,4 @@
-import { View, Text, FlatList, SafeAreaView, ScrollView, TouchableOpacity, Button, TextInput } from 'react-native'
+import { View, Text, FlatList, SafeAreaView, ScrollView, TouchableOpacity, Button, TextInput, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import UserListCard from '@/components/UserListCard';
 
@@ -9,7 +9,9 @@ import UserSelector from './UserSelector';
 import { useLoading } from '@/providers/LoadingProvider';
 import { Ionicons } from '@expo/vector-icons';
 import UserSelectorAll from './UserSelectorAll';
-import { useLocalSearchParams, useRouter } from 'expo-router'; 
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { deleteDoc, doc } from 'firebase/firestore';
+import { db } from './services/firebaseConfig';
 const UserList = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [usersSearch, setUsersSearch] = useState<any[]>([]);
@@ -23,7 +25,8 @@ const UserList = () => {
   const [filteredU, setFiltered] = useState<any[]>([]);
 
   const { getUsers, userData } = useDataContext();
-  const { owner , groupId} = useLocalSearchParams()
+  const { owner, groupId } = useLocalSearchParams()
+  const groupIds = groupId.toString()
   useEffect(() => {
     getUsers().then((data) => {
       setUsersSearch(data)
@@ -36,7 +39,7 @@ const UserList = () => {
     getUsersByGroupId(groupId.toString()).then((data) => {
       setUsers(data)
     })
-  }, [users]) 
+  }, [users])
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     const filtered = usersSearch.filter(user =>
@@ -52,7 +55,7 @@ const UserList = () => {
 
 
   const showSearch = displayedUsers.length > 4
-  const ITEM_HEIGHT = 50 
+  const ITEM_HEIGHT = 50
   const router = useRouter()
   useEffect(() => {
 
@@ -64,7 +67,46 @@ const UserList = () => {
 
     setSelectedUserId(id);
     setPerformer(newPerformer);
-  }; 
+  };
+  const handleDeleteUser = async (user: any,) => {
+
+    console.log(user, 'groupsIDs')
+
+    //setSelectedGroupId(group.key);
+    Alert.alert(
+      "Подтвердите удаление",
+      `Вы уверены, что хотите удалить ${user.nickname} ?`,
+      [
+        { text: "Отмена", style: "cancel" },
+        {
+          text: "Удалить",
+          style: "destructive",
+          onPress: async () => {
+            setTimeout(async () => {
+              try { 
+ 
+
+                  if (user.key) {
+                    try {
+
+                      await deleteDoc(doc(db, `groups/${groupIds}/users`, user.key));
+                      await deleteDoc(doc(db, `users/${user.key}/groups`, groupIds)); 
+                    } catch (error) {
+                      console.error(`Ошибка при удалении документа группы для пользователя ${user.key}:`, error);
+                    }
+                  } 
+ 
+                // console.log(`Документ группы ${group} успешно удалён для пользователя ${userEmail}`);
+              } catch (error) {
+                console.error(`Ошибка при удалении группы ${groupId}:`, error);
+              }
+            }, 100)
+          }
+        }
+      ]
+    );
+  }
+
   const addUserFunc = async () => {
 
     if (!performer) {
@@ -88,7 +130,21 @@ const UserList = () => {
     return <Text style={styles.header}>Нет пользователей</Text>
 
   }
-
+  const renderRightActions = (user: any) => (
+    <TouchableOpacity
+      style={{
+        backgroundColor: "red",
+        justifyContent: "center",
+        alignItems: "center",
+        width: 100,
+        height: "100%",
+        borderRadius: 5,
+      }}
+      onPress={() => handleDeleteUser(user)}
+    >
+      <Text style={{ color: "white", fontWeight: "bold" }}>Удалить</Text>
+    </TouchableOpacity>
+  );
   // setSelectedGroupId(group.key);
   return (
     <>
@@ -102,7 +158,12 @@ const UserList = () => {
             keyExtractor={(item) => item.key}
             renderItem={({ item }) => (
               <View style={{ flex: 1, margin: 1 }}>
-                <UserListCard users={item} />
+
+                {isOwner ? (
+                  <TouchableOpacity onPress={() => handleDeleteUser(item)}>
+                    <UserListCard users={item} />
+                  </TouchableOpacity>
+                ) : (<UserListCard users={item} />)}
               </View>
 
             )}
@@ -161,18 +222,18 @@ const UserList = () => {
                   ListEmptyComponent={() => (
                     (
                       <View style={{ alignItems: "center", }}>
-                        <Text style={{...styles.header,fontSize:24}}>Нет пользователей</Text>
+                        <Text style={{ ...styles.header, fontSize: 24 }}>Нет пользователей</Text>
                       </View>
                     )
                   )}
                 />
               </View>
             </View>
-            {displayedUsers.length > 0  ?(
-            <View style={{ marginTop: 10 }}>
-              <Button title="Добавить" onPress={addUserFunc} color="#007bff" />
+            {displayedUsers.length > 0 ? (
+              <View style={{ marginTop: 10 }}>
+                <Button title="Добавить" onPress={addUserFunc} color="#007bff" />
 
-            </View>):('')}
+              </View>) : ('')}
           </Dialog>
         </View>
       </SafeAreaView>

@@ -18,14 +18,14 @@ const Groups: React.FC = () => {
   const { selectedGroupId, setSelectedGroupId, setSelectedGroup } = useDataContext();
   const router = useRouter()
 
-    const { getUsers, userData } = useDataContext(); 
+  const { getUsers, userData } = useDataContext();
   useEffect(() => {
     setLoading(false)
-  }, [cachedGroups]);  
- 
+  }, [cachedGroups]);
+
   // console.log(usersAll,'dddddddddddd')
-  
-  
+
+
   const handleUser = (group: any, ownerId: any) => {
     setSelectedGroupId(group.key);
     setSelectedGroup(group)
@@ -38,53 +38,93 @@ const Groups: React.FC = () => {
       }
     })
   };
-  const handleDeleteGroup = async (groupId: any) => {
-    
-    console.log(groupId,'groupsIDs')
-    
-              //setSelectedGroupId(group.key);
-    Alert.alert(
-      "Подтвердите удаление",
-      "Вы уверены, что хотите удалить эту группу?",
-      [
-        { text: "Отмена", style: "cancel" },
-        {
-          text: "Удалить",
-          style: "destructive",
-          onPress: async () => {
-            setTimeout(async () => {
-            try {
-              const users = await getUsersByGroupId(groupId)
- 
-              console.log("Pressed", users);
-              for (const user of users) {
-                
-              console.log(user.key, "user.key...");
-                const userEmail = user.key; 
-                
-                if (userEmail) {
+  const handleDeleteGroup = async (groupId: any, isOwner: any) => {
+    if (userData.id === isOwner) {
+      isOwner = true
+    }
+    else {
+      isOwner = false
+    }
+    console.log(isOwner, 'groupsIDs')
+    {
+      isOwner ? (
+        Alert.alert(
+          "Подтвердите удаление",
+          "Вы уверены, что хотите удалить эту группу?",
+          [
+            { text: "Отмена", style: "cancel" },
+            {
+              text: "Удалить",
+              style: "destructive",
+              onPress: async () => {
+                setTimeout(async () => {
                   try {
-                    
-                    await deleteDoc(doc(db, `groups/${groupId}/users`, userEmail));
-                    await deleteDoc(doc(db, `users/${userEmail}/groups`, groupId));
-                    console.log(`Документ группы ${groupId} успешно удалён для пользователя ${userEmail}`);
-                  } catch (error) {
-                    console.error(`Ошибка при удалении документа группы для пользователя ${userEmail}:`, error);
-                  }
-                }
-              }
+                    const users = await getUsersByGroupId(groupId)
 
-                await deleteDoc(doc(db, `groups/${groupId}`));
-                // console.log(`Документ группы ${group} успешно удалён для пользователя ${userEmail}`);
-            } catch (error) {
-              console.error(`Ошибка при удалении группы ${groupId}:`, error);
+                    console.log("Pressed", users);
+                    for (const user of users) {
+
+                      console.log(user.key, "user.key...");
+                      const userEmail = user.key;
+
+                      if (userEmail) {
+                        try {
+
+                          await deleteDoc(doc(db, `groups/${groupId}/users`, userEmail));
+                          await deleteDoc(doc(db, `users/${userEmail}/groups`, groupId));
+                          console.log(`Документ группы ${groupId} успешно удалён для пользователя ${userEmail}`);
+                        } catch (error) {
+                          console.error(`Ошибка при удалении документа группы для пользователя ${userEmail}:`, error);
+                        }
+                      }
+                    }
+
+                    await deleteDoc(doc(db, `groups/${groupId}`));
+                    // console.log(`Документ группы ${group} успешно удалён для пользователя ${userEmail}`);
+                  } catch (error) {
+                    console.error(`Ошибка при удалении группы ${groupId}:`, error);
+                  }
+                }, 100)
+              }
             }
-          },100)
-        }
-        }
-      ]
-    );
-  }; 
+          ]
+        )
+      ) : (
+        Alert.alert(
+          "Подтвердите выход",
+          "Вы уверены, что хотите выйт из из этой группы?",
+          [
+            { text: "Отмена", style: "cancel" },
+            {
+              text: "Удалить",
+              style: "destructive",
+              onPress: async () => {
+                setTimeout(async () => {
+                  try {
+                    const users = await getUsersByGroupId(groupId)
+
+                    if (userData.id) {
+                      try {
+
+                        await deleteDoc(doc(db, `groups/${groupId}/users`, userData.id));
+                        await deleteDoc(doc(db, `users/${userData.id}/groups`, groupId));
+                        console.log(`Документ группы ${groupId} успешно удалён для пользователя ${userData.id}`);
+                      } catch (error) {
+                        console.error(`Ошибка при удалении документа группы для пользователя ${userData.id}:`, error);
+                      }
+                    }
+                    // console.log(`Документ группы ${group} успешно удалён для пользователя ${userEmail}`);
+                  } catch (error) {
+                    console.error(`Ошибка при удалении группы ${groupId}:`, error);
+                  }
+                }, 100)
+              }
+            }
+          ]
+        )
+      )
+    }
+  };
 
   const handleGotoGroupDetails = (group: any, ownerId: any) => {
     setSelectedGroupId(group.key);
@@ -99,11 +139,11 @@ const Groups: React.FC = () => {
     })
 
   };
-  const renderRightActions = (progress: any, dragX: any, group: any) => {
+  const renderRightActions = (progress: any, dragX: any, group: any, isOwner: any) => {
 
     return (
       <Animated.View style={styles.rightAction}>
-        <RectButton style={styles.deleteButton} onPress={() => handleDeleteGroup(group.key)}>
+        <RectButton style={styles.deleteButton} onPress={() => handleDeleteGroup(group.key, group.ownerId)}>
           <Ionicons name={'trash-outline'} size={30} color={"red"} />
         </RectButton>
       </Animated.View>
@@ -115,7 +155,7 @@ const Groups: React.FC = () => {
       data={cachedGroups}
       keyExtractor={(item) => item.key}
       renderItem={({ item }) => (
-        <Swipeable renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, item)}>
+        <Swipeable renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, item, item.isOwner)}>
           <View>
             <TouchableOpacity onPress={() => handleGotoGroupDetails(item, item.ownerId)}>
               <GroupCard

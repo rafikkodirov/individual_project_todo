@@ -26,6 +26,7 @@ const GroupDetailsPage: React.FC = () => {
     
       
       const _groupId = Array.isArray(params.groupId) ? params.groupId[0] : params.groupId;
+      console.log(GroupId,'123012310381')
       
     console.log(params.groupId,'dwedwed')
       if (_groupName) setGroupName(_groupName);
