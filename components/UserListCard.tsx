@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text } from "react-native";
 import { Platform } from 'react-native'; 
 const styles = Platform.OS === 'android' 
@@ -6,16 +6,22 @@ const styles = Platform.OS === 'android'
   : require('../styles/styles.android').default; 
 
 interface UsersProps {
-  users: any;  // URL or image source  
+  user: any;  // URL or image source  
 }
 
 const UserListCard: React.FC<UsersProps> = ({
-  users,  
+  user,  
 }) => { 
+ 
   return (
-    <View style={styles.card}> 
+    <View style={{...styles.card,
+      backgroundColor: user.isSelected ? "#e0e0e0" : "white",
+    }}> 
       <View style={styles.content}>
-          <Text style={styles.title}>{users.nickname}</Text> 
+          <Text style={{...styles.title,
+            fontWeight: user.isSelected ? "700" : "300",
+            color: user.isSelected ? "#007bff" : "gray",
+          }}>{user.nickname}</Text> 
       </View> 
     </View>
   );

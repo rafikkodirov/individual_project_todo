@@ -9,7 +9,7 @@ import {
   TextInput,
   Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import UserListCard from "@/components/UserListCard";
 
 import Dialog from "@/components/DialogComponent ";
@@ -39,7 +39,7 @@ const UserList = () => {
     selectedGroupId,
     setSelectedUserId,
     addUser,
-    addUsersToGroup
+    addUsersToGroup,
   } = useDataContext();
   const [searchQuery, setSearchQuery] = useState("");
   const { isLoading } = useLoading();
@@ -61,14 +61,25 @@ const UserList = () => {
       );
     });
   }, []);
+
   useEffect(() => {
     setIsOwner(userData.id === owner);
   }, [userData.id, owner]);
+
   useEffect(() => {
     getUsersByGroupId(groupId.toString()).then((data) => {
-      setUsers(data);
+      setUsers(
+        data.map((element) => {
+          return {
+            key: element.key,
+            nickname: element.nickname,
+            isSelected: false,
+          };
+        })
+      );
     });
-  }, [users]);
+  }, []);
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     const filtered = usersSearch.filter(
@@ -141,9 +152,8 @@ const UserList = () => {
   };
 
   const addUserFunc = async () => {
+    const selUsers = usersSearch.filter((user) => user.isSelected == true);
 
-    const selUsers = usersSearch.filter((user) => user.isSelected == true)
-      
     if (selUsers.length == 0) {
       alert("Пожалуйста, выберите пользователя!");
       return;
@@ -153,13 +163,12 @@ const UserList = () => {
     // };
 
     try {
-      
-      await addUsersToGroup(selUsers.map(
-        (user) => ({
+      await addUsersToGroup(
+        selUsers.map((user) => ({
           id: user.key,
           nickname: user.nickname,
-        })
-      ));
+        }))
+      );
       // await addUser(newUser);
       setConfirmationDialogVisible(false);
     } catch (error) {
@@ -186,6 +195,11 @@ const UserList = () => {
     </TouchableOpacity>
   );
   // setSelectedGroupId(group.key);
+
+  const isMainListSelectedUsersExists = useCallback(() => {
+    return users.some((user) => user.isSelected);
+  }, [users]);
+
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -199,11 +213,22 @@ const UserList = () => {
             renderItem={({ item }) => (
               <View style={{ flex: 1, margin: 1 }}>
                 {isOwner ? (
-                  <TouchableOpacity onPress={() => handleDeleteUser(item)}>
-                    <UserListCard users={item} />
+                  <TouchableOpacity
+                    onPress={() => {
+                      setUsers((prevUsers) =>
+                        prevUsers.map((user) =>
+                          user.key === item.key
+                            ? { ...user, isSelected: !user.isSelected }
+                            : user
+                        )
+                      );
+                      //handleDeleteUser(item)
+                    }}
+                  >
+                    <UserListCard user={item} />
                   </TouchableOpacity>
                 ) : (
-                  <UserListCard users={item} />
+                  <UserListCard user={item} />
                 )}
               </View>
             )}
@@ -215,12 +240,25 @@ const UserList = () => {
           />
           {isOwner ? (
             <View style={styles.buttonContainerInDetails}>
-              <TouchableOpacity
-                style={styles.buttonInDetails}
-                onPress={() => setConfirmationDialogVisible(true)}
-              >
-                <Text style={styles.applyText}>Добавить пользователя</Text>
-              </TouchableOpacity>
+              {isMainListSelectedUsersExists() ? (
+                <TouchableOpacity
+                  style={styles.buttonInDetails}
+                  onPress={() => {
+                    setUsers((prevUsers) =>
+                      prevUsers.map((user) => ({ ...user, isSelected: false }))
+                    );
+                  }}
+                >
+                  <Text style={styles.applyText}>Удалить</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.buttonInDetails}
+                  onPress={() => setConfirmationDialogVisible(true)}
+                >
+                  <Text style={styles.applyText}>Добавить пользователя</Text>
+                </TouchableOpacity>
+              )}
             </View>
           ) : (
             ""
@@ -254,11 +292,11 @@ const UserList = () => {
                         justifyContent: "space-between",
                         padding: 10,
                         borderBottomWidth: 1,
-                        borderBottomColor: "#ccc", 
+                        borderBottomColor: "#ccc",
                       }}
                       onPress={() => {
                         //handleUserSelect(item.key, item.nickname);
-                        
+
                         setUsersSearch((prevUsers) =>
                           prevUsers.map((user) =>
                             user.key === item.key
@@ -268,11 +306,15 @@ const UserList = () => {
                         );
                       }}
                     >
-                      <Text style={{
-                        ...styles.groupText,
-                        fontWeight: item.isSelected ? "700" : "300",
-                        color: item.isSelected ? "#007bff" : "gray",
-                      }}>{item.nickname}</Text>
+                      <Text
+                        style={{
+                          ...styles.groupText,
+                          fontWeight: item.isSelected ? "700" : "300",
+                          color: item.isSelected ? "#007bff" : "gray",
+                        }}
+                      >
+                        {item.nickname}
+                      </Text>
                       <Ionicons
                         name={
                           selectedUserId === item.key
