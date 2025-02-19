@@ -25,10 +25,8 @@ const GroupDetailsPage: React.FC = () => {
       const _groupName = Array.isArray(params.name) ? params.name[0] : params.name;
     
       
-      const _groupId = Array.isArray(params.groupId) ? params.groupId[0] : params.groupId;
-      console.log(GroupId,'123012310381')
-      
-    console.log(params.groupId,'dwedwed')
+      const _groupId = Array.isArray(params.groupId) ? params.groupId[0] : params.groupId; 
+       
       if (_groupName) setGroupName(_groupName);
       if (_groupId) setGroupId(_groupId);
     } catch (error) {
@@ -39,9 +37,6 @@ const GroupDetailsPage: React.FC = () => {
   useEffect(() => {
     setItems(filteredTasks(GroupId));
   }, [GroupId, filteredTasks]);
-
-
-
 
   const router = useRouter()
   const handleTask = ( ) => {

@@ -1,7 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, Platform, TouchableOpacity } from 'react-native';
-import GroupSelector from './GroupSelector';
+import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, Platform, TouchableOpacity } from 'react-native'; 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useDataContext } from '@/providers/DataProvider';
@@ -23,21 +22,14 @@ const AddTaskS: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
   const [groupId, setGroupId] = useState('');
   const [performer, setPerformer] = useState<{ id: string, name: string } | null>(null);
   const [owner, setOwner] = useState('');
-  const [groupName, setGroupName] = useState('');
-  const [nickname, setnickname] = useState('');
-  const [status, setStatus] = useState('');
+  const [groupName, setGroupName] = useState(''); 
   const [endTime, setEndTime] = useState(new Date());
   const [description, setDescription] = useState('');
-  const [title, setTitle] = useState('');
-  const [date, setDate] = useState(new Date());
+  const [title, setTitle] = useState(''); 
   const [dateEnd, setDateEnd] = useState(nextDay);
   const [searchQuery, setSearchQuery] = useState('');
-  const [groups, setGroups] = useState<any[]>([]);
-  const [filteredGroups, setFilteredGroups] = useState<any[]>([]);
-  const [show, setShow] = useState(false);
-  const [showEnd, setShowEnd] = useState(false);
-  const [inputHeight, setInputHeight] = useState(40)
-  const [isGroupSelectorVisible, setGroupSelectorVisible] = useState(false);
+  const [groups, setGroups] = useState<any[]>([]); 
+  const [showEnd, setShowEnd] = useState(false); 
   const [isUserSelectorVisible, setisUserSelectorVisible] = useState(false);
   const params = useLocalSearchParams()
   const [time, setTime] = useState(new Date())
@@ -57,18 +49,11 @@ const AddTaskS: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
   const onChangeEnd = (event: any, selectedDate?: Date) => {
     setShowEnd(false);
     if (selectedDate) setDateEnd(selectedDate);
-  };
-  // const showSearch = displayedUsers.length > 4
-  const ITEM_HEIGHT = 50
+  }; 
   const showDatePickerEnd = () => {
 
     setShowEnd(true);
-  };
-  const handleGroupSelect = (id: string, name: string) => {
-    setGroupId(id);
-    setGroupName(name);
-  };
-
+  }; 
   const handleUserSelect = (id: string, name: string) => {
     setPerformer({ id: id, name: name });
   };
@@ -116,9 +101,7 @@ const AddTaskS: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
         <LabeledTextInput value={title} onChangeText={setTitle} inputType={TextInputType.title} />
         <LabeledTextInput value={description} onChangeText={setDescription} inputType={TextInputType.description} />
 
-        <View style={{ padding: 6 }}>
-
-          <GroupSelector visible={isGroupSelectorVisible} onClose={() => setGroupSelectorVisible(false)} onSelectGroup={handleGroupSelect} />
+        <View style={{ padding: 6 }}> 
           <View style={styles.rowStyle}>
 
             <Text style={styles.header}>Пользователь : {performer?.name || 'Не выбрана'}</Text>

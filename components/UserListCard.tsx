@@ -15,12 +15,12 @@ const UserListCard: React.FC<UsersProps> = ({
  
   return (
     <View style={{...styles.card,
-      backgroundColor: user.isSelected ? "#e0e0e0" : "white",
+      backgroundColor: user.isSelected ? "#e4e4e4" : "white",
     }}> 
       <View style={styles.content}>
           <Text style={{...styles.title,
             fontWeight: user.isSelected ? "700" : "300",
-            color: user.isSelected ? "#007bff" : "gray",
+            color: user.isSelected ? "#dd1c1c" : "gray",
           }}>{user.nickname}</Text> 
       </View> 
     </View>

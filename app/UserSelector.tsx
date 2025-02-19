@@ -15,8 +15,7 @@ const UserSelector: React.FC<UserSelectorProps> = ({ visible, onClose, onSelectU
   const [filteredGroups, setFilteredGroups] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   
-  const { getUsersByGroupId,selectedGroupId } = useDataContext();
-  console.log(selectedGroupId,'info')
+  const { getUsersByGroupId,selectedGroupId } = useDataContext(); 
   
  const groupId = selectedGroupId || 'Нету'
   useEffect(()=> {

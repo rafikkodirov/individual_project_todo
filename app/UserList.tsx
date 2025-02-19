@@ -15,16 +15,14 @@ import UserListCard from "@/components/UserListCard";
 import Dialog from "@/components/DialogComponent ";
 import styles from "../styles/styles.android";
 import { useDataContext } from "@/providers/DataProvider";
-import UserSelector from "./UserSelector";
 import { useLoading } from "@/providers/LoadingProvider";
 import { Ionicons } from "@expo/vector-icons";
-import UserSelectorAll from "./UserSelectorAll";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "./services/firebaseConfig";
 const UserList = () => {
   const [users, setUsers] = useState<any[]>([]);
-  const [usersSearch, setUsersSearch] = useState<any[]>([]);
+  const [usersInSearch, setUsersInSearch] = useState<any[]>([]);
   const [isOwner, setIsOwner] = useState(false);
   const [performer, setPerformer] = useState<{
     id: string;
@@ -32,14 +30,11 @@ const UserList = () => {
   } | null>(null);
   const [confirmationDialogVisible, setConfirmationDialogVisible] =
     useState(false);
-  const [isUserSelectorVisible, setisUserSelectorVisible] = useState(false);
   const {
     getUsersByGroupId,
-    selectedUserId,
-    selectedGroupId,
     setSelectedUserId,
-    addUser,
     addUsersToGroup,
+    removeUsersFromGroup
   } = useDataContext();
   const [searchQuery, setSearchQuery] = useState("");
   const { isLoading } = useLoading();
@@ -50,7 +45,7 @@ const UserList = () => {
   const groupIds = groupId.toString();
   useEffect(() => {
     getUsers().then((data) => {
-      setUsersSearch(
+      setUsersInSearch(
         data.map((element) => {
           return {
             key: element.key,
@@ -79,80 +74,45 @@ const UserList = () => {
       );
     });
   }, []);
-
+  // useEffect(() => {
+  //   getUsersByGroupId(groupId.toString()).then((data) => {
+  //     setUsers(
+  //       data
+  //         .filter((user) => user.key !== owner) // Исключаем владельца
+  //         .map((element) => {
+  //           return {
+  //             key: element.key,
+  //             nickname: element.nickname,
+  //             isSelected: false,
+  //           };
+  //         })
+  //     );
+  //   });
+  // }, []);
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    const filtered = usersSearch.filter(
+    const filtered = usersInSearch.filter(
       (user) =>
         user.nickname.toLowerCase().includes(query.toLowerCase()) &&
-        !users.some((groupUser) => groupUser.key === user.key) // Фильтруем уже добавленных пользователей
+        !users.some((groupUser) => groupUser.key === user.key)
     );
     setFiltered(filtered);
   };
 
-  const displayedUsers = searchQuery.trim()
+  const displayedUsersInSearsh = searchQuery.trim()
     ? filteredU
-    : usersSearch.filter(
-        (user) => !users.some((groupUser) => groupUser.key === user.key)
-      );
+    : usersInSearch.filter(
+      (user) => !users.some((groupUser) => groupUser.key === user.key)
+    );
 
-  const showSearch = displayedUsers.length > 4;
+  const showSearch = displayedUsersInSearsh.length > 4;
   const ITEM_HEIGHT = 50;
-  const router = useRouter();
   useEffect(() => {
     setSelectedUserId(performer);
   }, []);
 
-  const handleUserSelect = async (id: string, name?: string) => {
-    const newPerformer = { id, name: name || "Без имени" }; // Если name нет, то "Без имени"
-
-    setSelectedUserId(id);
-    setPerformer(newPerformer);
-  };
-  const handleDeleteUser = async (user: any) => {
-    console.log(user, "groupsIDs");
-
-    //setSelectedGroupId(group.key);
-    Alert.alert(
-      "Подтвердите удаление",
-      `Вы уверены, что хотите удалить ${user.nickname} ?`,
-      [
-        { text: "Отмена", style: "cancel" },
-        {
-          text: "Удалить",
-          style: "destructive",
-          onPress: async () => {
-            setTimeout(async () => {
-              try {
-                if (user.key) {
-                  try {
-                    await deleteDoc(
-                      doc(db, `groups/${groupIds}/users`, user.key)
-                    );
-                    await deleteDoc(
-                      doc(db, `users/${user.key}/groups`, groupIds)
-                    );
-                  } catch (error) {
-                    console.error(
-                      `Ошибка при удалении документа группы для пользователя ${user.key}:`,
-                      error
-                    );
-                  }
-                }
-
-                // console.log(`Документ группы ${group} успешно удалён для пользователя ${userEmail}`);
-              } catch (error) {
-                console.error(`Ошибка при удалении группы ${groupId}:`, error);
-              }
-            }, 100);
-          },
-        },
-      ]
-    );
-  };
-
   const addUserFunc = async () => {
-    const selUsers = usersSearch.filter((user) => user.isSelected == true);
+    const selUsers = usersInSearch.filter((user) => user.isSelected == true);
 
     if (selUsers.length == 0) {
       alert("Пожалуйста, выберите пользователя!");
@@ -167,34 +127,59 @@ const UserList = () => {
         selUsers.map((user) => ({
           id: user.key,
           nickname: user.nickname,
+          isActive: true,
         }))
       );
-      // await addUser(newUser);
+      setUsersInSearch((prevUsers) =>
+        prevUsers.map((user) => ({ ...user, isSelected: false }))
+      );
       setConfirmationDialogVisible(false);
     } catch (error) {
       console.error("Ошибка при добавлении задачи:", error);
     }
   };
-  const EmptyList = () => {
-    if (isLoading === true || users.length !== 0) return <></>;
-    return <Text style={styles.header}>Нет пользователей</Text>;
+  const removeUserFunc = async () => {
+
+    const selUsers = users.filter(
+      (user) => user.isSelected === true && user.key !== owner // Исключаем владельца
+    );
+    if (selUsers.length === 0) {
+      alert("Пожалуйста, выберите пользователя!");
+      return;
+    }
+
+    Alert.alert(
+      "Подтвердите удаление",
+      selUsers.length > 1
+        ? "Вы уверены, что хотите удалить этих пользователей?"
+        : "Вы уверены, что хотите удалить этого пользователя?",
+      [
+        { text: "Отмена", style: "cancel" },
+        {
+          text: "Удалить",
+          style: "destructive",
+          onPress: async () => { // Только после нажатия "Удалить" выполняется этот код
+            try {
+              await removeUsersFromGroup(
+                selUsers.map((user) => ({
+                  id: user.key,
+                  nickname: user.nickname,
+                }))
+              );
+
+              setUsers((prevUsers) =>
+                prevUsers.map((user) => ({ ...user, isSelected: false }))
+              );
+
+              setConfirmationDialogVisible(false);
+            } catch (error) {
+              console.error("Ошибка при удалении пользователей:", error);
+            }
+          }
+        }
+      ]
+    );
   };
-  const renderRightActions = (user: any) => (
-    <TouchableOpacity
-      style={{
-        backgroundColor: "red",
-        justifyContent: "center",
-        alignItems: "center",
-        width: 100,
-        height: "100%",
-        borderRadius: 5,
-      }}
-      onPress={() => handleDeleteUser(user)}
-    >
-      <Text style={{ color: "white", fontWeight: "bold" }}>Удалить</Text>
-    </TouchableOpacity>
-  );
-  // setSelectedGroupId(group.key);
 
   const isMainListSelectedUsersExists = useCallback(() => {
     return users.some((user) => user.isSelected);
@@ -213,16 +198,18 @@ const UserList = () => {
             renderItem={({ item }) => (
               <View style={{ flex: 1, margin: 1 }}>
                 {isOwner ? (
+
                   <TouchableOpacity
                     onPress={() => {
-                      setUsers((prevUsers) =>
-                        prevUsers.map((user) =>
-                          user.key === item.key
-                            ? { ...user, isSelected: !user.isSelected }
-                            : user
-                        )
-                      );
-                      //handleDeleteUser(item)
+                      if (item.key !== owner) {
+                        setUsers((prevUsers) =>
+                          prevUsers.map((user) =>
+                            user.key === item.key
+                              ? { ...user, isSelected: !user.isSelected }
+                              : user
+                          )
+                        );
+                      }
                     }}
                   >
                     <UserListCard user={item} />
@@ -242,13 +229,10 @@ const UserList = () => {
             <View style={styles.buttonContainerInDetails}>
               {isMainListSelectedUsersExists() ? (
                 <TouchableOpacity
-                  style={styles.buttonInDetails}
-                  onPress={() => {
-                    setUsers((prevUsers) =>
-                      prevUsers.map((user) => ({ ...user, isSelected: false }))
-                    );
-                  }}
+                  style={{ ...styles.buttonInDetails, backgroundColor: "#dd1c1c" }}
+                  onPress={removeUserFunc}
                 >
+
                   <Text style={styles.applyText}>Удалить</Text>
                 </TouchableOpacity>
               ) : (
@@ -282,7 +266,7 @@ const UserList = () => {
               <View style={{ maxHeight: ITEM_HEIGHT * 5 }}>
                 {/* Список пользователей */}
                 <FlatList
-                  data={displayedUsers}
+                  data={displayedUsersInSearsh}
                   keyExtractor={(item) => item.key}
                   renderItem={({ item }) => (
                     <TouchableOpacity
@@ -297,7 +281,7 @@ const UserList = () => {
                       onPress={() => {
                         //handleUserSelect(item.key, item.nickname);
 
-                        setUsersSearch((prevUsers) =>
+                        setUsersInSearch((prevUsers) =>
                           prevUsers.map((user) =>
                             user.key === item.key
                               ? { ...user, isSelected: !user.isSelected }
@@ -315,15 +299,7 @@ const UserList = () => {
                       >
                         {item.nickname}
                       </Text>
-                      <Ionicons
-                        name={
-                          selectedUserId === item.key
-                            ? "radio-button-on"
-                            : "radio-button-off"
-                        }
-                        size={24}
-                        color="black"
-                      />
+
                     </TouchableOpacity>
                   )}
                   ListEmptyComponent={() => (
@@ -336,7 +312,7 @@ const UserList = () => {
                 />
               </View>
             </View>
-            {displayedUsers.length > 0 ? (
+            {displayedUsersInSearsh.length > 0 ? (
               <View style={{ marginTop: 10 }}>
                 <Button
                   title="Добавить"

@@ -44,6 +44,7 @@ interface DataContextType {
   addTask: (newTask: any) => Promise<void>;
   addUser: (newUser: any) => Promise<void>;
   addUsersToGroup: (selectedUsers: any[]) => Promise<void>;
+  removeUsersFromGroup: (selectedUsers: any[]) => Promise<void>;
   addGroups: (newTask: any) => Promise<void>;
   deleteGroup: (groupId: any) => Promise<void>;
   
@@ -381,10 +382,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addUsersToGroup = async (selectedUsers: any[]) => {
     try {
-      if (selectedGroupId) {
-        for (const user of selectedUsers) {
-          await addElementToTheFirebase(`groups/${selectedGroupId}/users`, user);
-          await addElementToTheFirebase(`users/${user.id}/groups`, selectedGroup, selectedGroupId);
+      if (selectedGroupId) { 
+        
+        for (const user of selectedUsers) { 
+          const userId = user.id
+          await addElementToTheFirebase(`groups/${selectedGroupId}/users`, {nickname: user.nickname},userId);
+          await addElementToTheFirebase(`users/${userId}/groups`, selectedGroup, selectedGroupId);
         }
       } else {
         console.error("Ошибка: selectedGroupId is null");
@@ -394,7 +397,23 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error("Ошибка при добавлении задачи:", error);
     }
   };
+  const removeUsersFromGroup = async (selectedUsers: any[]) => {
+    try {
+      if (selectedGroupId) { 
+        
+        for (const user of selectedUsers) { 
+          const userId = user.id
+          await deleteDoc(doc(db,`groups/${selectedGroupId}/users` ,userId));
+          await deleteDoc(doc(db,`users/${userId}/groups`,  selectedGroupId));
+        }
+      } else {
+        console.error("Ошибка: selectedGroupId is null");
+      }
 
+    } catch (error) {
+      console.error("Ошибка при добавлении задачи:", error);
+    }
+  };
 
 
 
@@ -466,6 +485,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         addGroups,
         // updateTask,
         // deleteTask,
+        removeUsersFromGroup,
         refreshRequest,
         getUsersByGroupId,
         addUsersToGroup
