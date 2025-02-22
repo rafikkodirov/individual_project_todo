@@ -30,12 +30,7 @@ export default function RootLayout() {
     router.push({
       pathname: '/add-task',
     });
-  };
-
-  // const colorScheme = Appearance.getColorScheme();
-  // if (colorScheme === 'dark') {
-  //   // Use dark color scheme
-  // }
+  }; 
   return (
 
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -45,10 +40,10 @@ export default function RootLayout() {
             <Stack>
               <Stack.Screen name="index" options={{ headerShown: false }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="UserList" options={{ headerShown: true, title: "Пользователи" }} />
+              <Stack.Screen name="user-list" options={{ headerShown: true, title: "Пользователи" }} />
               <Stack.Screen name="sign-in" options={{ headerShown: true, title: "Авторизация", headerBackVisible: false, headerTitleAlign: 'center' }} />
               <Stack.Screen
-                name="GroupDetailsPage"
+                name="group-details"
                 options={({ route }) => ({
                   headerShown: true,
                   title: (route.params as RouteParams)?.name || 'Задания группы',
@@ -57,7 +52,7 @@ export default function RootLayout() {
               <Stack.Screen name="add-task" options={{ headerShown: true, title: "Добавление задачи", headerBackTitle: "Назад" }} />
               <Stack.Screen name="archive" options={{ headerShown: true, title: "Архив", headerBackTitle: "Назад" }} />
               <Stack.Screen name="Information" options={{ headerShown: true, title: "Информация", headerBackTitle: "Назад" }} />
-              <Stack.Screen name="AddGroups" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
+              <Stack.Screen name="add-groups" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
               <Stack.Screen name="sign-up" options={{ headerShown: true, title: "Регистрация", headerBackVisible: false, headerTitleAlign: 'center' }} />
             </Stack>
           </DataProvider>

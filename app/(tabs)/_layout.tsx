@@ -2,14 +2,14 @@ import { Image, View, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Tabs, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons';
-import Dialog from '@/components/DialogComponent ';
+import Dialog from '@/Common/DialogComponent ';
 import people from '../../assets/images/people.png'
 import edit from '../../assets/images/edit.png'
 import settings from '../../assets/images/settings.png'
 import { ScaledStyleSheet } from '../../Common/ScaledStyleSheet'
 import { AppUser, useAuth } from '@/providers/authProvider';
 import { SecureStore } from '@/stores/global.store';
-import AddGroupScreen from '../AddGroups';
+import AddGroupScreen from '../add-group';
 interface TabIcon {
   color: string,
   name: string

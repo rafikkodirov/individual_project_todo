@@ -1,13 +1,11 @@
 import { View, Text, FlatList, Platform, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import TaskCard from '@/components/TaskCard';
-
-import Dialog from '@/components/DialogComponent ';
+import Dialog from '@/Common/DialogComponent ';
 import { useDataContext } from '@/providers/DataProvider';
 import { useLoading } from '@/providers/LoadingProvider';
 import { updateElementToTheFirebase } from '../services/firestore';
 import dayjs from 'dayjs';
-import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 const styles = Platform.OS === 'android'
   ? require('../../styles/styles.android').default
@@ -36,9 +34,7 @@ const ActiveTask: React.FC = () => {
     await updateElementToTheFirebase('tasks', { key: item.key, status: 'in_review' });
     setConfirmationDialogVisible('')
 
-  };
-
-
+  }; 
   const handleCompleteForOwner = async (item: any) => {
     await updateElementToTheFirebase('tasks', { key: item.key, status: 'completed' });
     setConfirmationDialogVisible('')

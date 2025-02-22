@@ -3,7 +3,6 @@ import {
   Text,
   FlatList,
   SafeAreaView,
-  ScrollView,
   TouchableOpacity,
   Button,
   TextInput,
@@ -11,15 +10,11 @@ import {
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import UserListCard from "@/components/UserListCard";
-
-import Dialog from "@/components/DialogComponent ";
+import Dialog from "@/Common/DialogComponent ";
 import styles from "../styles/styles.android";
 import { useDataContext } from "@/providers/DataProvider";
 import { useLoading } from "@/providers/LoadingProvider";
-import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { deleteDoc, doc } from "firebase/firestore";
-import { db } from "./services/firebaseConfig";
+import { useLocalSearchParams } from "expo-router";
 const UserList = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [usersInSearch, setUsersInSearch] = useState<any[]>([]);
@@ -36,13 +31,10 @@ const UserList = () => {
     addUsersToGroup,
     removeUsersFromGroup
   } = useDataContext();
-  const [searchQuery, setSearchQuery] = useState("");
-  const { isLoading } = useLoading();
+  const [searchQuery, setSearchQuery] = useState(""); 
   const [filteredU, setFiltered] = useState<any[]>([]);
-
   const { getUsers, userData } = useDataContext();
-  const { owner, groupId } = useLocalSearchParams();
-  const groupIds = groupId.toString();
+  const { owner, groupId } = useLocalSearchParams(); 
   useEffect(() => {
     getUsers().then((data) => {
       setUsersInSearch(

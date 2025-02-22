@@ -1,8 +1,8 @@
-import { View, Text, FlatList, RefreshControl, TouchableOpacity, Platform } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import TaskCard from '@/components/TaskCard';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useDataContext, DataType } from '@/providers/DataProvider';
+import { useDataContext } from '@/providers/DataProvider';
 const styles = Platform.OS === 'android'
   ? require('../styles/styles.android').default
   : require('../styles/styles.android').default;

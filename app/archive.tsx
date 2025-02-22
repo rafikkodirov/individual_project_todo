@@ -2,7 +2,7 @@ import { View, Text, FlatList, Platform, TouchableOpacity, ScrollView } from 're
 import React, { useEffect, useMemo, useState } from 'react'
 import TaskCard from '@/components/TaskCard';
 
-import Dialog from '@/components/DialogComponent ';
+import Dialog from '@/Common/DialogComponent ';
 import { useDataContext } from '@/providers/DataProvider';
 import { useLoading } from '@/providers/LoadingProvider';
 import dayjs from 'dayjs';

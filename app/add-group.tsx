@@ -15,9 +15,7 @@ interface AddGroupScreenProps {
 }
 
 const AddGroupScreen: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
-  const [groupName, setGroupName] = useState('');
-  const [groups, setGroups] = useState<any[]>([]);
-  const [nickname, setNickname] = useState('');
+  const [groupName, setGroupName] = useState(''); 
   const { isLoading, setLoading } = useLoading()
 
   const { addGroups, userData } = useDataContext();
@@ -26,7 +24,6 @@ const AddGroupScreen: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
   const handleColorSelect = (selectedColor: string) => {
     setColor(selectedColor); // Обновляем выбранный цвет
   };
-
 
   const addGroup = debounce(async () => {
     if (!groupName) {
