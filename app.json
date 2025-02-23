@@ -7,25 +7,20 @@
       "android"
     ],
     "orientation": "portrait",
-    "icon": "./assets/images/Group_full_edit.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "tasks",
     "userInterfaceStyle": "automatic", 
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "icon": "./assets/images/Group_full_edit_resize.png",
+      "icon": "./assets/images/icon.png",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/Group_full_edit_resize.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#FFFAFA"
       },
       "package": "com.forceenginee.tasksgroups"
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
+    }, 
     "experiments": {
       "typedRoutes": true
     },

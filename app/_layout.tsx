@@ -52,7 +52,7 @@ export default function RootLayout() {
               <Stack.Screen name="add-task" options={{ headerShown: true, title: "Добавление задачи", headerBackTitle: "Назад" }} />
               <Stack.Screen name="archive" options={{ headerShown: true, title: "Архив", headerBackTitle: "Назад" }} />
               <Stack.Screen name="Information" options={{ headerShown: true, title: "Информация", headerBackTitle: "Назад" }} />
-              <Stack.Screen name="add-groups" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
+              <Stack.Screen name="add-group" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
               <Stack.Screen name="sign-up" options={{ headerShown: true, title: "Регистрация", headerBackVisible: false, headerTitleAlign: 'center' }} />
             </Stack>
           </DataProvider>

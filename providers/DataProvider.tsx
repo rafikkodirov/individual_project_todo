@@ -33,6 +33,7 @@ interface DataContextType {
   cachedGroups: any[];
   userDoc: any;
   userData: any,
+  userSync: number,
   selectedGroupId: string | null;
   setSelectedGroupId: (id: string | null) => void;
   selectedGroup: string | null;
@@ -46,8 +47,7 @@ interface DataContextType {
   addUsersToGroup: (selectedUsers: any[]) => Promise<void>;
   removeUsersFromGroup: (selectedUsers: any[]) => Promise<void>;
   addGroups: (newTask: any) => Promise<void>;
-  deleteGroup: (groupId: any) => Promise<void>;
-  
+  deleteGroupOwner: (groupId: any, isOwner: boolean) => Promise<void>;
   getUsersByGroupId: (groupId: string) => Promise<any[]>;
   getUsers: () => Promise<any[]>;
   refreshRequest: () => void;
@@ -81,11 +81,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const [cachedUsers, setCachedUsers] = useState<any[]>([]);
   const [cachedGroups, setCachedGroups] = useState<any[]>([]);
+  const [userSync, setUserSync] = useState<number>(0)
 
   const [userData, setUserData] = useState<any>(null);
   const [whereConditionTasks, setWhereConditionTasks] = useState<any[]>([]);
   const [wherePerformConditionTasks, setPerformWhereConditionTasks] = useState<any[]>([]);
-  const [whereArchiveConditionTasks, setArchiveWhereConditionTasks] = useState<any[]>([]); 
+  const [whereArchiveConditionTasks, setArchiveWhereConditionTasks] = useState<any[]>([]);
   const { isLoading, setLoading } = useLoading()
 
 
@@ -174,7 +175,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     // console.log("refreshRequest ............... 4");
-    if (userData && userData.id && wherePerformConditionTasks.length > 0) { 
+    if (userData && userData.id && wherePerformConditionTasks.length > 0) {
 
       setLoading(true);
 
@@ -191,7 +192,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [userData, wherePerformConditionTasks]);
   useEffect(() => {
     // console.log("refreshRequest ............... 4");
-    if (userData && userData.id && whereArchiveConditionTasks.length > 0) { 
+    if (userData && userData.id && whereArchiveConditionTasks.length > 0) {
 
       setLoading(true);
 
@@ -289,7 +290,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
           operator: "in",
           value: [TaskStatuses.in_progress, TaskStatuses.in_review, TaskStatuses.returned],
         },
-        
+
       ]);
       setArchiveWhereConditionTasks([
         {
@@ -301,7 +302,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
           key: "status",
           operator: "in",
           value: [TaskStatuses.expired, TaskStatuses.declined, TaskStatuses.completed],
-        },   
+        },
       ]);
 
       const unsubscribeGroups = subscribeToCollection(
@@ -318,13 +319,39 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
   }, [userData]);
 
+  const deleteGroupOwner = async (groupId: any, isOwner: boolean) => {
+    try {
+      const users = await getUsersByGroupId(groupId)
+console.log(users,'users')
+console.log(groupId,'groupId')
+console.log(isOwner,'isOwner')
 
-  const deleteGroup = async (groupId: any) => {
-    try {  
-      
-      console.log(`Группа ${groupId} успешно удалена вместе со связанными данными!`);
+
+
+      console.log("Pressed", users);
+      for (const user of users) {
+
+        console.log(user.key, "user.key...");
+        const userEmail = user.key;
+
+        if (userEmail) {
+          try {
+
+            await deleteDoc(doc(db, `groups/${groupId}/users`, userEmail));
+            await deleteDoc(doc(db, `users/${userEmail}/groups`, groupId));
+            console.log(`Документ группы ${groupId} успешно удалён для пользователя ${userEmail}`);
+          } catch (error) {
+            console.error(`Ошибка при удалении документа группы для пользователя ${userEmail}:`, error);
+          }
+        }
+      }
+      if (isOwner === true) {
+        await deleteDoc(doc(db, `groups/${groupId}`));
+      }
     } catch (error) {
       console.error("Ошибка при удалении группы:", error);
+    } finally{
+      setLoading(false)
     }
   }
   const addElementToTheFirebase = (path: string, element: any, docId?: string,) => {
@@ -345,29 +372,30 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch (error) {
       setLoading(false);
       console.error("Ошибка при добавлении задачи:", error);
+    }finally{
+      setLoading(false)
     }
   };
   const addGroups = async (newGroup: any) => {
     try {
       const docId = uuidv4();
-      console.log(docId,'dddddddddddddddddd')
-      
+      console.log(docId, 'dddddddddddddddddd')
+
       await addElementToTheFirebase("groups", newGroup, docId);
-      await addElementToTheFirebase(`groups/${docId}/users`,{ nickname: userData.nickname}, userData.id);
-      
-      
+      await addElementToTheFirebase(`groups/${docId}/users`, { nickname: userData.nickname }, userData.id);
+
+
       await addElementToTheFirebase(`users/${userData.id}/groups`, newGroup, docId);
     } catch (error) {
       console.error("Ошибка при добавлении задачи:", error);
+    }finally{
+      setLoading(false)
     }
   };
   const addUser = async (newUser: any) => {
     try {
       if (selectedGroupId) {
         if (selectedUserId) {
-          console.log(selectedGroup,'inform')
-          
-          console.log(selectedGroupId,'inform')
           await addElementToTheFirebase(`groups/${selectedGroupId}/users`, newUser, selectedUserId);
           await addElementToTheFirebase(`users/${selectedUserId}/groups`, selectedGroup, selectedGroupId);
         }
@@ -377,17 +405,44 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
     } catch (error) {
       console.error("Ошибка при добавлении задачи:", error);
+    }finally{
+      setLoading(false)
     }
   };
 
   const addUsersToGroup = async (selectedUsers: any[]) => {
     try {
-      if (selectedGroupId) { 
-        
-        for (const user of selectedUsers) { 
+      setLoading(true)
+      if (selectedGroupId) {
+
+        for (const user of selectedUsers) {
           const userId = user.id
-          await addElementToTheFirebase(`groups/${selectedGroupId}/users`, {nickname: user.nickname},userId);
+          await addElementToTheFirebase(`groups/${selectedGroupId}/users`, { nickname: user.nickname }, userId);
           await addElementToTheFirebase(`users/${userId}/groups`, selectedGroup, selectedGroupId);
+
+        }
+      } else {
+        console.error("Ошибка: selectedGroupId is null");
+      }
+
+    } catch (error) {
+      console.error("Ошибка при добавлении задачи:", error);
+    } finally {
+      const newDate = new Date()
+      setUserSync(newDate.getTime())
+      setLoading(false)
+    }
+
+  };
+  const removeUsersFromGroup = async (selectedUsers: any[]) => {
+    try {
+      setLoading(true)
+      if (selectedGroupId) {
+
+        for (const user of selectedUsers) {
+          const userId = user.id
+          await deleteDoc(doc(db, `groups/${selectedGroupId}/users`, userId));
+          await deleteDoc(doc(db, `users/${userId}/groups`, selectedGroupId));
         }
       } else {
         console.error("Ошибка: selectedGroupId is null");
@@ -396,22 +451,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch (error) {
       console.error("Ошибка при добавлении задачи:", error);
     }
-  };
-  const removeUsersFromGroup = async (selectedUsers: any[]) => {
-    try {
-      if (selectedGroupId) { 
-        
-        for (const user of selectedUsers) { 
-          const userId = user.id
-          await deleteDoc(doc(db,`groups/${selectedGroupId}/users` ,userId));
-          await deleteDoc(doc(db,`users/${userId}/groups`,  selectedGroupId));
-        }
-      } else {
-        console.error("Ошибка: selectedGroupId is null");
-      }
-
-    } catch (error) {
-      console.error("Ошибка при добавлении задачи:", error);
+    finally {
+      const newDate = new Date()
+      setUserSync(newDate.getTime())
+      setLoading(false)
     }
   };
 
@@ -463,7 +506,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     <DataContext.Provider
       value={{
         cachedUsers,
-        deleteGroup,
+        deleteGroupOwner,
         cachedArchiveRowTasks,
         cachedTasks,
         getUsers,
@@ -483,12 +526,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         addTask,
         userData,
         addGroups,
+        userSync,
         // updateTask,
-        // deleteTask,
+        // deleteTask, 
         removeUsersFromGroup,
         refreshRequest,
         getUsersByGroupId,
-        addUsersToGroup
+        addUsersToGroup,
       }}
     >
       {children}

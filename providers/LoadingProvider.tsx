@@ -1,6 +1,9 @@
 import { Loading02Icon } from '@/components/Loading02Icon';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
+const styles = Platform.OS === 'android' 
+  ? require('../styles/styles.android').default 
+  : require('../styles/styles.android').default; 
 
 interface LoadingContextType {
   isLoading: boolean;
@@ -34,16 +37,4 @@ export const useLoading = () => {
   return context;
 };
 
-const styles = StyleSheet.create({
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.2)', // Полупрозрачный фон
-    zIndex: 1000,
-  },
-}); 
+ 

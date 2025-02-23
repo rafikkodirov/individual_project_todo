@@ -10,6 +10,8 @@ import { ScaledStyleSheet } from '../../Common/ScaledStyleSheet'
 import { AppUser, useAuth } from '@/providers/authProvider';
 import { SecureStore } from '@/stores/global.store';
 import AddGroupScreen from '../add-group';
+import { Loading02Icon } from '@/components/Loading02Icon';
+import { useLoading } from '@/providers/LoadingProvider';
 interface TabIcon {
   color: string,
   name: string
@@ -26,11 +28,21 @@ const TabIcon: React.FC<TabIcon> = ({ icon, focused, color, name }) => {
     </View>
   )
 }
-
 const styles = ScaledStyleSheet.create({
   icon: {
     width: 24,
     height: 24,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)', // Полупрозрачный фон
+    zIndex: 1000,
   },
   text: {
     fontSize: 12,
@@ -49,6 +61,8 @@ const styles = ScaledStyleSheet.create({
   },
 });
 const TabsLayout = () => {
+
+  const { isLoading } = useLoading()
   const router = useRouter();
   const { user, loading, reLogin } = useAuth();
   const [isConfirmationDialogVisible, setIsConfirmationDialogVisible] = useState<boolean>(false);
@@ -59,20 +73,22 @@ const TabsLayout = () => {
   }, [reLogin])
 
   useEffect(() => {
-    if (!loading && !user) { 
+    if (!loading && !user) {
       const savedUser = SecureStore.get<AppUser>("USER");
       if (savedUser === null)
         router.replace("/sign-in");
     }
-  }, [user, loading]); 
+  }, [user, loading]);
+
   return (
+
     <>
       <Tabs>
 
         <Tabs.Screen name="activeTask"
           options={{
             title: 'Активные Задания',
-           
+
             tabBarLabel: "Задания",
             tabBarIcon: ({ color, focused }) => {
               return <TabIcon
@@ -87,7 +103,7 @@ const TabsLayout = () => {
           options={{
             title: 'Группы',
             headerRight: () => (
-              <View style={styles.headerButtonsContainer}> 
+              <View style={styles.headerButtonsContainer}>
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => setIsConfirmationDialogVisible(true)} >
@@ -95,9 +111,14 @@ const TabsLayout = () => {
                   <Ionicons name="add" size={24} color="black" />
 
                   <Dialog isVisible={isConfirmationDialogVisible} onClose={() => setIsConfirmationDialogVisible(false)} dialogWidth={'100%'} scrollable={false}  >
-                    <AddGroupScreen closeModal={() => setIsConfirmationDialogVisible(false)}/>
+                    {isLoading && (
+                      <View style={{ ...styles.overlay, backgroundColor: "" }}>
+                        <Loading02Icon fill="blue" width="42" height="42" />
+                      </View>
+                    )}
+                    <AddGroupScreen closeModal={() => setIsConfirmationDialogVisible(false)} />
                   </Dialog>
-                  
+
                 </TouchableOpacity>
               </View>),
             tabBarLabel: "Группы",

@@ -23,7 +23,7 @@ const ActiveTask: React.FC = () => {
   const EmptyList = () => {
     if (isLoading === true || uniqueTasks.length !== 0)
       return <></>;
-    return <Text style={styles.header}>Нет активных задач</Text>
+    return <Text  style={{...styles.header,color:"#5E5E5E",paddingTop:10,fontWeight:"500",}}>Ваш список пока пуст</Text>
 
   }
   const formatDateTime = (dateString: string) => {

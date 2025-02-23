@@ -8,8 +8,9 @@ export default ScaledStyleSheet.create({
     textAlign: "center",
   },
   titleInSettings: {
-    fontSize: 24,
-    fontWeight: 'bold', 
+    fontSize: 24, 
+    color:"#5E5E5E",
+    textAlign: "center",
   },  
   safeArea: {
     flexGrow: 1,
@@ -247,7 +248,7 @@ export default ScaledStyleSheet.create({
   },
 
   header: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
@@ -289,6 +290,17 @@ export default ScaledStyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 14,
     height: '100%',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)', // Полупрозрачный фон
+    zIndex: 1000,
   },
   actionText: {
     color: 'white',

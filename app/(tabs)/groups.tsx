@@ -1,5 +1,5 @@
 import { View, Text, FlatList, TouchableOpacity, RefreshControl, Platform, Alert, Animated } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import GroupCard from '@/components/GroupCard';
 import { useRouter } from 'expo-router';
 import { useDataContext, DataType } from '@/providers/DataProvider';
@@ -15,9 +15,19 @@ const styles = Platform.OS === 'android'
 const Groups: React.FC = () => {
   const { isLoading, setLoading } = useLoading()
   const { cachedGroups, getUsersByGroupId } = useDataContext();
-  const { selectedGroupId, setSelectedGroupId, setSelectedGroup } = useDataContext();
+  const { selectedGroupId, setSelectedGroupId, deleteGroupOwner, setSelectedGroup } = useDataContext();
   const router = useRouter()
+    const uniqueGroups = useMemo(() => {
+      return cachedGroups.filter((groups, index, self) =>
+        index === self.findIndex((g) => g.key === groups.key)
+      );
+    }, [cachedGroups]);
+ const EmptyList = () => {
+    if (isLoading === true || uniqueGroups.length !== 0)
+      return <></>;
+    return <Text  style={{...styles.header,color:"#5E5E5E",fontWeight:"500",paddingTop:10}}>Создайте первую группу</Text>
 
+  }
   const { getUsers, userData } = useDataContext();
   useEffect(() => {
     setLoading(false)
@@ -57,32 +67,14 @@ const Groups: React.FC = () => {
               text: "Удалить",
               style: "destructive",
               onPress: async () => {
+
+                setLoading(true)
                 setTimeout(async () => {
                   try {
-                    const users = await getUsersByGroupId(groupId)
+                    await deleteGroupOwner(groupId, isOwner)
 
-                    console.log("Pressed", users);
-                    for (const user of users) {
-
-                      console.log(user.key, "user.key...");
-                      const userEmail = user.key;
-
-                      if (userEmail) {
-                        try {
-
-                          await deleteDoc(doc(db, `groups/${groupId}/users`, userEmail));
-                          await deleteDoc(doc(db, `users/${userEmail}/groups`, groupId));
-                          console.log(`Документ группы ${groupId} успешно удалён для пользователя ${userEmail}`);
-                        } catch (error) {
-                          console.error(`Ошибка при удалении документа группы для пользователя ${userEmail}:`, error);
-                        }
-                      }
-                    }
-
-                    await deleteDoc(doc(db, `groups/${groupId}`));
-                    // console.log(`Документ группы ${group} успешно удалён для пользователя ${userEmail}`);
                   } catch (error) {
-                    console.error(`Ошибка при удалении группы ${groupId}:`, error);
+                    console.error("Ошибка при удалении пользователей:", error);
                   }
                 }, 100)
               }
@@ -92,7 +84,7 @@ const Groups: React.FC = () => {
       ) : (
         Alert.alert(
           "Подтвердите выход",
-          "Вы уверены, что хотите выйт из из этой группы?",
+          "Вы уверены, что хотите выйти из из этой группы?",
           [
             { text: "Отмена", style: "cancel" },
             {
@@ -101,21 +93,9 @@ const Groups: React.FC = () => {
               onPress: async () => {
                 setTimeout(async () => {
                   try {
-                    const users = await getUsersByGroupId(groupId)
-
-                    if (userData.id) {
-                      try {
-
-                        await deleteDoc(doc(db, `groups/${groupId}/users`, userData.id));
-                        await deleteDoc(doc(db, `users/${userData.id}/groups`, groupId));
-                        console.log(`Документ группы ${groupId} успешно удалён для пользователя ${userData.id}`);
-                      } catch (error) {
-                        console.error(`Ошибка при удалении документа группы для пользователя ${userData.id}:`, error);
-                      }
-                    }
-                    // console.log(`Документ группы ${group} успешно удалён для пользователя ${userEmail}`);
+                    await deleteGroupOwner
                   } catch (error) {
-                    console.error(`Ошибка при удалении группы ${groupId}:`, error);
+                    console.error("Ошибка при удалении пользователей:", error);
                   }
                 }, 100)
               }
@@ -167,7 +147,7 @@ const Groups: React.FC = () => {
           </View></Swipeable>
       )
       }
-      ListEmptyComponent={<Text style={styles.header}>Нет групп</Text>}
+      ListEmptyComponent={EmptyList}
     />
   )
 }

@@ -15,6 +15,7 @@ import styles from "../styles/styles.android";
 import { useDataContext } from "@/providers/DataProvider";
 import { useLoading } from "@/providers/LoadingProvider";
 import { useLocalSearchParams } from "expo-router";
+import { Loading02Icon } from "@/components/Loading02Icon";
 const UserList = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [usersInSearch, setUsersInSearch] = useState<any[]>([]);
@@ -31,10 +32,12 @@ const UserList = () => {
     addUsersToGroup,
     removeUsersFromGroup
   } = useDataContext();
-  const [searchQuery, setSearchQuery] = useState(""); 
+  const [searchQuery, setSearchQuery] = useState("");
+  const { isLoading } = useLoading()
   const [filteredU, setFiltered] = useState<any[]>([]);
-  const { getUsers, userData } = useDataContext();
-  const { owner, groupId } = useLocalSearchParams(); 
+  const { getUsers, userData, userSync } = useDataContext();
+  const { owner, groupId } = useLocalSearchParams();
+
   useEffect(() => {
     getUsers().then((data) => {
       setUsersInSearch(
@@ -54,6 +57,8 @@ const UserList = () => {
   }, [userData.id, owner]);
 
   useEffect(() => {
+    console.log('User Sync')
+
     getUsersByGroupId(groupId.toString()).then((data) => {
       setUsers(
         data.map((element) => {
@@ -65,7 +70,7 @@ const UserList = () => {
         })
       );
     });
-  }, []);
+  }, [userSync]);
   // useEffect(() => {
   //   getUsersByGroupId(groupId.toString()).then((data) => {
   //     setUsers(
@@ -90,7 +95,12 @@ const UserList = () => {
     );
     setFiltered(filtered);
   };
-
+  const handleCloseDialog = () => {
+    setUsersInSearch((prevUsers) =>
+      prevUsers.map((user) => ({ ...user, isSelected: false }))
+    );
+    setConfirmationDialogVisible(false); // Закрываем диалог
+  };
   const displayedUsersInSearsh = searchQuery.trim()
     ? filteredU
     : usersInSearch.filter(
@@ -241,7 +251,7 @@ const UserList = () => {
           )}
           <Dialog
             isVisible={confirmationDialogVisible}
-            onClose={() => setConfirmationDialogVisible(false)}
+            onClose={handleCloseDialog}
             dialogWidth={"100%"}
             scrollable={false}
           >
@@ -255,6 +265,7 @@ const UserList = () => {
                   onChangeText={handleSearch}
                 />
               )}
+
               <View style={{ maxHeight: ITEM_HEIGHT * 5 }}>
                 {/* Список пользователей */}
                 <FlatList
@@ -304,8 +315,15 @@ const UserList = () => {
                 />
               </View>
             </View>
+            {isLoading && (
+                  <View style={{...styles.overlay,backgroundColor:"" } }>
+                    <Loading02Icon fill="blue" />
+                  </View>
+                )}
             {displayedUsersInSearsh.length > 0 ? (
+              
               <View style={{ marginTop: 10 }}>
+               
                 <Button
                   title="Добавить"
                   onPress={addUserFunc}
