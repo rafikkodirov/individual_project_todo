@@ -75,7 +75,7 @@ const Index = () => {
                         source={video}
                         style={styles.video}
                         resizeMode={ResizeMode.CONTAIN}
-                        shouldPlay
+                        shouldPlay={!isLoading}
                         isLooping
                         isMuted
                     />

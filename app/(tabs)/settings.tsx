@@ -46,8 +46,7 @@ const Settings: React.FC = () => {
           <Text style={styles.archiveText}>📂 Посмотреть архив</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Кнопка выхода */}
+ 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLog}>
         <Text style={styles.logoutText}> Выйти из аккаунта</Text>
       </TouchableOpacity>
@@ -99,6 +98,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#2061b7",
     borderRadius: 10,
     alignItems: "center",
+  
     marginRight: 10,
   },
   archiveButton: {
@@ -112,10 +112,13 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+    
+    textAlign:"center",
   },
   archiveText: {
     color: "#fff",
     fontSize: 16,
+    textAlign:"center",
     fontWeight: "bold",
   },
   logoutButton: {
