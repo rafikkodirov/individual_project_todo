@@ -45,8 +45,7 @@ export const updateElementToTheFirebase = async (docPath: string, element: any) 
     [key: string]: any;
   }
   
-export const getFilteredItems = async (path: string, key: string, optionWhere: any) => {
-  console.log("getFilteredItems", path, key, optionWhere);
+export const getFilteredItems = async (path: string, key: string, optionWhere: any) => { 
   try {
     const q = query(collection(db, path), where(key, '==', optionWhere));
     const querySnapshot = await getDocs(q);
@@ -75,7 +74,6 @@ export interface WhereCondition {
 }
 
 export const getFilteredItemsV2 = async (path: string, conditions: WhereCondition[]) => {
-//  console.log("getFilteredItems222", path, conditions);
   try {
  
     let queryRef = query(collection(db, path)); 
@@ -131,7 +129,6 @@ export const getUser = async (email: string): Promise<any> => {
   try { 
 
   const userRef = doc(db, `/users/${email}`);
-  // console.log("getUser 2");
 
   const docSnapshot = await getDoc(userRef); 
     

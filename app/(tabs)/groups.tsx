@@ -32,8 +32,7 @@ const Groups: React.FC = () => {
   useEffect(() => {
     setLoading(false)
   }, [cachedGroups]);
-
-  // console.log(usersAll,'dddddddddddd')
+ 
 
 
   const handleUser = (group: any, ownerId: any) => {
@@ -54,8 +53,7 @@ const Groups: React.FC = () => {
     }
     else {
       isOwner = false
-    }
-    console.log(isOwner, 'groupsIDs')
+    } 
     {
       isOwner ? (
         Alert.alert(

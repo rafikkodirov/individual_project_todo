@@ -56,8 +56,7 @@ const UserList = () => {
     setIsOwner(userData.id === owner);
   }, [userData.id, owner]);
 
-  useEffect(() => {
-    console.log('User Sync')
+  useEffect(() => { 
 
     getUsersByGroupId(groupId.toString()).then((data) => {
       setUsers(
@@ -70,22 +69,7 @@ const UserList = () => {
         })
       );
     });
-  }, [userSync]);
-  // useEffect(() => {
-  //   getUsersByGroupId(groupId.toString()).then((data) => {
-  //     setUsers(
-  //       data
-  //         .filter((user) => user.key !== owner) // Исключаем владельца
-  //         .map((element) => {
-  //           return {
-  //             key: element.key,
-  //             nickname: element.nickname,
-  //             isSelected: false,
-  //           };
-  //         })
-  //     );
-  //   });
-  // }, []);
+  }, [userSync]); 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     const filtered = usersInSearch.filter(

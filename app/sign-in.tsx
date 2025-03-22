@@ -74,7 +74,7 @@ const SignIn: React.FC = () => {
       if (user) {
         if (user.isActive) {
           router.push({
-            pathname: '/(tabs)/activeTask',
+            pathname: '/Preview_1',
             params: {
               user: user
             }

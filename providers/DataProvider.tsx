@@ -139,9 +139,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
   useEffect(() => {
-    //console.log("refreshRequest ............... 4");
     if (userData && userData.id && whereConditionTasks.length > 0) {
-      // console.log(whereConditionTasks, "whereConditionTasks...............");
 
       setLoading(true);
 
@@ -174,7 +172,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
 
   useEffect(() => {
-    // console.log("refreshRequest ............... 4");
     if (userData && userData.id && wherePerformConditionTasks.length > 0) {
 
       setLoading(true);
@@ -191,7 +188,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [userData, wherePerformConditionTasks]);
   useEffect(() => {
-    // console.log("refreshRequest ............... 4");
     if (userData && userData.id && whereArchiveConditionTasks.length > 0) {
 
       setLoading(true);
@@ -322,16 +318,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   const deleteGroupOwner = async (groupId: any, isOwner: boolean) => {
     try {
       const users = await getUsersByGroupId(groupId)
-console.log(users,'users')
-console.log(groupId,'groupId')
-console.log(isOwner,'isOwner')
 
 
-
-      console.log("Pressed", users);
       for (const user of users) {
 
-        console.log(user.key, "user.key...");
         const userEmail = user.key;
 
         if (userEmail) {
@@ -339,9 +329,7 @@ console.log(isOwner,'isOwner')
 
             await deleteDoc(doc(db, `groups/${groupId}/users`, userEmail));
             await deleteDoc(doc(db, `users/${userEmail}/groups`, groupId));
-            console.log(`Документ группы ${groupId} успешно удалён для пользователя ${userEmail}`);
           } catch (error) {
-            console.error(`Ошибка при удалении документа группы для пользователя ${userEmail}:`, error);
           }
         }
       }
@@ -379,7 +367,6 @@ console.log(isOwner,'isOwner')
   const addGroups = async (newGroup: any) => {
     try {
       const docId = uuidv4();
-      console.log(docId, 'dddddddddddddddddd')
 
       await addElementToTheFirebase("groups", newGroup, docId);
       await addElementToTheFirebase(`groups/${docId}/users`, { nickname: userData.nickname }, userData.id);

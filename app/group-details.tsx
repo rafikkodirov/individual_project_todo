@@ -47,10 +47,7 @@ const GroupDetailsPage: React.FC = () => {
         groupName: GroupName,
         groupId: GroupId
       }
-    });
-
-    console.log(GroupId,'id');
-    console.log(GroupName);
+    }); 
   }; 
 
   return (

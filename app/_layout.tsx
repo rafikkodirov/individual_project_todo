@@ -38,7 +38,8 @@ export default function RootLayout() {
         <LoadingProvider>
           <DataProvider>
             <Stack>
-              <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="Preview_1" options={{ headerShown: false }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen name="user-list" options={{ headerShown: true, title: "Пользователи" }} />
               <Stack.Screen name="sign-in" options={{ headerShown: true, title: "Авторизация", headerBackVisible: false, headerTitleAlign: 'center' }} />
