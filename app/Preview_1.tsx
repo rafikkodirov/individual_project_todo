@@ -1,5 +1,5 @@
 import { ImageBackground, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Link, useRouter } from 'expo-router'
 import { storeData } from '@/hooks/storageUtils';
 import { ScaledStyleSheet } from '@/Common/ScaledStyleSheet';
@@ -28,14 +28,16 @@ const Index = () => {
         [('welcome2_1'), ('welcome2_2')],
         [('welcome3_2'), ('welcome3_2')],
     ]
- 
-    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-    const [isExpanded, setIsExpanded] = useState(false);
-
-    const handlePressVideo = () => {
-        setIsVideoPlaying(true); // Начинаем воспроизведение
-        setIsExpanded(true); // Расширяем видео
+    const [videoLoaded, setVideoLoaded] = useState(false);
+    const handleVideoLoad = () => {
+        setVideoLoaded(true);
     };
+    // useEffect(()=>{
+    //     videos.forEach((video) =>{
+    //         const videoElement = new Video(video)
+    //         videoElement.load()
+    //     })
+    // },[]);
 
     const { isLoading, setLoading } = useLoading()
     const router = useRouter();
@@ -44,7 +46,7 @@ const Index = () => {
     const [title, setTitle] = useState(titles[page]);
     const [imagge, setImage] = useState(imagges[page])
     const [video, setVideo] = useState(videos[page]);
-    const handlePress = async () => {
+    const handlePress = useCallback( async () => {
         if (isDisabled || isLoading) return; // Проверяем оба состояния
         setIsDisabled(true);
         setLoading(true);
@@ -54,7 +56,7 @@ const Index = () => {
                 await storeData('isWelcomeShowed', 'true');
                 await router.replace("/(tabs)/activeTask"); // Ждем завершения навигации
             } else {
-                await new Promise((resolve) => setTimeout(resolve, 3000)); // Задержка перед сменой видео
+                await new Promise((resolve) => setTimeout(resolve, 1500)); // Задержка перед сменой видео
                 setVideo(videos[page + 1]);
                 setPage(page + 1);
             }
@@ -64,7 +66,7 @@ const Index = () => {
             setIsDisabled(false); // Разблокировка кнопки в любом случае
             setLoading(false);
         }
-    };
+    }, [isDisabled, isLoading, page, videos, router]);
     const currentImage = imagges[page]
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -75,9 +77,10 @@ const Index = () => {
                         source={video}
                         style={styles.video}
                         resizeMode={ResizeMode.CONTAIN}
-                        shouldPlay={!isLoading}
+                        shouldPlay={!isLoading && videoLoaded}
                         isLooping
                         isMuted
+                        onLoad={handleVideoLoad}
                     />
                 </View>
 

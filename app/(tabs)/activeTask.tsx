@@ -1,5 +1,5 @@
 import { View, Text, FlatList, Platform, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import TaskCard from '@/components/TaskCard';
 import Dialog from '@/Common/DialogComponent ';
 import { useDataContext } from '@/providers/DataProvider';
@@ -23,31 +23,68 @@ const ActiveTask: React.FC = () => {
   const EmptyList = () => {
     if (isLoading === true || uniqueTasks.length !== 0)
       return <></>;
-    return <Text  style={{...styles.header,color:"#5E5E5E",paddingTop:10,fontWeight:"500",}}>Ваш список пока пуст</Text>
+    return <Text style={{ ...styles.header, color: "#5E5E5E", paddingTop: 10, fontWeight: "500", }}>Ваш список пока пуст</Text>
 
   }
   const formatDateTime = (dateString: string) => {
     if (!dateString) return '***'
     return dayjs(dateString).format('DD/MM/YYYY HH:mm');
   };
-  const handleCompleteForPerformer = async (item: any) => {
+  const handleCompleteForPerformer = useCallback(async (item: any) => {
     await updateElementToTheFirebase('tasks', { key: item.key, status: 'in_review' });
     setConfirmationDialogVisible('')
 
-  }; 
-  const handleCompleteForOwner = async (item: any) => {
+  }, []);
+  const handleCompleteForOwner = useCallback(async (item: any) => {
     await updateElementToTheFirebase('tasks', { key: item.key, status: 'completed' });
     setConfirmationDialogVisible('')
-  };
-  const handleRefactorForOwner = async (item: any) => {
+  }, []);
+  const handleRefactorForOwner = useCallback(async (item: any) => {
     await updateElementToTheFirebase('tasks', { key: item.key, status: 'returned' });
     setConfirmationDialogVisible('')
-  };
-  const handleDeclined = async (item: any) => {
+  }, []);
+  const handleDeclined = useCallback(async (item: any) => {
     await updateElementToTheFirebase('tasks', { key: item.key, status: 'declined' });
     setConfirmationDialogVisible('')
-  };
+  }, []);
+  const TaskActionButton = ({ item }: { item: any }) => {
+    if (item.isOwner) {
+      return (
+        <View style={{
+          ...styles.rowStyle,
+          marginTop: "5%",
+        }}>
+          <View style={{ ...styles.buttonContainerInDetails, flexDirection: "row", width: "100%" }}>
+            <TouchableOpacity style={{ ...styles.buttonInDetails, width: 85, height: 40, backgroundColor: "green", justifyContent: "center", alignItems: "center" }} onPress={() => handleCompleteForOwner(item)}>
+              <Ionicons name="checkmark" size={24} color="white" />
+            </TouchableOpacity>
 
+            <TouchableOpacity style={{ ...styles.buttonInDetails, marginHorizontal: 5, width: 85, height: 40, backgroundColor: "orange", justifyContent: "center", alignItems: "center" }} onPress={() => handleRefactorForOwner(item)}>
+              <Ionicons name="refresh" size={24} color="white" />
+            </TouchableOpacity>
+
+
+
+            <TouchableOpacity style={{ ...styles.buttonInDetails, marginRight: "-5%", width: 85, height: 40, backgroundColor: "red", justifyContent: "center", alignItems: "center" }} onPress={() => handleDeclined(item)}>
+              <Ionicons name="close" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )
+    }
+    else {
+      <View style={{ ...styles.buttonContainerInDetails, padding: 0, width: "100%" }}>
+        <TouchableOpacity style={{
+          ...styles.buttonInDetails,
+          marginHorizontal: 0,
+          marginTop: "5%",
+          backgroundColor: "orange"
+        }} onPress={() => handleCompleteForPerformer(item)}>
+          <Text style={{ ...styles.applyText }}>На проверку</Text>
+        </TouchableOpacity>
+      </View>
+    }
+  }
 
 
   return (
@@ -58,10 +95,9 @@ const ActiveTask: React.FC = () => {
       renderItem={({ item }) => (
         <View>
           {item.performerId === userData.id && item.status === "in_review" ? (
-            // Если пользователь является исполнителем и статус "in_review"
             <TaskCard task={item} />
           ) : item.ownerId === userData.id ? (
-            // Если пользователь является владельцем
+            // Если пользователь является владельцем 
             <View>
               <TouchableOpacity onPress={() => setConfirmationDialogVisible(item.key)}>
                 <TaskCard task={item} />
@@ -87,13 +123,13 @@ const ActiveTask: React.FC = () => {
                 }}>Из группы</Text>
 
                 <Text style={{
-                  ...styles.header,marginVertical:3
+                  ...styles.header, marginVertical: 3
                 }}>{item.groupName}</Text></View>
               <View style={styles.rowStyle}>
                 <Text style={{ fontSize: 16, marginTop: 5, }}>Дедлайн в</Text>
 
                 <Text style={{
-                  ...styles.header ,marginVertical:3
+                  ...styles.header, marginVertical: 3
                 }}>{item.endTime ? formatDateTime(item.endTime.toDate()) : 'Не указано'}</Text>
               </View>
 
@@ -104,49 +140,18 @@ const ActiveTask: React.FC = () => {
                   marginBottom: 4,
                   textAlign: 'center'
                 }}>{item.description}</Text></ScrollView>
-              {item.isOwner ? (
-                <>
-                  <View style={{
-                    ...styles.rowStyle,
-                    marginTop: "5%",
-                  }}>
-                    <View style={{ ...styles.buttonContainerInDetails, flexDirection: "row", width: "100%" }}>
-                      <TouchableOpacity style={{ ...styles.buttonInDetails, width: 85, height: 40, backgroundColor: "green", justifyContent: "center", alignItems: "center" }} onPress={() => handleCompleteForOwner(item)}>
-                        <Ionicons name="checkmark" size={24} color="white" />
-                      </TouchableOpacity>
 
-                      <TouchableOpacity style={{ ...styles.buttonInDetails,marginHorizontal:5, width: 85, height: 40, backgroundColor: "orange", justifyContent: "center", alignItems: "center" }} onPress={() => handleRefactorForOwner(item)}>
-                        <Ionicons name="refresh" size={24} color="white" />
-                      </TouchableOpacity>
+              <TaskActionButton item={item} />
 
-
-
-                      <TouchableOpacity style={{ ...styles.buttonInDetails,marginRight:"-5%", width: 85, height: 40, backgroundColor: "red", justifyContent: "center", alignItems: "center" }} onPress={() => handleDeclined(item)}>
-                        <Ionicons name="close" size={24} color="white" />
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </>
-              ) : (
-                <>
-                  <View style={{ ...styles.buttonContainerInDetails, padding: 0, width: "100%" }}>
-                    <TouchableOpacity style={{
-                      ...styles.buttonInDetails,
-                      marginHorizontal: 0,
-                      marginTop: "5%",
-                      backgroundColor: "orange"
-                    }} onPress={() => handleCompleteForPerformer(item)}>
-                      <Text style={{ ...styles.applyText }}>На проверку</Text>
-                    </TouchableOpacity>
-                  </View>
-                </>
-              )}
             </ScrollView>
           </Dialog>
         </View>
       )}
 
       ListEmptyComponent={<EmptyList />}
+      initialNumToRender={10}
+      maxToRenderPerBatch={10}
+      getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
     />
   )
 }

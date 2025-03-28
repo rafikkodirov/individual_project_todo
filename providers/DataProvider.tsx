@@ -1,24 +1,19 @@
-import React, { createContext, useState, useContext, useEffect, useMemo } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 import { useAuth } from "./authProvider";
 import {
   addDoc,
-  and,
   collection,
-  collectionGroup,
   deleteDoc,
   doc,
-  getDocs,
   onSnapshot,
-  or,
   query,
   setDoc,
   updateDoc,
   where,
-  writeBatch,
 } from "firebase/firestore";
-import { getFilteredItemsV2, getItems, updateElementToTheFirebase } from "@/app/services/firestore";
+import { getItems } from "@/app/services/firestore";
 import { db } from "@/app/services/firebaseConfig";
-import { AsyncStore, SecureStore } from "@/stores/global.store";
+import { AsyncStore } from "@/stores/global.store";
 import { useLoading } from "./LoadingProvider";
 import { TaskStatuses } from "@/Common/TaskStatuses";
 import 'react-native-get-random-values';
@@ -39,8 +34,7 @@ interface DataContextType {
   selectedGroup: string | null;
   setSelectedGroup: (name: string | null) => void;
   selectedUserId: string | null;
-  setSelectedUserId: (id: any | null) => void;
-  // refreshData: (entityType: DataType) => Promise<void>;
+  setSelectedUserId: (id: any | null) => void; 
   filteredTasks: (groupId: string) => any[];
   addTask: (newTask: any) => Promise<void>;
   addUser: (newUser: any) => Promise<void>;
@@ -65,24 +59,18 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [cachedTasks, setCachedTasks] = useState<any[]>([]);
-  const [groupId, setGroupId] = useState<string>('');
-  const [cachedRowTasks, setCachedRowTasks] = useState<any[]>([]);
-
+  const [cachedTasks, setCachedTasks] = useState<any[]>([]); 
+  const [cachedRowTasks, setCachedRowTasks] = useState<any[]>([]); 
   const [cachedPerformTasks, setCachedPerformTasks] = useState<any[]>([]);
   const [cachedPerformRowTasks, setCachedPerformRowTasks] = useState<any[]>([]);
-  const [cachedArchiveRowTasks, setCachedArchiveRowTasks] = useState<any[]>([]);
-
+  const [cachedArchiveRowTasks, setCachedArchiveRowTasks] = useState<any[]>([]); 
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [concatenateTasks, setConcatenateTasks] = useState<any[]>([]);
-
-
+  const [concatenateTasks, setConcatenateTasks] = useState<any[]>([]); 
   const [cachedUsers, setCachedUsers] = useState<any[]>([]);
   const [cachedGroups, setCachedGroups] = useState<any[]>([]);
-  const [userSync, setUserSync] = useState<number>(0)
-
+  const [userSync, setUserSync] = useState<number>(0) 
   const [userData, setUserData] = useState<any>(null);
   const [whereConditionTasks, setWhereConditionTasks] = useState<any[]>([]);
   const [wherePerformConditionTasks, setPerformWhereConditionTasks] = useState<any[]>([]);
