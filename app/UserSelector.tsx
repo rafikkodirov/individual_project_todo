@@ -16,13 +16,23 @@ const UserSelector: React.FC<UserSelectorProps> = ({ visible, onClose, onSelectU
   const [users, setUsers] = useState<any[]>([]);
   
   const { getUsersByGroupId,selectedGroupId } = useDataContext(); 
-  
- const groupId = selectedGroupId || 'Нету'
-  useEffect(()=> {
-    getUsersByGroupId(groupId).then((data) => { 
-      setUsers(data) 
-    })
-  }, [])
+   
+ useEffect(() => {
+  // Use a fallback value if selectedGroupId is not defined
+  const groupId = selectedGroupId || 'Нету';
+
+  const fetchUsers = async () => {
+    try {
+      const data = await getUsersByGroupId(groupId);
+      setUsers(data);
+    } catch (error) {
+      console.error("Ошибка получения пользователей по группе:", error);
+    }
+  };
+
+  fetchUsers();
+}, [selectedGroupId]); // Depend on selectedGroupId so that effect re-runs when it changes
+
 
 
   const handleSearch = (query: string) => {

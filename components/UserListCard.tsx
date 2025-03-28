@@ -6,7 +6,7 @@ const styles = Platform.OS === 'android'
   : require('../styles/styles.android').default; 
 
 interface UsersProps {
-  user: any;  // URL or image source  
+  user: any;   
 }
 
 const UserListCard: React.FC<UsersProps> = ({
