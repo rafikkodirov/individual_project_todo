@@ -192,43 +192,83 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [userData, whereArchiveConditionTasks]);
 
+  // useEffect(() => {
+  //   const sortedTasks = [...cachedRowTasks].sort(
+  //     (a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime()
+  //   );
+
+
+
+  //   const updatedTasks = cachedRowTasks.map((task: any) => {
+
+  //     const now = new Date().getTime(); // Текущее время
+  //     const taskEndTime = new Date(task.endTime.toDate()).getTime();
+  //     const oneDayInMs = 24 * 60 * 60 * 1000; // миллисекунд в одном дне 
+  //     const isExpired = taskEndTime < now  //Eсли не выбрать день то срок будет ровно 1 день
+
+  //     // Если статус уже "expired", не обновляем
+  //     if (isExpired && task.status !== "expired") { 
+  //       const taskRef = doc(db, "tasks", task.key);
+  //       updateDoc(taskRef, { status: "expired" }).catch((error) =>
+  //         console.error("Ошибка обновления статуса:", error)
+  //       );
+
+  //       return { ...task, status: "expired" }; // Обновляем локально
+  //     }
+
+  //     return task;
+  //   });
+  //   sortedTasks.forEach(async (element: any) => {
+  //     element.isOwner = element.ownerId === userData.id;
+
+  //   }
+  //   );
+
+  //   setCachedTasks([...sortedTasks]); // Создаём новый массив, чтобы React отследил изменения
+  // }, [cachedRowTasks]);
+
   useEffect(() => {
-    const sortedTasks = cachedRowTasks.sort(
+    // Step 1: Sort tasks by endTime
+    const sortedTasks = [...cachedRowTasks].sort(
       (a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime()
     );
-
-
-
-    const updatedTasks = cachedRowTasks.map((task: any) => {
-
-      const now = new Date().getTime(); // Текущее время
+  
+    // Step 2: Update tasks with 'expired' status if needed
+    const now = new Date().getTime();
+    const updatedTasks = sortedTasks.map((task: any) => {
       const taskEndTime = new Date(task.endTime.toDate()).getTime();
-      const oneDayInMs = 24 * 60 * 60 * 1000; // миллисекунд в одном дне 
-      const isExpired = taskEndTime < now  //Eсли не выбрать день то срок будет ровно 1 день
-
-      // Если статус уже "expired", не обновляем
+      const isExpired = taskEndTime < now;
+  
       if (isExpired && task.status !== "expired") {
-        // Обновляем Firestore
-        const taskRef = doc(db, "tasks", task.key);
-        updateDoc(taskRef, { status: "expired" }).catch((error) =>
-          console.error("Ошибка обновления статуса:", error)
-        );
-
-        return { ...task, status: "expired" }; // Обновляем локально
+        // If expired and status is not already "expired", return the updated task
+        return { ...task, status: "expired" };
       }
-
       return task;
     });
-    sortedTasks.forEach(async (element: any) => {
-      element.isOwner = element.ownerId === userData.id;
-
-    }
-    );
-
-    setCachedTasks([...sortedTasks]); // Создаём новый массив, чтобы React отследил изменения
-  }, [cachedRowTasks]);
-
-
+  
+    // Step 3: Update tasks that are expired in Firestore
+    const expiredTasks = updatedTasks.filter((task: any) => task.status === "expired");
+  
+    // If there are tasks with status 'expired', update them in Firestore
+    const updatePromises = expiredTasks.map((task) => {
+      const taskRef = doc(db, "tasks", task.key);
+      return updateDoc(taskRef, { status: "expired" }).catch((error) => {
+        console.error("Error updating task status:", error);
+      });
+    });
+  
+    // Wait for all updates to complete (if any)
+    Promise.all(updatePromises).then(() => {
+      // Step 4: Update `cachedTasks` with the final tasks array
+      setCachedTasks(updatedTasks);
+  
+      // Step 5: Set ownership flag for each task
+      updatedTasks.forEach((task: any) => {
+        task.isOwner = task.ownerId === userData.id;
+      });
+    });
+  }, [cachedRowTasks, userData]); // Trigger effect when `cachedRowTasks` or `userData` changes
+  
 
   useEffect(() => {
     const sortedTasks = cachedPerformRowTasks.sort((a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime())
@@ -501,9 +541,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         addTask,
         userData,
         addGroups,
-        userSync,
-        // updateTask,
-        // deleteTask, 
+        userSync, 
         removeUsersFromGroup,
         refreshRequest,
         getUsersByGroupId,
