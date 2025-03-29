@@ -11,7 +11,7 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import UserListCard from "@/components/UserListCard";
 import Dialog from "@/Common/DialogComponent ";
-import styles from "../styles/styles.android";
+import styles from "../../../styles/styles.android";
 import { useDataContext } from "@/providers/DataProvider";
 import { useLoading } from "@/providers/LoadingProvider";
 import { useLocalSearchParams } from "expo-router";

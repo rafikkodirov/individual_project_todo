@@ -16,7 +16,7 @@ const AuthCheck: React.FC = () => {
         router.replace('/(tabs)/activeTask');
       } else {
         // Если пользователь не авторизован, отправляем на экран авторизации
-        router.replace('/sign-in');
+        router.replace('/auth/screens/sign-in');
       }
 
       setLoading(false); // Отключаем индикатор загрузки

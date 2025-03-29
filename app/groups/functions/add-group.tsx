@@ -7,8 +7,8 @@ import ColorPicker from '@/components/ColorPicker';
 import LabeledTextInput, { TextInputType } from '@/Common/LabeledTextInput';
 
 const styles = Platform.OS === 'android'
-  ? require('../styles/styles.android').default
-  : require('../styles/styles.android').default;
+  ? require('../../../styles/styles.android').default
+  : require('../../../styles/styles.android').default;
 
 interface AddGroupScreenProps {
   closeModal: () => void;

@@ -23,7 +23,7 @@ const IndexScreen = () => {
             router.replace('/(tabs)/activeTask');
             // router.replace('/Preview_1'); // Переход на другой экран
           } else {
-          router.replace('/sign-in'); // Переход на другой экран
+          router.replace('/auth/screens/sign-in'); // Переход на другой экран
           }
         }, 3000); // 3 seconds delay
       }

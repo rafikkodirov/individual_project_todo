@@ -5,12 +5,13 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useDataContext } from '@/providers/DataProvider';
 import { TaskStatuses } from '@/Common/TaskStatuses';
-import UserSelector from './UserSelector';
+import UserSelector from '../../users/functions/UserSelector';
 import LabeledTextInput, { TextInputType } from '@/Common/LabeledTextInput';
 import { Ionicons } from '@expo/vector-icons';
 const styles = Platform.OS === 'android'
-  ? require('../styles/styles.android').default
-  : require('../styles/styles.android').default; interface AddGroupScreenProps {
+  ? require('../../../styles/styles.android').default
+  : require('../../../styles/styles.android').default;
+interface AddGroupScreenProps {
   closeModal: () => void;
 }
 
@@ -31,9 +32,7 @@ const AddTaskS: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
   const [groups, setGroups] = useState<any[]>([]); 
   const [showEnd, setShowEnd] = useState(false); 
   const [isUserSelectorVisible, setisUserSelectorVisible] = useState(false);
-  const params = useLocalSearchParams()
-  const [time, setTime] = useState(new Date())
-  const [showTimePicker, setShowTimePicker] = useState(false);
+  const params = useLocalSearchParams() 
 
   useEffect(() => {
     if (params.groupId && params.groupName) {

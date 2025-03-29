@@ -8,8 +8,8 @@ interface UserSelectorProps {
   onSelectUser: (id: string, name: string) => void;
 }
 const styles = Platform.OS === 'android'
-  ? require('../styles/styles.android').default
-  : require('../styles/styles.android').default;
+  ? require('../../../styles/styles.android').default
+  : require('../../../styles/styles.android').default;
 const UserSelector: React.FC<UserSelectorProps> = ({ visible, onClose, onSelectUser }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredGroups, setFilteredGroups] = useState<any[]>([]);

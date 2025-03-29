@@ -40,7 +40,7 @@ const Groups: React.FC = () => {
     setSelectedGroup(group)
 
     router.push({
-      pathname: "/user-list",
+      pathname: "/users/screens/user-list",
       params: {
         owner: ownerId,
         groupId: group.key
@@ -108,7 +108,7 @@ const Groups: React.FC = () => {
     setSelectedGroupId(group.key);
 
     router.push({
-      pathname: "/group-details",
+      pathname: "/groups/screens/group-details",
       params: {
         groupId: group.key,
         name: group.groupName,

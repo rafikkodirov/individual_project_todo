@@ -25,12 +25,7 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-
-  const handleTasks = () => {
-    router.push({
-      pathname: '/add-task',
-    });
-  }; 
+ 
   return (
 
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -41,20 +36,20 @@ export default function RootLayout() {
             <Stack.Screen name="index" options={{ headerShown: false }} />
             <Stack.Screen name="Preview_1" options={{ headerShown: false }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="user-list" options={{ headerShown: true, title: "Пользователи" }} />
-              <Stack.Screen name="sign-in" options={{ headerShown: true, title: "Авторизация", headerBackVisible: false, headerTitleAlign: 'center' }} />
+              <Stack.Screen name="users/screens/user-list" options={{ headerShown: true, title: "Пользователи" }} />
+              <Stack.Screen name="auth/screens/sign-in" options={{ headerShown: true, title: "Авторизация", headerBackVisible: false, headerTitleAlign: 'center' }} />
               <Stack.Screen
-                name="group-details"
+                name="groups/screens/group-details"
                 options={({ route }) => ({
                   headerShown: true,
                   title: (route.params as RouteParams)?.name || 'Задания группы',
                 })}
               />
-              <Stack.Screen name="add-task" options={{ headerShown: true, title: "Добавление задачи", headerBackTitle: "Назад" }} />
+              <Stack.Screen name="tasks/functions/add-task" options={{ headerShown: true, title: "Добавление задачи", headerBackTitle: "Назад" }} />
               <Stack.Screen name="archive" options={{ headerShown: true, title: "Архив", headerBackTitle: "Назад" }} />
               <Stack.Screen name="Information" options={{ headerShown: true, title: "Информация", headerBackTitle: "Назад" }} />
-              <Stack.Screen name="add-group" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
-              <Stack.Screen name="sign-up" options={{ headerShown: true, title: "Регистрация", headerBackVisible: false, headerTitleAlign: 'center' }} />
+              <Stack.Screen name="groups/functions/add-group" options={{ headerShown: true, title: "Добавление группы", headerBackTitle: "Назад" }} />
+              <Stack.Screen name="auth/screens/sign-up" options={{ headerShown: true, title: "Регистрация", headerBackVisible: false, headerTitleAlign: 'center' }} />
             </Stack>
           </DataProvider>
         </LoadingProvider>

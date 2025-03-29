@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Alert, Platform } from 'react-native';
 import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
-import { db } from './services/firebaseConfig';
+import { db } from '../../services/firebaseConfig';
 import { useRouter } from 'expo-router';
 import LabeledTextInput, { TextInputType } from '@/Common/LabeledTextInput';
-import { registerWithEmail } from './services/authUtils';
+import { registerWithEmail } from '../../services/authUtils';
 const styles = Platform.OS === 'android'
-  ? require('../styles/styles.android').default
-  : require('../styles/styles.android').default;
+  ? require('../../../styles/styles.android').default
+  : require('../../../styles/styles.android').default;
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState(''); 
@@ -24,7 +24,7 @@ const SignUp: React.FC = () => {
   };
   const handleLogin = async () => {
     router.push({
-      pathname: "/sign-in"
+      pathname: "/auth/screens/sign-in"
     })
   }
   const handleRegister = async () => {
@@ -71,7 +71,7 @@ const SignUp: React.FC = () => {
       };
       await setDoc(doc(db, `users/${email}`), newUser);
       Alert.alert('Успех', 'Вы успешно зарегистрировались!');
-      router.push('/sign-in');
+      router.push('/auth/screens/sign-in');
 
     } catch (err: any) {
       setError(err.message);

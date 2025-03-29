@@ -4,8 +4,8 @@ import TaskCard from '@/components/TaskCard';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useDataContext } from '@/providers/DataProvider';
 const styles = Platform.OS === 'android'
-  ? require('../styles/styles.android').default
-  : require('../styles/styles.android').default;
+  ? require('../../../styles/styles.android').default
+  : require('../../../styles/styles.android').default;
 const GroupDetailsPage: React.FC = () => {
   const params = useLocalSearchParams();
 
@@ -42,7 +42,7 @@ const GroupDetailsPage: React.FC = () => {
   const handleTask = ( ) => {
 
     router.push({
-      pathname: '/add-task',
+      pathname: '/tasks/functions/add-task',
       params: {
         groupName: GroupName,
         groupId: GroupId

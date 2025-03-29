@@ -8,10 +8,10 @@ import edit from '../../assets/images/edit.png'
 import settings from '../../assets/images/settings.png'
 import { ScaledStyleSheet } from '../../Common/ScaledStyleSheet'
 import { AppUser, useAuth } from '@/providers/authProvider';
-import { SecureStore } from '@/stores/global.store';
-import AddGroupScreen from '../add-group';
+import { SecureStore } from '@/stores/global.store'; 
 import { Loading02Icon } from '@/components/Loading02Icon';
 import { useLoading } from '@/providers/LoadingProvider';
+import AddGroupScreen from '../groups/functions/add-group';
 interface TabIcon {
   color: string,
   name: string
@@ -69,14 +69,14 @@ const TabsLayout = () => {
 
   useEffect((): void => {
     if (reLogin === true)
-      router.replace("/sign-in");
+      router.replace("/auth/screens/sign-in");
   }, [reLogin])
 
   useEffect(() => {
     if (!loading && !user) {
       const savedUser = SecureStore.get<AppUser>("USER");
       if (savedUser === null)
-        router.replace("/sign-in");
+        router.replace("/auth/screens/sign-in");
     }
   }, [user, loading]);
 

@@ -74,7 +74,7 @@ const Information: React.FC = () => {
         <Text style={styles.text}>- Узнать информацию о приложении</Text>
         <Text style={styles.text}>- Выйти из аккаунта при необходимости</Text>
       </View>
-      <TouchableOpacity style={{ ...styles.button, marginBottom: 20 }} onPress={handlePress}>
+      <TouchableOpacity style={{ ...styles.button, paddingBottom:10,marginBottom: 30 }} onPress={handlePress}>
         <Text style={styles.buttonText}>Перейти к видеоинструкции</Text>
       </TouchableOpacity>
     </ScrollView>

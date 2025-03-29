@@ -1,15 +1,15 @@
 import { View, Text, TouchableOpacity, Alert, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { getUser } from './services/firestore';
+import { getUser } from '../../services/firestore';
 import { useLoading } from '@/providers/LoadingProvider';
 import { AsyncStore, SecureStore } from '@/stores/global.store';
 import { AppUser, useAuth } from '@/providers/authProvider';
 import { FSUserInfo, useDataContext } from '@/providers/DataProvider';
 import LabeledTextInput, { TextInputType } from '@/Common/LabeledTextInput';
 const styles = Platform.OS === 'android'
-  ? require('../styles/styles.android').default
-  : require('../styles/styles.android').default;
+  ? require('../../../styles/styles.android').default
+  : require('../../../styles/styles.android').default;
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -42,7 +42,7 @@ const SignIn: React.FC = () => {
 
   const handleReg = () => {
     router.push({
-      pathname: "/sign-up"
+      pathname: "/auth/screens/sign-up"
     })
   }
 
@@ -81,7 +81,7 @@ const SignIn: React.FC = () => {
           });
         } else {
           router.push({
-            pathname: '/sign-up',
+            pathname: '/auth/screens/sign-up',
 
           });
         }

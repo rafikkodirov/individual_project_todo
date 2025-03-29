@@ -1,5 +1,5 @@
 import { ImageBackground, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useRouter } from 'expo-router'
 import { storeData } from '@/hooks/storageUtils';
 import { ScaledStyleSheet } from '@/Common/ScaledStyleSheet';
@@ -9,47 +9,27 @@ const completeWelcomeRoute = '/(tabs)/activeTask.tsx';   //'/(tabs)/loans'
 const back = "../assets/images/back_welcome.png"
 
 const Index = () => {
-    const imagges = [
-        require("../assets/images/Group_full_edit1024.png"),
-        require("../assets/images/Group_full_edit1024.png"),
-        require("../assets/images/Group_full_edit1024.png"),
-    ]
-
-    const videos = [
-
+    const videos = useMemo(() => [
         require("../assets/video/welcome_groups.mp4"),
         require("../assets/video/welcome_tasks.mp4"),
         require("../assets/video/welcome_settings.mp4"),
+    ], []);
 
-    ]
-
-    const titles = [
-        [('welcome1_1'), ('welcome1_2')],
-        [('welcome2_1'), ('welcome2_2')],
-        [('welcome3_2'), ('welcome3_2')],
-    ]
     const [videoLoaded, setVideoLoaded] = useState(false);
-    const handleVideoLoad = () => {
+    useEffect(() => {
         setVideoLoaded(true);
-    };
-    // useEffect(()=>{
-    //     videos.forEach((video) =>{
-    //         const videoElement = new Video(video)
-    //         videoElement.load()
-    //     })
-    // },[]);
+    }, [videos])
 
     const { isLoading, setLoading } = useLoading()
     const router = useRouter();
     const [isDisabled, setIsDisabled] = useState(false);
     const [page, setPage] = useState(0);
-    const [title, setTitle] = useState(titles[page]);
-    const [imagge, setImage] = useState(imagges[page])
     const [video, setVideo] = useState(videos[page]);
-    const handlePress = useCallback( async () => {
-        if (isDisabled || isLoading) return; // Проверяем оба состояния
+    const handlePress = useCallback(async () => {
+        if (isDisabled || isLoading || !videoLoaded) return; // Проверяем оба состояния
         setIsDisabled(true);
         setLoading(true);
+        setVideoLoaded(true)
 
         try {
             if (page >= 2) {
@@ -67,7 +47,7 @@ const Index = () => {
             setLoading(false);
         }
     }, [isDisabled, isLoading, page, videos, router]);
-    const currentImage = imagges[page]
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
@@ -80,22 +60,23 @@ const Index = () => {
                         shouldPlay={!isLoading && videoLoaded}
                         isLooping
                         isMuted
-                        onLoad={handleVideoLoad}
+                        onLoad={() => videoLoaded}
                     />
                 </View>
 
                 <View style={styles.ROW}>
-                    <View style={page === 0 ? styles.miniActiveButton : styles.miniButton} />
-                    <View style={page === 1 ? styles.miniActiveButton : styles.miniButton} />
-                    <View style={page === 2 ? styles.miniActiveButton : styles.miniButton} />
+                    {Array(3).fill(null).map((_, index) => (
+                        <View key={index} style={page === index ? styles.miniActiveButton : styles.miniButton} />
+                    ))}
                 </View>
 
                 <TouchableOpacity style={styles.button} onPress={handlePress}>
                     <Text style={styles.buttonText}>Далее</Text>
                 </TouchableOpacity>
-                <Link href="/(tabs)/activeTask">
-                    <Text style={{ fontSize: 20, padding: 10 }}>Пропустить</Text></Link>
 
+                <Link href="/(tabs)/activeTask">
+                    <Text style={{ fontSize: 20, padding: 10 }}>Пропустить</Text>
+                </Link>
             </View>
         </SafeAreaView>
     );

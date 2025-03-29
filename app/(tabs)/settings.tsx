@@ -24,7 +24,7 @@ const Settings: React.FC = () => {
     await logout()
     userData(null)
     router.push({
-      pathname: "/sign-in"
+      pathname: "/auth/screens/sign-in"
     })
 
   }
