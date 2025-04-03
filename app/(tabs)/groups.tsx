@@ -1,10 +1,9 @@
-import { View, Text, FlatList, TouchableOpacity, RefreshControl, Platform, Alert, Animated } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
+import { View, Text, FlatList, TouchableOpacity,  Platform, Alert, Animated } from 'react-native'
+import React, { useEffect, useMemo,  } from 'react'
 import GroupCard from '@/components/GroupCard';
 import { useRouter } from 'expo-router';
-import { useDataContext, DataType } from '@/providers/DataProvider';
+import { useDataContext,  } from '@/providers/DataProvider';
 import { useLoading } from '@/providers/LoadingProvider';
-import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../services/firebaseConfig';
 
 import { Swipeable, RectButton } from 'react-native-gesture-handler';
@@ -13,9 +12,8 @@ const styles = Platform.OS === 'android'
   ? require('../../styles/styles.android').default
   : require('../../styles/styles.android').default;
 const Groups: React.FC = () => {
-  const { isLoading, setLoading } = useLoading()
-  const { cachedGroups, getUsersByGroupId } = useDataContext();
-  const { selectedGroupId, setSelectedGroupId, deleteGroupOwner, setSelectedGroup } = useDataContext();
+  const { isLoading, setLoading } = useLoading() 
+  const { cachedGroups,userData , setSelectedGroupId, deleteGroupOwner, setSelectedGroup } = useDataContext();
   const router = useRouter()
     const uniqueGroups = useMemo(() => {
       return cachedGroups.filter((groups, index, self) =>
@@ -27,8 +25,7 @@ const Groups: React.FC = () => {
       return <></>;
     return <Text  style={{...styles.header,color:"#5E5E5E",fontWeight:"500",paddingTop:10}}>Создайте первую группу</Text>
 
-  }
-  const { getUsers, userData } = useDataContext();
+  } 
   useEffect(() => {
     setLoading(false)
   }, [cachedGroups]);

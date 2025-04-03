@@ -4,8 +4,7 @@ import { Link, useRouter } from 'expo-router'
 import { storeData } from '@/hooks/storageUtils';
 import { ScaledStyleSheet } from '@/Common/ScaledStyleSheet';
 import { ResizeMode, Video } from 'expo-av';
-import { useLoading } from '@/providers/LoadingProvider';
-const completeWelcomeRoute = '/(tabs)/activeTask.tsx';   //'/(tabs)/loans'
+import { useLoading } from '@/providers/LoadingProvider'; 
 const back = "../assets/images/back_welcome.png"
 
 const Index = () => {

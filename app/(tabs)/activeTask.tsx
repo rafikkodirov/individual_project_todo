@@ -7,6 +7,7 @@ import { useLoading } from '@/providers/LoadingProvider';
 import { updateElementToTheFirebase } from '../services/firestore';
 import dayjs from 'dayjs';
 import { Ionicons } from '@expo/vector-icons';
+import { useTaskActions } from '../tasks/functions/taskActions';
 const styles = Platform.OS === 'android'
   ? require('../../styles/styles.android').default
   : require('../../styles/styles.android').default;
@@ -35,23 +36,8 @@ const ActiveTask: React.FC = () => {
     if (!dateString) return '***'
     return dayjs(dateString).format('DD/MM/YYYY HH:mm');
   };
-  const handleCompleteForPerformer = useCallback(async (item: any) => {
-    await updateElementToTheFirebase('tasks', { key: item.key, status: 'in_review' });
-    setConfirmationDialogVisible('')
-
-  }, []);
-  const handleCompleteForOwner = useCallback(async (item: any) => {
-    await updateElementToTheFirebase('tasks', { key: item.key, status: 'completed' });
-    setConfirmationDialogVisible('')
-  }, []);
-  const handleRefactorForOwner = useCallback(async (item: any) => {
-    await updateElementToTheFirebase('tasks', { key: item.key, status: 'returned' });
-    setConfirmationDialogVisible('')
-  }, []);
-  const handleDeclined = useCallback(async (item: any) => {
-    await updateElementToTheFirebase('tasks', { key: item.key, status: 'declined' });
-    setConfirmationDialogVisible('')
-  }, []);
+ 
+ const { handleCompleteForPerformer, handleCompleteForOwner, handleRefactorForOwner, handleDeclined } = useTaskActions();
   const TaskActionButton = ({ item }: { item: any }) => {
     if (item.isOwner) {
       return (

@@ -2,10 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/providers/DataProvider';
 import { SecureStore } from '@/stores/global.store';
-import { logout } from '../services/authUtils';
-// const styles = Platform.OS === 'android'
-//   ? require('../../styles/styles.android').default
-//   : require('../../styles/styles.android').default;
+import { logout } from '../services/authUtils'; 
 const Settings: React.FC = () => {
   const router = useRouter();
   const { userData } = useDataContext();

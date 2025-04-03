@@ -34,7 +34,7 @@ interface DataContextType {
   selectedGroup: string | null;
   setSelectedGroup: (name: string | null) => void;
   selectedUserId: string | null;
-  setSelectedUserId: (id: any | null) => void; 
+  setSelectedUserId: (id: any | null) => void;
   filteredTasks: (groupId: string) => any[];
   addTask: (newTask: any) => Promise<void>;
   addUser: (newUser: any) => Promise<void>;
@@ -59,18 +59,18 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [cachedTasks, setCachedTasks] = useState<any[]>([]); 
-  const [cachedRowTasks, setCachedRowTasks] = useState<any[]>([]); 
+  const [cachedTasks, setCachedTasks] = useState<any[]>([]);
+  const [cachedRowTasks, setCachedRowTasks] = useState<any[]>([]);
   const [cachedPerformTasks, setCachedPerformTasks] = useState<any[]>([]);
   const [cachedPerformRowTasks, setCachedPerformRowTasks] = useState<any[]>([]);
-  const [cachedArchiveRowTasks, setCachedArchiveRowTasks] = useState<any[]>([]); 
+  const [cachedArchiveRowTasks, setCachedArchiveRowTasks] = useState<any[]>([]);
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [concatenateTasks, setConcatenateTasks] = useState<any[]>([]); 
+  const [concatenateTasks, setConcatenateTasks] = useState<any[]>([]);
   const [cachedUsers, setCachedUsers] = useState<any[]>([]);
   const [cachedGroups, setCachedGroups] = useState<any[]>([]);
-  const [userSync, setUserSync] = useState<number>(0) 
+  const [userSync, setUserSync] = useState<number>(0)
   const [userData, setUserData] = useState<any>(null);
   const [whereConditionTasks, setWhereConditionTasks] = useState<any[]>([]);
   const [wherePerformConditionTasks, setPerformWhereConditionTasks] = useState<any[]>([]);
@@ -228,24 +228,24 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   // }, [cachedRowTasks]);
 
   useEffect(() => {
-   
-  
+
+
     // Step 2: Update tasks with 'expired' status if needed
     const now = new Date().getTime();
     const updatedTasks = cachedRowTasks.map((task: any) => {
       const taskEndTime = new Date(task.endTime.toDate()).getTime();
       const isExpired = taskEndTime < now;
-  
+
       if (isExpired && task.status !== "expired") {
         // If expired and status is not already "expired", return the updated task
         return { ...task, status: "expired" };
       }
       return task;
     });
-  
+
     // Step 3: Update tasks that are expired in Firestore
     const expiredTasks = updatedTasks.filter((task: any) => task.status === "expired");
-  
+
     // If there are tasks with status 'expired', update them in Firestore
     const updatePromises = expiredTasks.map((task) => {
       const taskRef = doc(db, "tasks", task.key);
@@ -253,19 +253,19 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error("Error updating task status:", error);
       });
     });
-  
+
     // Wait for all updates to complete (if any)
     Promise.all(updatePromises).then(() => {
       // Step 4: Update `cachedTasks` with the final tasks array
       setCachedTasks(updatedTasks);
-  
+
       // Step 5: Set ownership flag for each task
       updatedTasks.forEach((task: any) => {
         task.isOwner = task.ownerId === userData.id;
       });
     });
   }, [cachedRowTasks, userData]); // Trigger effect when `cachedRowTasks` or `userData` changes
-  
+
 
   useEffect(() => {
     const sortedTasks = cachedPerformRowTasks.sort((a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime())
@@ -363,7 +363,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     } catch (error) {
       console.error("Ошибка при удалении группы:", error);
-    } finally{
+    } finally {
       setLoading(false)
     }
   }
@@ -385,7 +385,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch (error) {
       setLoading(false);
       console.error("Ошибка при добавлении задачи:", error);
-    }finally{
+    } finally {
       setLoading(false)
     }
   };
@@ -400,7 +400,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       await addElementToTheFirebase(`users/${userData.id}/groups`, newGroup, docId);
     } catch (error) {
       console.error("Ошибка при добавлении задачи:", error);
-    }finally{
+    } finally {
       setLoading(false)
     }
   };
@@ -417,7 +417,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
     } catch (error) {
       console.error("Ошибка при добавлении задачи:", error);
-    }finally{
+    } finally {
       setLoading(false)
     }
   };
@@ -502,7 +502,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
     try {
       if (cachedTasks.length > 0) {
-        const lst = cachedTasks.filter((task: any) => task.groupId === groupId);
+        const lst = cachedTasks.filter((task: any) => task.groupId === groupId).sort((a, b) =>
+          new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime()
+        );
         return lst
       }
       return [];
@@ -538,7 +540,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         addTask,
         userData,
         addGroups,
-        userSync, 
+        userSync,
         removeUsersFromGroup,
         refreshRequest,
         getUsersByGroupId,

@@ -23,6 +23,4 @@ console.error(e);
 }
 };
 
-export {
-storeData,
-getData}
+export { storeData, getData}
