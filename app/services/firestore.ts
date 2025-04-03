@@ -23,12 +23,15 @@ export const addElementToTheFirebase = (path: string, element: any) => {
 //   delete element.key;
 //   updateDoc(tasksCollectionRef, element);
 // }; 
-export const updateElementToTheFirebase = async (docPath: string, element: any) => {
+export const updateElementToTheFirebase = async (docPath: string, element: any,success?: () => void) => {
   try {
     const { key, ...updateData } = element; // Деструктурируем key, чтобы не мутировать объект
     const tasksCollectionRef = doc(db, docPath, key);
 
-    await updateDoc(tasksCollectionRef, updateData); // Ждём завершения обновления
+    await updateDoc(tasksCollectionRef, updateData); // Ждём завершения обновления 
+    if (success) {
+      success(); // Вызываем колбэк, если он передан
+    }
   } catch (error) {
     console.error("Ошибка при обновлении документа:", error);
   }

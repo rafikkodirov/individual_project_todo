@@ -46,17 +46,30 @@ const ActiveTask: React.FC = () => {
           marginTop: "5%",
         }}>
           <View style={{ ...styles.buttonContainerInDetails, flexDirection: "row", width: "100%" }}>
-            <TouchableOpacity style={{ ...styles.buttonInDetails, width: 85, height: 40, backgroundColor: "green", justifyContent: "center", alignItems: "center" }} onPress={() => handleCompleteForOwner(item)}>
+            <TouchableOpacity style={{ ...styles.buttonInDetails, 
+            width: 85, 
+              height: 40, backgroundColor: "green",
+               justifyContent: "center",
+                alignItems: "center" }} onPress={() => handleCompleteForOwner(item,setConfirmationDialogVisible)}>
               <Ionicons name="checkmark" size={24} color="white" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={{ ...styles.buttonInDetails, marginHorizontal: 5, width: 85, height: 40, backgroundColor: "orange", justifyContent: "center", alignItems: "center" }} onPress={() => handleRefactorForOwner(item)}>
+            <TouchableOpacity style={{
+               ...styles.buttonInDetails, 
+               marginHorizontal: 5,
+                width: 85, height: 40,
+               backgroundColor: "orange", 
+               justifyContent: "center",
+                alignItems: "center" }} onPress={() => handleRefactorForOwner(item,() => setConfirmationDialogVisible)}>
               <Ionicons name="refresh" size={24} color="white" />
             </TouchableOpacity>
 
 
 
-            <TouchableOpacity style={{ ...styles.buttonInDetails, marginRight: "-5%", width: 85, height: 40, backgroundColor: "red", justifyContent: "center", alignItems: "center" }} onPress={() => handleDeclined(item)}>
+            <TouchableOpacity style={{ ...styles.buttonInDetails,
+               marginRight: "-5%", width: 85, height: 40,
+                backgroundColor: "red", justifyContent: "center", 
+                alignItems: "center" }} onPress={() => handleDeclined(item,() =>setConfirmationDialogVisible)}>
               <Ionicons name="close" size={24} color="white" />
             </TouchableOpacity>
           </View>
@@ -64,17 +77,18 @@ const ActiveTask: React.FC = () => {
       )
     }
     else {
+      return (
       <View style={{ ...styles.buttonContainerInDetails, padding: 0, width: "100%" }}>
         <TouchableOpacity style={{
           ...styles.buttonInDetails,
           marginHorizontal: 0,
           marginTop: "5%",
           backgroundColor: "orange"
-        }} onPress={() => handleCompleteForPerformer(item)}>
+        }} onPress={() => handleCompleteForPerformer(item,setConfirmationDialogVisible)}>
           <Text style={{ ...styles.applyText }}>На проверку</Text>
         </TouchableOpacity>
       </View>
-    }
+      )}
   }
 
 
