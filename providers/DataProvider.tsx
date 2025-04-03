@@ -228,14 +228,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   // }, [cachedRowTasks]);
 
   useEffect(() => {
-    // Step 1: Sort tasks by endTime
-    const sortedTasks = [...cachedRowTasks].sort(
-      (a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime()
-    );
+   
   
     // Step 2: Update tasks with 'expired' status if needed
     const now = new Date().getTime();
-    const updatedTasks = sortedTasks.map((task: any) => {
+    const updatedTasks = cachedRowTasks.map((task: any) => {
       const taskEndTime = new Date(task.endTime.toDate()).getTime();
       const isExpired = taskEndTime < now;
   

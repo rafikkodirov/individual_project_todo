@@ -25,13 +25,9 @@ const Archive: React.FC = () => {
     const EmptyList = () => {
         if (isLoading === true || uniqueTasks.length !== 0)
             return <></>;
-        return <Text style={styles.header}>Нет задач</Text>
+        return <Text style={styles.header}>Здесь пока пусто</Text>
 
-    }
-    const formatDateTime = (dateString: string) => {
-        if (!dateString) return '***'
-        return dayjs(dateString).format('DD/MM/YYYY HH:mm');
-    };
+    } 
 
     return (
 

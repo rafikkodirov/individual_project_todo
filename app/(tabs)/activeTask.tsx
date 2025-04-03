@@ -16,10 +16,15 @@ const ActiveTask: React.FC = () => {
   const { concatenateTasks, userData } = useDataContext();
   const { isLoading } = useLoading()
   const uniqueTasks = useMemo(() => {
-    return concatenateTasks.filter((task, index, self) =>
-      index === self.findIndex((t) => t.key === task.key)
-    );
+    return concatenateTasks
+      .filter((task, index, self) =>
+        index === self.findIndex((t) => t.key === task.key)
+      )
+      .sort((a, b) => 
+        new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime()
+      );
   }, [concatenateTasks]);
+  
   const EmptyList = () => {
     if (isLoading === true || uniqueTasks.length !== 0)
       return <></>;

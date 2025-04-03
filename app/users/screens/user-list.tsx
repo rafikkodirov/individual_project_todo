@@ -16,16 +16,18 @@ import { useDataContext } from "@/providers/DataProvider";
 import { useLoading } from "@/providers/LoadingProvider";
 import { useLocalSearchParams } from "expo-router";
 import { Loading02Icon } from "@/components/Loading02Icon";
+import { query } from "firebase/firestore";
 const UserList = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [usersInSearch, setUsersInSearch] = useState<any[]>([]);
   const [isOwner, setIsOwner] = useState(false);
+
   const [performer, setPerformer] = useState<{
     id: string;
     name: string;
   } | null>(null);
-  const [confirmationDialogVisible, setConfirmationDialogVisible] =
-    useState(false);
+
+  const [confirmationDialogVisible, setConfirmationDialogVisible] = useState(false);
   const {
     getUsersByGroupId,
     setSelectedUserId,
@@ -40,6 +42,10 @@ const UserList = () => {
 
   useEffect(() => {
     getUsers().then((data) => {
+      /* The `setUsersInSearch` function is updating the state variable `usersInSearch` with a new
+      array of objects. Each object in the new array is created by mapping over the `data` array and
+      transforming each element into a new object with the properties `key`, `nickname`, and
+      `isSelected`. */
       setUsersInSearch(
         data.map((element) => {
           return {
@@ -56,8 +62,8 @@ const UserList = () => {
     setIsOwner(userData.id === owner);
   }, [userData.id, owner]);
 
-  useEffect(() => { 
-
+  useEffect(() => {
+    // getUsersByGroupId Получает юзеров по группе затем создает новый массив дял юзеров с новыми элементами
     getUsersByGroupId(groupId.toString()).then((data) => {
       setUsers(
         data.map((element) => {
@@ -69,11 +75,16 @@ const UserList = () => {
         })
       );
     });
-  }, [userSync]); 
+  }, [userSync]);
+
   const handleSearch = (query: string) => {
+    /* The code snippet you provided is filtering the `usersInSearch` array based
+    on a search query. Here's a breakdown of what it's doing: */
     setSearchQuery(query);
+
     const filtered = usersInSearch.filter(
       (user) =>
+        // Ищет юзера по заниженному никнейму
         user.nickname.toLowerCase().includes(query.toLowerCase()) &&
         !users.some((groupUser) => groupUser.key === user.key)
     );
@@ -90,8 +101,12 @@ const UserList = () => {
     : usersInSearch.filter(
       (user) => !users.some((groupUser) => groupUser.key === user.key)
     );
+     
 
-  const showSearch = displayedUsersInSearsh.length > 4;
+    const showSearch =
+    
+    displayedUsersInSearsh.length > 4 || searchQuery.length > 0;
+  
   const ITEM_HEIGHT = 50;
   useEffect(() => {
     setSelectedUserId(performer);
@@ -300,14 +315,14 @@ const UserList = () => {
               </View>
             </View>
             {isLoading && (
-                  <View style={{...styles.overlay,backgroundColor:"" } }>
-                    <Loading02Icon fill="blue" />
-                  </View>
-                )}
+              <View style={{ ...styles.overlay, backgroundColor: "" }}>
+                <Loading02Icon fill="blue" />
+              </View>
+            )}
             {displayedUsersInSearsh.length > 0 ? (
-              
+
               <View style={{ marginTop: 10 }}>
-               
+
                 <Button
                   title="Добавить"
                   onPress={addUserFunc}

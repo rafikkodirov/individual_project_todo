@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, Platform, TouchableOpacity } from 'react-native'; 
+import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, Platform, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useDataContext } from '@/providers/DataProvider';
@@ -16,23 +16,23 @@ interface AddGroupScreenProps {
 }
 
 const AddTaskS: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
-  
+
   const now = new Date().getTime(); // Текущее время 
   const oneDayInMs = 24 * 60 * 60 * 1000; // миллисекунд в од
   const nextDay = new Date(now + oneDayInMs)
   const [groupId, setGroupId] = useState('');
   const [performer, setPerformer] = useState<{ id: string, name: string } | null>(null);
   const [owner, setOwner] = useState('');
-  const [groupName, setGroupName] = useState(''); 
+  const [groupName, setGroupName] = useState('');
   const [endTime, setEndTime] = useState(new Date());
   const [description, setDescription] = useState('');
-  const [title, setTitle] = useState(''); 
+  const [title, setTitle] = useState('');
   const [dateEnd, setDateEnd] = useState(nextDay);
   const [searchQuery, setSearchQuery] = useState('');
-  const [groups, setGroups] = useState<any[]>([]); 
-  const [showEnd, setShowEnd] = useState(false); 
+  const [groups, setGroups] = useState<any[]>([]);
+  const [showEnd, setShowEnd] = useState(false);
   const [isUserSelectorVisible, setisUserSelectorVisible] = useState(false);
-  const params = useLocalSearchParams() 
+  const params = useLocalSearchParams()
 
   useEffect(() => {
     if (params.groupId && params.groupName) {
@@ -48,11 +48,11 @@ const AddTaskS: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
   const onChangeEnd = (event: any, selectedDate?: Date) => {
     setShowEnd(false);
     if (selectedDate) setDateEnd(selectedDate);
-  }; 
+  };
   const showDatePickerEnd = () => {
 
     setShowEnd(true);
-  }; 
+  };
   const handleUserSelect = (id: string, name: string) => {
     setPerformer({ id: id, name: name });
   };
@@ -64,9 +64,23 @@ const AddTaskS: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
     return `${day}/${month}/${year}`;
   };
   const addTaskFunc = async () => {
-    if (!title || !description || !endTime || !groupName  || !performer ) {
+    if (!title) {
+      alert('Пожалуйста, введите название!');
+      return
+    }
+    if (!description) {
+      alert('Пожалуйста, введите описание!');
+      return
+    }
+    if (!endTime) {
       alert('Пожалуйста, заполните все поля!');
-      return;
+      return
+    }
+    if (!groupName) {
+      throw new Error
+    }
+    if (!performer) {
+      return alert('Пожалуйста, выберите исполнителя!');
     }
     const newTask = {
       endTime: dateEnd,
@@ -100,7 +114,7 @@ const AddTaskS: React.FC<AddGroupScreenProps> = ({ closeModal }) => {
         <LabeledTextInput value={title} onChangeText={setTitle} inputType={TextInputType.title} />
         <LabeledTextInput value={description} onChangeText={setDescription} inputType={TextInputType.description} />
 
-        <View style={{ padding: 6 }}> 
+        <View style={{ padding: 6 }}>
           <View style={styles.rowStyle}>
 
             <Text style={styles.header}>Пользователь : {performer?.name || 'Не выбрана'}</Text>
