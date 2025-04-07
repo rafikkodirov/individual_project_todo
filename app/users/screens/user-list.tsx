@@ -16,8 +16,9 @@ import { useDataContext } from "@/providers/DataProvider";
 import { useLoading } from "@/providers/LoadingProvider";
 import { useLocalSearchParams } from "expo-router";
 import { Loading02Icon } from "@/components/Loading02Icon";
-import { query } from "firebase/firestore";
 const UserList = () => {
+  const [dialogMode, setDialogMode] = useState<"add" | "remove">("add");
+
   const [users, setUsers] = useState<any[]>([]);
   const [usersInSearch, setUsersInSearch] = useState<any[]>([]);
   const [isOwner, setIsOwner] = useState(false);
@@ -59,8 +60,8 @@ const UserList = () => {
   }, []);
 
   useEffect(() => {
-    setIsOwner(userData.id === owner);
-  }, [userData.id, owner]);
+    setIsOwner(userData?.id === owner);
+  }, [userData?.id, owner]);
 
   useEffect(() => {
     // getUsersByGroupId Получает юзеров по группе затем создает новый массив дял юзеров с новыми элементами
@@ -91,22 +92,28 @@ const UserList = () => {
     setFiltered(filtered);
   };
   const handleCloseDialog = () => {
+    // Сбрасываем выделение пользователей для обоих режимов
     setUsersInSearch((prevUsers) =>
       prevUsers.map((user) => ({ ...user, isSelected: false }))
     );
-    setConfirmationDialogVisible(false); // Закрываем диалог
+    setUsers((prevUsers) =>
+      prevUsers.map((user) => ({ ...user, isSelected: false }))
+    );
+    setConfirmationDialogVisible(false);
+    setDialogMode("add"); // сброс режима на добавление
   };
+
   const displayedUsersInSearsh = searchQuery.trim()
     ? filteredU
     : usersInSearch.filter(
       (user) => !users.some((groupUser) => groupUser.key === user.key)
     );
-     
 
-    const showSearch =
-    
+
+  const showSearch =
+
     displayedUsersInSearsh.length > 4 || searchQuery.length > 0;
-  
+
   const ITEM_HEIGHT = 50;
   useEffect(() => {
     setSelectedUserId(performer);
@@ -201,17 +208,7 @@ const UserList = () => {
                 {isOwner ? (
 
                   <TouchableOpacity
-                    onPress={() => {
-                      if (item.key !== owner) {
-                        setUsers((prevUsers) =>
-                          prevUsers.map((user) =>
-                            user.key === item.key
-                              ? { ...user, isSelected: !user.isSelected }
-                              : user
-                          )
-                        );
-                      }
-                    }}
+                    onPress={()=> {}}
                   >
                     <UserListCard user={item} />
                   </TouchableOpacity>
@@ -228,22 +225,32 @@ const UserList = () => {
           />
           {isOwner ? (
             <View style={styles.buttonContainerInDetails}>
-              {isMainListSelectedUsersExists() ? (
+              <View style={{
+                flexDirection: 'row',
+              }}>
                 <TouchableOpacity
-                  style={{ ...styles.buttonInDetails, backgroundColor: "#dd1c1c" }}
-                  onPress={removeUserFunc}
+                  style={[styles.buttonInDetailsUser, { marginRight: 5 }]}
+                  onPress={() => {
+                    setDialogMode("add"); // устанавливаем режим удаления
+                    setConfirmationDialogVisible(true);
+                  }}
                 >
+                  <Text style={styles.applyText}>Добавить</Text>
+                </TouchableOpacity>
 
+                <TouchableOpacity
+                  style={[styles.buttonInDetailsUser, { backgroundColor: "#dd1c1c", marginLeft: 5 }]}
+                  onPress={() => {
+                    setDialogMode("remove"); // устанавливаем режим удаления
+                    setConfirmationDialogVisible(true);
+                  }}
+                >
                   <Text style={styles.applyText}>Удалить</Text>
                 </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={styles.buttonInDetails}
-                  onPress={() => setConfirmationDialogVisible(true)}
-                >
-                  <Text style={styles.applyText}>Добавить пользователя</Text>
-                </TouchableOpacity>
-              )}
+
+              </View>
+
+
             </View>
           ) : (
             ""
@@ -255,82 +262,129 @@ const UserList = () => {
             scrollable={false}
           >
             <View style={{ padding: 16 }}>
-              {/* Поле поиска */}
-              {showSearch && (
-                <TextInput
-                  style={styles.searchInput}
-                  placeholder="Поиск пользователя..."
-                  value={searchQuery}
-                  onChangeText={handleSearch}
-                />
-              )}
-
-              <View style={{ maxHeight: ITEM_HEIGHT * 5 }}>
-                {/* Список пользователей */}
-                <FlatList
-                  data={displayedUsersInSearsh}
-                  keyExtractor={(item) => item.key}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: 10,
-                        borderBottomWidth: 1,
-                        borderBottomColor: "#ccc",
-                      }}
-                      onPress={() => {
-                        //handleUserSelect(item.key, item.nickname);
-
-                        setUsersInSearch((prevUsers) =>
-                          prevUsers.map((user) =>
-                            user.key === item.key
-                              ? { ...user, isSelected: !user.isSelected }
-                              : user
-                          )
-                        );
-                      }}
-                    >
-                      <Text
+              {dialogMode === "remove" ? (
+                <>
+                  <Text style={styles.header}>Выберите пользователей для удаления</Text>
+                  <FlatList
+                    data={users.filter((user) => user.key !== owner)} // исключаем владельца
+                    keyExtractor={(item) => item.key}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
                         style={{
-                          ...styles.groupText,
-                          fontWeight: item.isSelected ? "700" : "300",
-                          color: item.isSelected ? "#007bff" : "gray",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: 10,
+                          borderBottomWidth: 1,
+                          borderBottomColor: "#ccc",
+                        }}
+                        onPress={() => {
+                          // переключаем флаг isSelected для удаления
+                          setUsers((prevUsers) =>
+                            prevUsers.map((user) =>
+                              user.key === item.key
+                                ? { ...user, isSelected: !user.isSelected }
+                                : user
+                            )
+                          );
                         }}
                       >
-                        {item.nickname}
-                      </Text>
-
-                    </TouchableOpacity>
-                  )}
-                  ListEmptyComponent={() => (
-                    <View style={{ alignItems: "center" }}>
-                      <Text style={{ ...styles.header, fontSize: 24 }}>
-                        Нет пользователей
-                      </Text>
+                        <Text
+                          style={{
+                            ...styles.groupText,
+                            fontWeight: item.isSelected ? "700" : "300",
+                            color: item.isSelected ? "#dd1c1c" : "gray",
+                          }}
+                        >
+                          {item.nickname}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                    ListEmptyComponent={() => (
+                      <View style={{ alignItems: "center" }}>
+                        <Text style={{ ...styles.header, fontSize: 24 }}>
+                          Нет пользователей
+                        </Text>
+                      </View>
+                    )}
+                  />
+                  {users.filter((user) => user.key !== owner).length > 0 && (
+                    <View style={{ marginTop: 10 }}>
+                      <Button
+                        title="Удалить"
+                        onPress={removeUserFunc}
+                        color="#dd1c1c"
+                      />
                     </View>
                   )}
-                />
-              </View>
+                </>
+              ) : (
+                <>
+                  {/* Здесь текущая логика для добавления пользователей */}
+                  {showSearch && (
+                    <TextInput
+                      style={styles.searchInput}
+                      placeholder="Поиск пользователя..."
+                      value={searchQuery}
+                      onChangeText={handleSearch}
+                    />
+                  )}
+                  <View style={{ maxHeight: ITEM_HEIGHT * 5 }}>
+                    <FlatList
+                      data={displayedUsersInSearsh}
+                      keyExtractor={(item) => item.key}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            padding: 10,
+                            borderBottomWidth: 1,
+                            borderBottomColor: "#ccc",
+                          }}
+                          onPress={() => {
+                            setUsersInSearch((prevUsers) =>
+                              prevUsers.map((user) =>
+                                user.key === item.key
+                                  ? { ...user, isSelected: !user.isSelected }
+                                  : user
+                              )
+                            );
+                          }}
+                        >
+                          <Text
+                            style={{
+                              ...styles.groupText,
+                              fontWeight: item.isSelected ? "700" : "300",
+                              color: item.isSelected ? "#007bff" : "gray",
+                            }}
+                          >
+                            {item.nickname}
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                      ListEmptyComponent={() => (
+                        <View style={{ alignItems: "center" }}>
+                          <Text style={{ ...styles.header, fontSize: 24 }}>
+                            Нет пользователей
+                          </Text>
+                        </View>
+                      )}
+                    />
+                  </View>
+                  {displayedUsersInSearsh.length > 0 && (
+                    <View style={{ marginTop: 10 }}>
+                      <Button title="Добавить" onPress={addUserFunc} color="#007bff" />
+                    </View>
+                  )}
+                </>
+              )}
             </View>
             {isLoading && (
               <View style={{ ...styles.overlay, backgroundColor: "" }}>
                 <Loading02Icon fill="blue" />
               </View>
-            )}
-            {displayedUsersInSearsh.length > 0 ? (
-
-              <View style={{ marginTop: 10 }}>
-
-                <Button
-                  title="Добавить"
-                  onPress={addUserFunc}
-                  color="#007bff"
-                />
-              </View>
-            ) : (
-              ""
             )}
           </Dialog>
         </View>

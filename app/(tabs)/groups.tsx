@@ -41,6 +41,7 @@ const Groups: React.FC = () => {
       params: {
         owner: ownerId,
         groupId: group.key
+        
       }
     })
   };

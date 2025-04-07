@@ -31,8 +31,8 @@ interface DataContextType {
   userSync: number,
   selectedGroupId: string | null;
   setSelectedGroupId: (id: string | null) => void;
-  selectedGroup: string | null;
-  setSelectedGroup: (name: string | null) => void;
+  selectedGroup: Group  | null;
+  setSelectedGroup: (group: Group | null) => void;
   selectedUserId: string | null;
   setSelectedUserId: (id: any | null) => void;
   filteredTasks: (groupId: string) => any[];
@@ -53,7 +53,12 @@ export interface FSUserInfo {
   nickname: string;
 
 }
-
+interface Group {
+  groupName: string;
+  color: string;
+  owner: string;
+  ownerId: string;
+}
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -65,7 +70,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   const [cachedPerformRowTasks, setCachedPerformRowTasks] = useState<any[]>([]);
   const [cachedArchiveRowTasks, setCachedArchiveRowTasks] = useState<any[]>([]);
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
-  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [concatenateTasks, setConcatenateTasks] = useState<any[]>([]);
   const [cachedUsers, setCachedUsers] = useState<any[]>([]);

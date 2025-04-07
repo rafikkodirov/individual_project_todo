@@ -75,7 +75,7 @@ export default ScaledStyleSheet.create({
     elevation: 8, // Для Android
   },  
   title: {
-    fontSize: 15,
+    fontSize: 16,
     marginVertical: -1,
     fontWeight: "bold",
   },
@@ -166,7 +166,16 @@ export default ScaledStyleSheet.create({
     flex: 1, 
     justifyContent: 'flex-start',
     backgroundColor: '#E0E0E0', // Серый фон для Android
+  }, 
+  buttonInDetailsUser: {
+    flex: 1,
+    paddingVertical: 12,
+    backgroundColor: '#007bff',
+    borderRadius: 8,
+    alignItems: 'center',
   },
+  
+  
   modalContainer: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
