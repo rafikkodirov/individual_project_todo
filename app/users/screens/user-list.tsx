@@ -14,7 +14,7 @@ import Dialog from "@/Common/DialogComponent ";
 import styles from "../../../styles/styles.android";
 import { useDataContext } from "@/providers/DataProvider";
 import { useLoading } from "@/providers/LoadingProvider";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Loading02Icon } from "@/components/Loading02Icon";
 const UserList = () => {
   const [dialogMode, setDialogMode] = useState<"add" | "remove">("add");
@@ -41,6 +41,7 @@ const UserList = () => {
   const { getUsers, userData, userSync } = useDataContext();
   const { owner, groupId } = useLocalSearchParams();
 
+  const router = useRouter();
   useEffect(() => {
     getUsers().then((data) => {
       /* The `setUsersInSearch` function is updating the state variable `usersInSearch` with a new
@@ -207,8 +208,18 @@ const UserList = () => {
               <View style={{ flex: 1, margin: 1 }}>
                 {isOwner ? (
 
-                  <TouchableOpacity
-                    onPress={()=> {}}
+                  <TouchableOpacity 
+                  onPress={() => {
+                    router.push({
+                      pathname: "/tasks/screens/defined-user-task",
+                      params: {
+                        userId: item.key,
+                        name: item.nickname
+                      },
+                    });
+                    console.log(item.key,'info');
+                    
+                  }}
                   >
                     <UserListCard user={item} />
                   </TouchableOpacity>
@@ -383,7 +394,7 @@ const UserList = () => {
             </View>
             {isLoading && (
               <View style={{ ...styles.overlay, backgroundColor: "" }}>
-                <Loading02Icon fill="blue" />
+                <Loading02Icon fill="black" />
               </View>
             )}
           </Dialog>

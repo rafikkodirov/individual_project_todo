@@ -37,6 +37,14 @@ export default function RootLayout() {
             <Stack.Screen name="Preview_1" options={{ headerShown: false }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen name="users/screens/user-list" options={{ headerShown: true, title: "Пользователи" }} />
+               
+              <Stack.Screen
+               name="tasks/screens/defined-user-task"
+                options={({ route }) => ({
+                  headerShown: true,
+                  title: (route.params as RouteParams)?.name || 'Заданаия пользователя',
+                })}
+              />
               <Stack.Screen name="auth/screens/sign-in" options={{ headerShown: true, title: "Авторизация", headerBackVisible: false, headerTitleAlign: 'center' }} />
               <Stack.Screen
                 name="groups/screens/group-details"
