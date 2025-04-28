@@ -2,7 +2,7 @@
   "expo": {
     "name": "Задания и Группы",
     "slug": "Tasks",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "platforms": [
       "android"
     ],
