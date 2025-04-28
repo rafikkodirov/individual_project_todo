@@ -27,7 +27,8 @@ interface DataContextType {
   concatenateTasks: any[];
   cachedGroups: any[];
   userDoc: any;
-  userData: any,
+  userData: any, 
+  clearAllSubscriptions: () => void;
   userSync: number,
   selectedGroupId: string | null;
   setSelectedGroupId: (id: string | null) => void;
@@ -64,6 +65,8 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  
+  const [userDoc, setUserDoc] = useState<any>(null);
   const [cachedTasks, setCachedTasks] = useState<any[]>([]);
   const [cachedRowTasks, setCachedRowTasks] = useState<any[]>([]);
   const [cachedPerformTasks, setCachedPerformTasks] = useState<any[]>([]);
@@ -102,7 +105,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       setUserData(data);
     });
   };
-
+  
+  // Добавляем в state или просто в замыкание:
+  const unsubscribers: Array<() => void> = [];
   const subscribeToCollection = (
     collectionPath: string,
     conditions: any[],
@@ -114,7 +119,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         where(condition.key, condition.operator, condition.value)
       )
     );
-    return onSnapshot(
+    const unsubscribe = onSnapshot(
       q,
       (querySnapshot) => {
         const data: any[] = [];
@@ -130,12 +135,16 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         setLoading(false);
       }
     );
+    unsubscribers.push(() => {
+      console.log(`[UNSUBSCRIBE] from ${collectionPath}`);
+      unsubscribe();
+    });
+    return unsubscribe;
   };
+
   useEffect(() => {
     if (userData && userData.id && whereConditionTasks.length > 0) {
-
       setLoading(true);
-
       const unsubscribeTasks = subscribeToCollection(
         "tasks",
         whereConditionTasks,
@@ -196,47 +205,20 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       };
     }
   }, [userData, whereArchiveConditionTasks]);
+  const clearAllSubscriptions = () => {
+    console.log('[CLEAR ALL SUBSCRIPTIONS]');
+    // вызываем всех отписчиков
+    unsubscribers.forEach(unsub => unsub());
+    // очищаем массив
+    unsubscribers.length = 0;
 
-  // useEffect(() => {
-  //   const sortedTasks = [...cachedRowTasks].sort(
-  //     (a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime()
-  //   );
-
-
-
-  //   const updatedTasks = cachedRowTasks.map((task: any) => {
-
-  //     const now = new Date().getTime(); // Текущее время
-  //     const taskEndTime = new Date(task.endTime.toDate()).getTime();
-  //     const oneDayInMs = 24 * 60 * 60 * 1000; // миллисекунд в одном дне 
-  //     const isExpired = taskEndTime < now  //Eсли не выбрать день то срок будет ровно 1 день
-
-  //     // Если статус уже "expired", не обновляем
-  //     if (isExpired && task.status !== "expired") { 
-  //       const taskRef = doc(db, "tasks", task.key);
-  //       updateDoc(taskRef, { status: "expired" }).catch((error) =>
-  //         console.error("Ошибка обновления статуса:", error)
-  //       );
-
-  //       return { ...task, status: "expired" }; // Обновляем локально
-  //     }
-
-  //     return task;
-  //   });
-  //   sortedTasks.forEach(async (element: any) => {
-  //     element.isOwner = element.ownerId === userData.id;
-
-  //   }
-  //   );
-
-  //   setCachedTasks([...sortedTasks]); // Создаём новый массив, чтобы React отследил изменения
-  // }, [cachedRowTasks]);
-
-  useEffect(() => {
-
-
-    // Step 2: Update tasks with 'expired' status if needed
-    const now = new Date().getTime();
+    setUserData(null);
+  setWhereConditionTasks([]);
+  setPerformWhereConditionTasks([]);
+  setArchiveWhereConditionTasks([]);
+  }; 
+  useEffect(() => { 
+    const now = new Date().getTime(); // Новое время
     const updatedTasks = cachedRowTasks.map((task: any) => {
       const taskEndTime = new Date(task.endTime.toDate()).getTime();
       const isExpired = taskEndTime < now;
@@ -246,20 +228,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         return { ...task, status: "expired" };
       }
       return task;
-    });
-
-    // Step 3: Update tasks that are expired in Firestore
-    const expiredTasks = updatedTasks.filter((task: any) => task.status === "expired");
-
-    // If there are tasks with status 'expired', update them in Firestore
+    }); 
+    const expiredTasks = updatedTasks.filter((task: any) => task.status === "expired"); 
     const updatePromises = expiredTasks.map((task) => {
       const taskRef = doc(db, "tasks", task.key);
       return updateDoc(taskRef, { status: "expired" }).catch((error) => {
         console.error("Error updating task status:", error);
       });
-    });
-
-    // Wait for all updates to complete (if any)
+    }); 
     Promise.all(updatePromises).then(() => {
       // Step 4: Update `cachedTasks` with the final tasks array
       setCachedTasks(updatedTasks);
@@ -269,11 +245,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         task.isOwner = task.ownerId === userData.id;
       });
     });
-  }, [cachedRowTasks, userData]); // Trigger effect when `cachedRowTasks` or `userData` changes
+  }, [cachedRowTasks, userData]);  
 
 
   useEffect(() => {
-    const sortedTasks = cachedPerformRowTasks.sort((a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime())
+    const sortedTasks = cachedPerformRowTasks.sort(
+      (a, b) => new Date(a.endTime.toDate()).getTime() - new Date(b.endTime.toDate()).getTime())
     sortedTasks.forEach(
       (element: any) => {
         element.isOwner = element.ownerId === userData.id
@@ -341,15 +318,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         unsubscribeGroups();
       };
     }
-
-
   }, [userData]);
 
   const deleteGroupOwner = async (groupId: any, isOwner: boolean) => {
     try {
       const users = await getUsersByGroupId(groupId)
-
-
       for (const user of users) {
 
         const userEmail = user.key;
@@ -371,7 +344,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       setLoading(false)
     }
-  }
+  } //Удаление группы.Только для владельцев группы "Исключает всех из группы"
   const addElementToTheFirebase = (path: string, element: any, docId?: string,) => {
     const collectionRef = collection(db, path);
     if (docId) {
@@ -379,7 +352,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       return setDoc(docRef, element)
     }
     return addDoc(collectionRef, element);
-  };
+  } // Шаблон для добавления чего-либо в базу данных
   const addTask = async (newTask: any) => {
     try {
       setLoading(true);
@@ -393,7 +366,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       setLoading(false)
     }
-  };
+  } // Функция для добавления задания
   const addGroups = async (newGroup: any) => {
     try {
       const docId = uuidv4();
@@ -408,7 +381,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       setLoading(false)
     }
-  };
+  } // Функция для добавления группы
   const addUser = async (newUser: any) => {
     try {
       if (selectedGroupId) {
@@ -425,8 +398,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       setLoading(false)
     }
-  };
-
+  } // Функция для добавления пользователей
   const addUsersToGroup = async (selectedUsers: any[]) => {
     try {
       setLoading(true)
@@ -450,7 +422,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       setLoading(false)
     }
 
-  };
+  } // Функция для добавления пользователя в группу
   const removeUsersFromGroup = async (selectedUsers: any[]) => {
     try {
       setLoading(true)
@@ -473,15 +445,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
       setUserSync(newDate.getTime())
       setLoading(false)
     }
-  };
-
-
-
-  const [userDoc, setUserDoc] = useState<any>(null);
+  } // Функция для удаления пользователя из группы
+ 
   useEffect(() => {
     if (user !== undefined) {
-      // fetchGroupData();
-
       if (!user?.email) return;
       const docRef = doc(db, `users/${user?.email}`);
       const unsubscribe = onSnapshot(
@@ -528,7 +495,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         deleteGroupOwner,
         cachedArchiveRowTasks,
         cachedTasks,
-        getUsers,
+        getUsers,clearAllSubscriptions,
         addUser,
         selectedUserId,
         setSelectedUserId,

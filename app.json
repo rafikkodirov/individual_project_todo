@@ -7,17 +7,16 @@
       "android"
     ],
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "tasks",
-    "userInterfaceStyle": "automatic", 
+    "icon": ".assets/images/icon_android.png",
+    "scheme": "tasks", 
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "icon": "./assets/images/icon.png",
+      "icon": ".assets/images/icon_android.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
-        "backgroundColor": "#FFFAFA"
+        "backgroundColor": "#FFFFFF"
       },
       "package": "com.forceenginee.tasksgroups"
     }, 

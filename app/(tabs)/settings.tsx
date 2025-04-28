@@ -5,7 +5,7 @@ import { SecureStore } from '@/stores/global.store';
 import { logout } from '../services/authUtils'; 
 const Settings: React.FC = () => {
   const router = useRouter();
-  const { userData } = useDataContext();
+  const { userData,clearAllSubscriptions  } = useDataContext();
   const handleArchive = () => {
     router.push({
       pathname: "/archive"
@@ -17,6 +17,7 @@ const Settings: React.FC = () => {
     })
   }
   const handleLog = async () => {
+    clearAllSubscriptions()
     SecureStore.delete(["USER"])
     await logout()
     userData(null)

@@ -51,7 +51,7 @@ const LabeledTextInput: React.FC<LabeledTextInputProps> = ({
                 keyboardType = 'email-address';
                 placeholder = "Введите почту"
                 autoCapitalize = "none"
-                label = 'Email'
+                label = 'Почта'
                 break;
             case TextInputType.title:
                 keyboardType = 'default';
