@@ -18,7 +18,7 @@ const Settings: React.FC = () => {
   }
   const handleLog = async () => {
     clearAllSubscriptions()
-    SecureStore.delete(["USER"])
+    await SecureStore.delete(["USER"])
     await logout()
     userData(null)
     router.push({
@@ -134,4 +134,3 @@ const styles = StyleSheet.create({
   },
 });
 export default Settings;
-
