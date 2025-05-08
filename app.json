@@ -12,7 +12,7 @@
     "ios": {
       "supportsTablet": true
     }, "splash": {
-      "image": "./assets/images/LogoSplash.jpg", 
+      "image": "./assets/images/LogoSplash.png", 
       "backgroundColor": "#ffffff"
     },
     "android": {
