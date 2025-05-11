@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Задания и Группы",
+    "name": "Tasks",
     "slug": "Tasks",
     "version": "1.0.1",
     "platforms": [
@@ -11,6 +11,9 @@
     "scheme": "tasks", 
     "ios": {
       "supportsTablet": true
+    }, "splash": {
+      "image": "./assets/images/LogoSplash.png", 
+      "backgroundColor": "#ffffff"
     },
     "android": {
       "icon": "./assets/images/icon_android.png",
