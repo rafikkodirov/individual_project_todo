@@ -18,7 +18,7 @@ const Settings: React.FC = () => {
   }
   const handleLog = async () => {
     clearAllSubscriptions()
-    await SecureStore.delete(["USER"])
+    SecureStore.delete(["USER"])
     await logout()
     userData(null)
     router.push({
