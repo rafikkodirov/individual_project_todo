@@ -15,8 +15,7 @@
       "image": "./assets/images/LogoSplash.png", 
       "backgroundColor": "#ffffff"
     },
-    "android": {
-      "permissions": [],
+    "android": { 
       "icon": "./assets/images/icon_android.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon_android.png",
